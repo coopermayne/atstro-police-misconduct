@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import react from '@astrojs/react';
 
 import sanity from '@sanity/astro';
 
@@ -11,6 +12,7 @@ export default defineConfig({
 	},
 
   integrations: [
+    react(),
     sanity({
       projectId: "i5q3udyt",
       dataset: "production",
