@@ -1,4 +1,3 @@
-console.log('Setting up menu toggle');
 const menuToggle = document.getElementById('menu-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
 const menuOpenIcon = document.getElementById('menu-open-icon');
