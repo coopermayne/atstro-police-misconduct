@@ -1,25 +1,32 @@
 ---
 import '../styles/global.css';
-// Component Imports
-import Button from '../components/Button.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+import type { SanityDocument } from "@sanity/client";
+import { sanityClient } from "sanity:client";
 
-// Full Astro Component Syntax:
-// https://docs.astro.build/basics/astro-components/
+const RECENT_POST_QUERY = `*[
+  _type == "post"
+  && defined(slug.current)
+]|order(publishedAt desc)[0]{_id, title, slug, publishedAt}`;
+
+const recentPost = await sanityClient.fetch<SanityDocument>(RECENT_POST_QUERY);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro + TailwindCSS</title>
-	</head>
+<MainLayout content={{ title: 'Home' }}>
+  <div class="grid place-items-center h-screen content-center">
+    <section class="text-center">
+      <h1 class="text-4xl font-bold mb-4">Welcome to Our Site</h1>
+      <p class="text-lg mb-8">Discover insightful blog posts and explore our latest updates.</p>
+    </section>
 
-	<body>
-		<div class="grid place-items-center h-screen content-center">
-			<Button>Tailwind Button in Astro!</Button>
-			<a href="/markdown-page" class="p-4 underline">Markdown is also supported...</a>
-		</div>
-	</body>
-</html>
+    {recentPost && (
+      <section class="mt-8">
+        <h2 class="text-2xl font-semibold">Most Recent Blog Post</h2>
+        <a href={`/posts/${recentPost.slug.current}`} class="block mt-4 text-xl text-blue-500 hover:underline">
+          {recentPost.title}
+        </a>
+        <p class="text-sm text-gray-600">Published: {new Date(recentPost.publishedAt).toLocaleDateString()}</p>
+      </section>
+    )}
+  </div>
+</MainLayout>
