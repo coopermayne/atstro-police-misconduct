@@ -1,24 +1,35 @@
 ---
 import ScaleIcon from '@heroicons/react/24/solid/ScaleIcon';
+import Bars3Icon from '@heroicons/react/24/solid/Bars3Icon';
+import XMarkIcon from '@heroicons/react/24/solid/XMarkIcon';
 ---
 
 <header class="bg-blue-600 text-white">
   <div class="container mx-auto max-w-7xl flex items-center justify-between py-4 px-4">
     <!-- Logo/Icon -->
     <div class="flex items-center gap-2">
-      <!-- Adjust icon size to match text-xl -->
-      <ScaleIcon className="h-6 w-6 text-blue-500 hover:text-blue-700"  />
+      <ScaleIcon className="h-6 w-6 text-blue-500 hover:text-blue-700" />
       <a href="/" class="text-xl font-bold">Police Misconduct Law</a>
     </div>
 
-    <!-- Navigation Links -->
-    <nav class="flex items-center gap-6">
+    <!-- Hamburger Menu (Mobile) -->
+    <button
+      id="menu-toggle"
+      class="lg:hidden text-white focus:outline-none"
+      aria-label="Toggle Menu"
+    >
+      <Bars3Icon id="menu-icon-open" className="h-6 w-6" />
+      <XMarkIcon id="menu-icon-close" className="h-6 w-6 hidden" />
+    </button>
+
+    <!-- Navigation Links (Desktop) -->
+    <nav class="hidden lg:flex items-center gap-6">
       <a href="/posts" class="hover:underline">Posts</a>
       <a href="/cases" class="hover:underline">Cases</a>
     </nav>
 
     <!-- Search Bar and Theme Toggle -->
-    <div class="flex items-center gap-4">
+    <div class="hidden lg:flex items-center gap-4">
       <!-- Search Bar -->
       <input
         type="text"
@@ -32,4 +43,37 @@ import ScaleIcon from '@heroicons/react/24/solid/ScaleIcon';
       </button>
     </div>
   </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div id="mobile-menu" class="hidden lg:hidden bg-blue-700 text-white">
+    <a href="/posts" class="block px-4 py-2 hover:bg-blue-800">Posts</a>
+    <a href="/cases" class="block px-4 py-2 hover:bg-blue-800">Cases</a>
+    <form action="/search" method="GET" class="px-4 py-2">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search..."
+        class="w-full border border-gray-300 rounded-md px-3 py-1 text-sm text-gray-800"
+      />
+      <button type="submit" class="mt-2 w-full bg-gray-800 text-white py-1 rounded-md">
+        Search
+      </button>
+    </form>
+    <button class="w-full bg-gray-700 text-white py-2 rounded-md mt-2 hover:bg-gray-600">
+      Toggle Theme
+    </button>
+  </div>
+
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIconOpen = document.getElementById('menu-icon-open');
+    const menuIconClose = document.getElementById('menu-icon-close');
+
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      menuIconOpen.classList.toggle('hidden');
+      menuIconClose.classList.toggle('hidden');
+    });
+  </script>
 </header>
