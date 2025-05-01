@@ -1,13 +1,15 @@
-const menuToggle = document.getElementById('menu-toggle');
-const mobileMenu = document.getElementById('mobile-menu');
-const menuOpenIcon = document.getElementById('menu-open-icon');
-const menuCloseIcon = document.getElementById('menu-close-icon');
+document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.getElementById("menu-toggle");
+    const menuOpenIcon = document.getElementById("menu-open-icon");
+    const menuCloseIcon = document.getElementById("menu-close-icon");
+    const mobileMenu = document.getElementById("mobile-menu");
 
-if (menuToggle) {
-  menuToggle.addEventListener('click', () => {
-    const isHidden = mobileMenu.classList.contains('hidden');
-    mobileMenu.classList.toggle('hidden', !isHidden);
-    menuOpenIcon.classList.toggle('hidden', !isHidden);
-    menuCloseIcon.classList.toggle('hidden', isHidden);
-  });
-}
+    menuToggle.addEventListener("click", () => {
+        // Toggle the mobile menu visibility
+        mobileMenu.classList.toggle("hidden");
+
+        // Toggle the visibility of the icons
+        menuOpenIcon.classList.toggle("hidden");
+        menuCloseIcon.classList.toggle("hidden");
+    });
+});
