@@ -29,9 +29,26 @@ import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
           </div>
       </div>
 
-      <!-- Mobile Menu -->
-      <div id="mobile-menu" class="absolute inset-x-0 z-20 w-full px-6 py-4 bg-white dark:bg-gray-900 md:mt-0 md:p-0 md:top-0 md:relative md:opacity-100 md:translate-x-0 md:flex md:items-center md:justify-between hidden">
-          <div class="flex flex-col px-2 -mx-4 md:flex-row md:mx-10 md:py-0">
+      <div id="mobile-menu" class="absolute inset-x-0 z-20 w-full px-6 py-4 bg-white dark:bg-gray-900 md:hidden hidden">
+          <div class="flex flex-col px-2 -mx-4">
+              <a href="/cases" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Cases</a>
+              <a href="/posts" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Blog</a>
+              <a href="/about" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">About</a>
+              <a href="/contact" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Contact</a>
+          </div>
+
+          <!-- Icons Section -->
+          <div class="flex items-center justify-center mt-4 space-x-4">
+              <button id="theme-toggle-mobile" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none">
+                  <SunIcon id="light-mode-icon-mobile" className="w-6 h-6 hidden dark:block" />
+                  <MoonIcon id="dark-mode-icon-mobile" className="w-6 h-6 block dark:hidden" />
+              </button>
+              <MagnifyingGlassIcon className="w-6 h-6 text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 cursor-pointer" />
+          </div>
+      </div>
+
+      <div id="desktop-menu" class="hidden md:flex md:items-center md:justify-between w-full px-6 py-4 bg-white dark:bg-gray-900">
+          <div class="flex flex-row px-2 md:mx-10">
               <a href="/cases" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Cases</a>
               <a href="/posts" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">Blog</a>
               <a href="/about" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 md:mx-2">About</a>
@@ -39,16 +56,13 @@ import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
           </div>
 
           <!-- Icons Section -->
-          <div class="flex items-center justify-center mt-4 md:mt-0 space-x-4">
-            <!-- Dark Mode/Light Mode Toggle -->
-            <button id="theme-toggle" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none">
-                <SunIcon id="light-mode-icon" className="w-6 h-6 hidden dark:block" />
-                <MoonIcon id="dark-mode-icon" className="w-6 h-6 block dark:hidden" />
-            </button>
-
-            <!-- Magnifying Glass Icon -->
-            <MagnifyingGlassIcon className="w-6 h-6 text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 cursor-pointer" />
-        </div>
+          <div class="flex items-center justify-center space-x-4">
+              <button id="theme-toggle-desktop" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none">
+                  <SunIcon id="light-mode-icon-desktop" className="w-6 h-6 hidden dark:block" />
+                  <MoonIcon id="dark-mode-icon-desktop" className="w-6 h-6 block dark:hidden" />
+              </button>
+              <MagnifyingGlassIcon className="w-6 h-6 text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 cursor-pointer" />
+          </div>
       </div>
   </div>
 </nav>
