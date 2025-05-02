@@ -17,7 +17,7 @@ import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
 
           <!-- Mobile menu button -->
           <div class="flex lg:hidden">
-              <button id="menu-toggle" type="button" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400" aria-label="toggle menu">
+              <button id="menu-toggle" type="button" class="z-51 text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none focus:text-gray-600 dark:focus:text-gray-400" aria-label="toggle menu">
                   <svg id="menu-open-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
                   </svg>
@@ -29,23 +29,25 @@ import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
           </div>
       </div>
 
-      <div id="mobile-menu" class="absolute inset-x-0 z-20 w-full px-6 py-4 bg-white dark:bg-gray-900 md:hidden hidden">
-          <div class="flex flex-col px-2 -mx-4">
-              <a href="/cases" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Cases</a>
-              <a href="/posts" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Blog</a>
-              <a href="/about" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">About</a>
-              <a href="/contact" class="px-2.5 py-2 text-gray-700 transition-colors duration-300 transform rounded-lg dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Contact</a>
-          </div>
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-gray bg-opacity-50 backdrop-blur-sm hidden"></div>
 
-          <!-- Icons Section -->
-          <div class="flex items-center justify-center mt-4 space-x-4">
-              <button id="theme-toggle-mobile" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none">
-                  <SunIcon id="light-mode-icon-mobile" className="w-6 h-6 hidden dark:block" />
-                  <MoonIcon id="dark-mode-icon-mobile" className="w-6 h-6 block dark:hidden" />
-              </button>
-              <MagnifyingGlassIcon className="w-6 h-6 text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 cursor-pointer" />
-          </div>
-      </div>
+    <div id="mobile-menu" class="absolute inset-x-4 top-16 z-20 w-auto px-6 py-4 bg-gray-800 rounded-lg shadow-lg backdrop-blur-md md:hidden hidden">
+        <div class="flex flex-col px-2 -mx-4">
+          <a href="/cases" class="px-2.5 py-2 text-gray-200 transition-colors duration-300 transform rounded-lg hover:bg-gray-700">Cases</a>
+          <a href="/posts" class="px-2.5 py-2 text-gray-200 transition-colors duration-300 transform rounded-lg hover:bg-gray-700">Blog</a>
+          <a href="/about" class="px-2.5 py-2 text-gray-200 transition-colors duration-300 transform rounded-lg hover:bg-gray-700">About</a>
+          <a href="/contact" class="px-2.5 py-2 text-gray-200 transition-colors duration-300 transform rounded-lg hover:bg-gray-700">Contact</a>
+        </div>
+
+        <!-- Icons Section -->
+        <div class="flex items-center justify-center mt-4 space-x-4">
+          <button id="theme-toggle-mobile" class="text-gray-400 hover:text-gray-300 focus:outline-none">
+            <SunIcon id="light-mode-icon-mobile" className="w-6 h-6 hidden dark:block" />
+            <MoonIcon id="dark-mode-icon-mobile" className="w-6 h-6 block dark:hidden" />
+          </button>
+          <MagnifyingGlassIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer" />
+        </div>
+    </div>
 
       <div id="desktop-menu" class="hidden md:flex md:items-center md:justify-between w-full px-6 py-4 bg-white dark:bg-gray-900">
           <div class="flex flex-row px-2 md:mx-10">
