@@ -3,8 +3,9 @@ import type { SanityDocument } from "@sanity/client";
 import { sanityClient } from "sanity:client";
 import imageUrlBuilder from "@sanity/image-url";
 import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
-import { PortableText } from "astro-portabletext";
 import MainLayout from '../../layouts/MainLayout.astro';
+import PortableText from "../../components/PortableText.astro";
+
 
 const CASE_QUERY = `*[_type == "caseProfile" && slug.current == $slug][0]`;
 const caseProfile = await sanityClient.fetch<SanityDocument>(CASE_QUERY, Astro.params);

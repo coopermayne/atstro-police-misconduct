@@ -1,0 +1,17 @@
+---
+import imageUrlBuilder from "@sanity/image-url";
+import { sanityClient } from "sanity:client";
+
+const { asset, alt } = Astro.props.node;
+
+// Use the client to create the image URL builder
+const builder = imageUrlBuilder(sanityClient);
+
+const url = builder.image(asset).url();
+const webpUrl = builder.image(asset).format("webp").url();
+---
+
+<picture>
+  <source srcset={webpUrl} type="image/webp" />
+  <img class="responsive__img" src={url} alt={alt} />
+</picture>
