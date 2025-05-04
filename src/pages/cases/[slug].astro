@@ -6,11 +6,11 @@ import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import { PortableText } from "astro-portabletext";
 import MainLayout from '../../layouts/MainLayout.astro';
 
-const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]`;
-const post = await sanityClient.fetch<SanityDocument>(POST_QUERY, Astro.params);
+const CASE_QUERY = `*[_type == "caseProfile" && slug.current == $slug][0]`;
+const caseProfile = await sanityClient.fetch<SanityDocument>(CASE_QUERY, Astro.params);
 
 export async function getStaticPaths(): Promise<{ params: { slug: string } }> {
-  const SLUGS_QUERY = `*[_type == "post" && defined(slug.current)]{
+  const SLUGS_QUERY = `*[_type == "caseProfile" && defined(slug.current)]{
     "params": {"slug": slug.current}
   }`;
   return await sanityClient.fetch(SLUGS_QUERY, Astro.params);
@@ -21,29 +21,56 @@ const urlFor = (source: SanityImageSource) =>
   projectId && dataset
     ? imageUrlBuilder({ projectId, dataset }).image(source)
     : null;
-const postImageUrl = post.image
-  ? urlFor(post.image)?.width(550).height(310).url()
+const featuredImageUrl = caseProfile.featuredImage
+  ? urlFor(caseProfile.featuredImage.asset)?.width(800).height(450).url()
   : null;
 ---
 
-<MainLayout content={{ title: post.title }}>
-  <main class="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-4">
-    <a href="/posts" class="hover:underline">&larr; Back to posts</a>
-    {
-      postImageUrl && (
-        <img
-          src={postImageUrl}
-          alt={post.title}
-          class="aspect-video rounded-xl"
-          width="550"
-          height="310"
-        />
-      )
-    }
-    <h1 class="text-4xl font-bold mb-8">{post.title}</h1>
-    <div class="prose">
-      <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p>
-      {Array.isArray(post.body) && <PortableText value={post.body} />}
-    </div>
+<MainLayout content={{ title: caseProfile.title }}>
+  <main class="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-8 dark:text-gray-200">
+    <a href="/cases" class="hover:underline">&larr; Back to cases</a>
+
+    {featuredImageUrl && (
+      <img
+        src={featuredImageUrl}
+        alt={caseProfile.title}
+        class="aspect-video rounded-xl"
+        width="800"
+        height="450"
+      />
+    )}
+
+    <h1 class="text-4xl font-bold">{caseProfile.title}</h1>
+    <p class="text-gray-600 dark:text-gray-200">Published: {new Date(caseProfile.publishedAt).toLocaleDateString()}</p>
+
+    <section class="prose">
+      {Array.isArray(caseProfile.content) && <PortableText value={caseProfile.content} />}
+    </section>
+
+    <section class="mt-8">
+      <h2 class="text-2xl font-semibold">Details</h2>
+      <ul class="list-disc pl-5">
+        {caseProfile.municipalities?.length > 0 && (
+          <li>
+            <strong>Municipalities:</strong> {caseProfile.municipalities.map(m => m._ref).join(", ")}
+          </li>
+        )}
+        {caseProfile.attorneys?.length > 0 && (
+          <li>
+            <strong>Attorneys:</strong> {caseProfile.attorneys.map(a => a._ref).join(", ")}
+          </li>
+        )}
+        {caseProfile.experts?.length > 0 && (
+          <li>
+            <strong>Experts:</strong> {caseProfile.experts.map(e => e._ref).join(", ")}
+          </li>
+        )}
+        {caseProfile.judges?.length > 0 && (
+          <li>
+            <strong>Judges:</strong> {caseProfile.judges.map(j => j._ref).join(", ")}
+          </li>
+        )}
+      </ul>
+    </section>
   </main>
 </MainLayout>
