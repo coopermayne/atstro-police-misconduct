@@ -6,7 +6,6 @@ import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 import MainLayout from '../../layouts/MainLayout.astro';
 import PortableText from "../../components/PortableText.astro";
 
-
 const CASE_QUERY = `*[_type == "caseProfile" && slug.current == $slug][0]`;
 const caseProfile = await sanityClient.fetch<SanityDocument>(CASE_QUERY, Astro.params);
 
@@ -45,7 +44,7 @@ const featuredImageUrl = caseProfile.featuredImage
     <p class="text-gray-600 dark:text-gray-200">Published: {new Date(caseProfile.publishedAt).toLocaleDateString()}</p>
 
     <section class="prose">
-      {Array.isArray(caseProfile.content) && <PortableText value={caseProfile.content} />}
+      <PortableText portableText={caseProfile.content} />
     </section>
 
     <section class="mt-8">
@@ -53,22 +52,22 @@ const featuredImageUrl = caseProfile.featuredImage
       <ul class="list-disc pl-5">
         {caseProfile.municipalities?.length > 0 && (
           <li>
-            <strong>Municipalities:</strong> {caseProfile.municipalities.map(m => m._ref).join(", ")}
+            <strong>Municipalities:</strong> {caseProfile.municipalities.map((m: { _ref: string }) => m._ref).join(", ")}
           </li>
         )}
         {caseProfile.attorneys?.length > 0 && (
           <li>
-            <strong>Attorneys:</strong> {caseProfile.attorneys.map(a => a._ref).join(", ")}
+            <strong>Attorneys:</strong> {caseProfile.attorneys.map((a: { _ref: string }) => a._ref).join(", ")}
           </li>
         )}
         {caseProfile.experts?.length > 0 && (
           <li>
-            <strong>Experts:</strong> {caseProfile.experts.map(e => e._ref).join(", ")}
+            <strong>Experts:</strong> {caseProfile.experts.map((e: { _ref: string }) => e._ref).join(", ")}
           </li>
         )}
         {caseProfile.judges?.length > 0 && (
           <li>
-            <strong>Judges:</strong> {caseProfile.judges.map(j => j._ref).join(", ")}
+            <strong>Judges:</strong> {caseProfile.judges.map((j: { _ref: string }) => j._ref).join(", ")}
           </li>
         )}
       </ul>

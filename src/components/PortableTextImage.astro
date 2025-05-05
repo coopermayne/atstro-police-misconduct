@@ -1,14 +1,10 @@
 ---
-import imageUrlBuilder from "@sanity/image-url";
-import { sanityClient } from "sanity:client";
+import { urlForImage } from "../sanity/lib/url-for-image";
 
 const { asset, alt } = Astro.props.node;
 
-// Use the client to create the image URL builder
-const builder = imageUrlBuilder(sanityClient);
-
-const url = builder.image(asset).url();
-const webpUrl = builder.image(asset).format("webp").url();
+const url = urlForImage(asset).url();
+const webpUrl = urlForImage(asset).format("webp").url();
 ---
 
 <picture>
