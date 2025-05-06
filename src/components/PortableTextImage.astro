@@ -3,11 +3,14 @@ import { urlForImage } from "../sanity/lib/url-for-image";
 
 const { asset, alt } = Astro.props.node;
 
+// Generate URLs for different image sizes
 const url = urlForImage(asset).url();
 const webpUrl = urlForImage(asset).format("webp").url();
+const mobileWebpUrl = urlForImage(asset).width(480).format("webp").url(); // Smaller WebP image for mobile
 ---
 
 <picture>
+  <source srcset={mobileWebpUrl} media="(max-width: 480px)" type="image/webp" />
   <source srcset={webpUrl} type="image/webp" />
   <img class="responsive__img" src={url} alt={alt} />
 </picture>
