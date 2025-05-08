@@ -27,23 +27,21 @@ const featuredImageUrl = caseProfile.featuredImage
 ---
 
 <MainLayout content={{ title: caseProfile.title }}>
-  <main class="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-8 dark:text-gray-200">
-    <a href="/cases" class="hover:underline">&larr; Back to cases</a>
+  <section class="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-lg rounded-lg">
+    <a href="/cases" class="text-blue-500 hover:underline font-medium">&larr; Back to cases</a>
 
     {featuredImageUrl && (
       <img
         src={featuredImageUrl}
         alt={caseProfile.title}
-        class="aspect-video rounded-xl"
-        width="800"
-        height="450"
+        class="rounded-xl shadow-md w-full h-auto object-cover"
       />
     )}
 
     <h1 class="text-4xl font-bold">{caseProfile.title}</h1>
     <p class="text-gray-600 dark:text-gray-200">Published: {new Date(caseProfile.publishedAt).toLocaleDateString()}</p>
 
-    <section class="prose">
+    <section class="prose dark:prose-invert max-w-none">
       <PortableText portableText={caseProfile.content} />
     </section>
 
@@ -72,5 +70,5 @@ const featuredImageUrl = caseProfile.featuredImage
         )}
       </ul>
     </section>
-  </main>
+  </section>
 </MainLayout>
