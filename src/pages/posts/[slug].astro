@@ -27,25 +27,23 @@ const postImageUrl = post.image
 ---
 <MainLayout content={{ title: post.title }}>
 
-  <main class="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-6 bg-white shadow-lg rounded-lg">
+  <section class="container mx-auto min-h-screen max-w-3xl p-8 flex flex-col gap-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-lg rounded-lg">
     <a href="/posts" class="text-blue-500 hover:underline font-medium">&larr; Back to posts</a>
     {
       postImageUrl && (
         <img
           src={postImageUrl}
           alt={post.title}
-          class="aspect-video rounded-xl shadow-md"
-          width="550"
-          height="310"
+          class="rounded-xl shadow-md w-full h-auto object-cover"
         />
       )
     }
-    <h1 class="text-5xl font-extrabold text-gray-900 mb-4">{post.title}</h1>
-    <div class="text-sm text-gray-500 mb-6">
+    <h1 class="text-5xl font-extrabold mb-4">{post.title}</h1>
+    <div class="text-sm mb-6">
       <p>Published: {new Date(post.publishedAt).toLocaleDateString()}</p>
     </div>
-    <div class="prose prose-lg max-w-none">
+    <div class="prose dark:prose-invert max-w-none">
       {Array.isArray(post.body) && <PortableText value={post.body} />}
     </div>
-  </main>
+  </section>
 </MainLayout>
