@@ -1,0 +1,13 @@
+[build]
+  # Specify the Ubuntu Noble 24.04 build image
+  image = "ubuntu-noble-24.04"
+  
+  # Your build command (adjust if needed)
+  command = "npm run build"
+  
+  # Your publish directory
+  publish = "dist"
+
+[build.environment]
+  # Specify Node.js version if needed
+  NODE_VERSION = "18"
