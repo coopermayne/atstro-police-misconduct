@@ -3,8 +3,6 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 
-import sanity from '@sanity/astro';
-
 // https://astro.build/config
 export default defineConfig({
   vite: {
@@ -12,11 +10,6 @@ export default defineConfig({
 	},
 
   integrations: [
-    react(),
-    sanity({
-      projectId: "i5q3udyt",
-      dataset: "production",
-      useCdn: false, // for static builds
-    }),
+    react()
   ],
 });

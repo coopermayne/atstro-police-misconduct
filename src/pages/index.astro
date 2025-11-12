@@ -1,23 +1,6 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-import type { SanityDocument } from "@sanity/client";
-import { sanityClient } from "sanity:client";
-import imageUrlBuilder from "@sanity/image-url";
-import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
-const POSTS_QUERY = `*[
-  _type == "post"
-  && defined(slug.current)
-]|order(publishedAt desc)[0...5]{_id, title, slug, publishedAt, image}`;
-
-const posts = await sanityClient.fetch<SanityDocument[]>(POSTS_QUERY);
-const [mostRecentPost, ...otherPosts] = posts;
-
-const { projectId, dataset } = sanityClient.config();
-const urlFor = (source: SanityImageSource) =>
-  projectId && dataset
-    ? imageUrlBuilder({ projectId, dataset }).image(source)
-    : null;
 ---
 
 <MainLayout content={{ title: 'Home' }}>
@@ -48,58 +31,5 @@ const urlFor = (source: SanityImageSource) =>
     </div>
     </header>
 
-  <!-- Blog Section -->
-  <section class="bg-white dark:bg-gray-900">
-    <div class="container px-6 py-10 mx-auto">
-      <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white">
-        Recent Blog Posts
-      </h2>
-      <div class="lg:flex lg:-mx-6 mt-8">
-        <!-- Most Recent Post -->
-        {mostRecentPost && (
-          <div class="lg:w-3/4 lg:px-6">
-            <img
-              class="object-cover object-center w-full h-80 xl:h-[28rem] rounded-xl"
-              src={mostRecentPost.image ? urlFor(mostRecentPost.image)?.width(800).height(400).url() : '/images/placeholder-800x400.png'}
-              alt={mostRecentPost.title}
-            />
-            <div>
-              <p class="mt-6 text-sm text-red-600 uppercase">Latest Post</p>
-              <h1 class="max-w-lg mt-4 text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
-                {mostRecentPost.title}
-              </h1>
-              <p class="text-sm text-gray-600 dark:text-gray-400">
-                Published: {new Date(mostRecentPost.publishedAt).toLocaleDateString()}
-              </p>
-              <a
-                href={`/posts/${mostRecentPost.slug.current}`}
-                class="inline-block mt-4 text-red-600 hover:underline"
-              >
-                Read More
-              </a>
-            </div>
-          </div>
-        )}
-
-        <!-- Other Recent Posts -->
-        <div class="mt-8 lg:w-1/4 lg:mt-0 lg:px-6">
-          {otherPosts.map((post) => (
-            <div>
-              <h3 class="text-red-600 capitalize">Recent Post</h3>
-              <a
-                href={`/posts/${post.slug.current}`}
-                class="block mt-2 font-medium text-gray-700 hover:underline hover:text-gray-500 dark:text-gray-400"
-              >
-                {post.title}
-              </a>
-              <p class="text-sm text-gray-600 dark:text-gray-400">
-                Published: {new Date(post.publishedAt).toLocaleDateString()}
-              </p>
-              <hr class="my-6 border-gray-200 dark:border-gray-700" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </section>
+  
 </MainLayout>
