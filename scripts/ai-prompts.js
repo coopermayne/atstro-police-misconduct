@@ -138,7 +138,13 @@ ${contentSchema}
 - DO NOT flag fields that can be extracted, inferred, or generated from the draft
 - DO NOT flag auto-generated fields (like case_id, slugs, etc.)
 - ONLY flag information that is completely absent and cannot be reasonably inferred
-- Be smart about inference - if notes mention "tased" you can infer force type, if they mention "lawsuit filed" you know civil_lawsuit_filed
+- MAKE REASONABLE INFERENCES from context - don't speculate, but use clear evidence:
+  * "tased" → force_type includes "Taser"
+  * "lawsuit filed" → civil_lawsuit_filed = true
+  * "he/his/him" pronouns → gender = "Male"
+  * "she/her" pronouns → gender = "Female"
+  * Gendered names (John, Mary) → gender can be inferred
+  * "teacher" + context → can infer approximate age range if reasonable
 
 **What CAN be generated/inferred (DO NOT flag these):**
 - title (victim's name if mentioned anywhere)
@@ -150,16 +156,21 @@ ${contentSchema}
 - threat_level (can be inferred from incident description)
 - civil_lawsuit_filed (can be inferred if lawsuit is mentioned)
 - bodycam_available (can be inferred if bodycam footage URL is provided or mentioned)
+- gender (CAN AND SHOULD be inferred from pronouns like "he/his/him" or "she/her" or gendered names)
+- age (can be inferred if context provides clues like "35-year-old" or job/role suggests age range)
 
 **What CANNOT be inferred (flag these if missing):**
 - Victim's name (if not mentioned at all)
 - Date of incident (if no date provided)
 - City/county (if location not specified)
 - Agency name (if no police department mentioned)
-- Age (specific number needed)
-- Race/ethnicity (cannot be assumed)
-- Gender (can be inferred from pronouns or gendered name - only flag if truly ambiguous)
-- Featured image URL, unless it's obvious that an image provided makes sense as featured image or it's specified as the featured image
+- Race/ethnicity (NEVER assume - must be explicitly stated)
+- Featured image URL (unless explicitly marked as featured image in the draft)
+
+**Be conservative but reasonable:**
+- Gender: Use pronouns (he/she) or clearly gendered names to infer. Only flag if no evidence.
+- Age: Use explicit age mentions ("35-year-old") or reasonable inference from context. Flag if no clues.
+- Armed status: Infer from incident description ("unarmed", "holding a knife", etc.)
 
 **Focus Areas:**
 1. Is there enough basic information to write a case (name, date, location, what happened)?
@@ -205,14 +216,21 @@ ${contentSchema}
 **Instructions:**
 1. Extract the schema for "${schemaSection}" from the provided TypeScript code
 2. Generate metadata that includes ALL fields defined in the schema (both required and optional)
-3. For fields where information is NOT available, use null (not empty string, not omitted)
-4. Return ONLY the metadata as a JSON object
-5. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
-6. For dates, use "YYYY-MM-DD" format as a STRING
-7. For case_id, use format: ca-[agency-slug]-[year]-[number]
-8. For tags, choose 3-5 relevant tags from the draft content
-9. Be flexible - extract information from unstructured notes, lists, and links
-10. ALWAYS include every field from the schema - use null if data is missing
+3. Make REASONABLE INFERENCES from the draft content - don't speculate wildly, but use clear evidence:
+   - Pronouns (he/his/him → "Male", she/her → "Female") for gender
+   - Gendered names (John → "Male", Mary → "Female") for gender
+   - Explicit age mentions ("35-year-old" → 35) for age
+   - Incident descriptions ("tased" → ["Taser"], "beaten" → ["Beating"]) for force_type
+   - Legal mentions ("lawsuit filed" → true, "settlement" → true) for civil_lawsuit_filed
+   - Evidence mentions ("body camera footage" → true) for bodycam_available
+4. For fields where information is NOT available AND cannot be reasonably inferred, use null
+5. Return ONLY the metadata as a JSON object
+6. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
+7. For dates, use "YYYY-MM-DD" format as a STRING
+8. For case_id, use format: ca-[agency-slug]-[year]-[number]
+9. For tags, choose 3-5 relevant tags from the draft content
+10. Be flexible - extract information from unstructured notes, lists, and links
+11. ALWAYS include every field from the schema - use null only if truly unknown after inference attempts
 
 Return ONLY valid JSON matching the schema:
 \`\`\`json
