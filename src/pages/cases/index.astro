@@ -19,6 +19,13 @@ const forceTypes = ['Shooting', 'Beating', 'Taser', 'Restraint', 'Chokehold', 'O
 // Get the most recent case for featured section
 const featuredCase = sortedCases[0];
 const recentCases = sortedCases.slice(1, 4);
+
+// Helper to get featured image URL
+function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
+  if (!imageId) return undefined;
+  const accountHash = "3oZsG34qPq3SIXQhl47vqA";
+  return `https://imagedelivery.net/${accountHash}/${imageId}/public`;
+}
 ---
 
 <MainLayout content={{ title: 'Cases' }}>
@@ -45,11 +52,19 @@ const recentCases = sortedCases.slice(1, 4);
         <!-- Most Recent Case (Featured) -->
         {featuredCase && (
           <div class="lg:w-3/4 lg:px-6">
-            <div class="bg-gray-100 dark:bg-gray-800 w-full h-80 xl:h-[28rem] rounded-xl flex flex-col items-center justify-center p-8 border-2 border-gray-300 dark:border-gray-600">
-              <h3 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">{featuredCase.data.victim_name}</h3>
-              <p class="text-xl text-gray-600 dark:text-gray-400">{featuredCase.data.city}, {featuredCase.data.county} County</p>
-              <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">{new Date(featuredCase.data.incident_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-            </div>
+            {featuredCase.data.featured_image ? (
+              <img 
+                class="object-cover object-center w-full h-80 xl:h-[28rem] rounded-xl" 
+                src={getFeaturedImageUrl(featuredCase.data.featured_image)} 
+                alt={featuredCase.data.title}
+              />
+            ) : (
+              <div class="bg-gray-100 dark:bg-gray-800 w-full h-80 xl:h-[28rem] rounded-xl flex flex-col items-center justify-center p-8 border-2 border-gray-300 dark:border-gray-600">
+                <h3 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">{featuredCase.data.title}</h3>
+                <p class="text-xl text-gray-600 dark:text-gray-400">{featuredCase.data.city}, {featuredCase.data.county} County</p>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">{new Date(featuredCase.data.incident_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+              </div>
+            )}
             
             <div>
               <p class="mt-6 text-sm text-red-600 uppercase">Most Recent Case</p>
@@ -57,7 +72,7 @@ const recentCases = sortedCases.slice(1, 4);
               <!-- Name with Age and Location -->
               <div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-2">
                 <h1 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
-                  {featuredCase.data.victim_name}
+                  {featuredCase.data.title}
                 </h1>
                 <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
                   {featuredCase.data.age && (
@@ -104,7 +119,7 @@ const recentCases = sortedCases.slice(1, 4);
                 href={`/cases/${caseItem.slug}`} 
                 class="block mt-2 font-medium text-gray-700 hover:underline hover:text-gray-500 dark:text-gray-400"
               >
-                {caseItem.data.victim_name}
+                {caseItem.data.title}
               </a>
               <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
                 {caseItem.data.city}, {caseItem.data.county} County
@@ -249,7 +264,7 @@ const recentCases = sortedCases.slice(1, 4);
         <article 
           class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700"
           data-case={JSON.stringify({
-            victim_name: caseItem.data.victim_name,
+            title: caseItem.data.title,
             city: caseItem.data.city,
             county: caseItem.data.county,
             agencies: caseItem.data.agencies,
@@ -266,7 +281,7 @@ const recentCases = sortedCases.slice(1, 4);
           <div class="p-6">
             <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-3">
               <a href={`/cases/${caseItem.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
-                {caseItem.data.victim_name}
+                {caseItem.data.title}
               </a>
             </h2>
             

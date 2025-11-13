@@ -5,11 +5,11 @@ const casesCollection = defineCollection({
   schema: z.object({
     // Basic Info
     case_id: z.string(),
-    title: z.string(),
+    title: z.string(), // Victim's name
     description: z.string(),
-    victim_name: z.string(),
     incident_date: z.string(),
     published: z.boolean().default(true),
+    featured_image: z.string().optional(), // Cloudflare Image ID for featured display
     
     // Location
     city: z.string(),

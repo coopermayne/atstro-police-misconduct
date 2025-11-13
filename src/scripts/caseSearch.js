@@ -61,7 +61,7 @@ function applyFilters() {
     // Search filter (omni-search across multiple fields)
     if (searchTerm) {
       const searchableText = [
-        data.victim_name,
+        data.title,
         data.city,
         data.county,
         ...(data.agencies || []),
