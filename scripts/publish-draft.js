@@ -137,10 +137,186 @@ function extractJSON(text) {
 }
 
 /**
+ * Validate media shortcode syntax
+ * Detects malformed shortcodes and provides specific error messages
+ */
+function validateMediaShortcodeSyntax(draftContent) {
+  const errors = [];
+  const warnings = [];
+  const lines = draftContent.split('\n');
+  
+  // Pattern to detect potential shortcodes (even malformed ones)
+  // Looks for {{ with type-like word followed by colon
+  const potentialShortcodePattern = /\{\{[\s]*(\w+)[\s]*:([^}]*)/g;
+  
+  let match;
+  let lineNumber = 0;
+  const contentByLine = lines.map((line, idx) => ({ line, number: idx + 1 }));
+  
+  // Check each line for potential shortcodes
+  for (const { line, number } of contentByLine) {
+    // Look for potential shortcodes on this line
+    const potentialMatches = [...line.matchAll(/\{\{/g)];
+    
+    if (potentialMatches.length > 0) {
+      // Check if properly closed
+      const openCount = (line.match(/\{\{/g) || []).length;
+      const closeCount = (line.match(/\}\}/g) || []).length;
+      
+      if (openCount !== closeCount) {
+        errors.push({
+          line: number,
+          text: line.trim(),
+          issue: `Mismatched braces - found ${openCount} opening {{ but ${closeCount} closing }}`,
+          fix: 'Ensure each {{type: url | params}} ends with }}'
+        });
+        continue;
+      }
+      
+      // Extract potential shortcodes from this line
+      const shortcodeMatches = [...line.matchAll(/\{\{([^}]+)\}\}/g)];
+      
+      for (const scMatch of shortcodeMatches) {
+        const fullShortcode = scMatch[0];
+        const content = scMatch[1];
+        
+        // Check basic structure: type: url
+        const structureMatch = content.match(/^\s*(\w+)\s*:\s*([^\s|]+)(.*)/);
+        
+        if (!structureMatch) {
+          errors.push({
+            line: number,
+            text: line.trim(),
+            issue: 'Invalid shortcode structure - missing type or URL',
+            fix: 'Use format: {{type: url | param: value}}'
+          });
+          continue;
+        }
+        
+        const [, type, url, params] = structureMatch;
+        const normalizedType = type.toLowerCase();
+        
+        // Validate type
+        if (!['video', 'image', 'document', 'pdf'].includes(normalizedType)) {
+          errors.push({
+            line: number,
+            text: line.trim(),
+            issue: `Unknown media type "${type}"`,
+            fix: 'Valid types are: video, image, document, pdf'
+          });
+          continue;
+        }
+        
+        // Validate URL
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          errors.push({
+            line: number,
+            text: line.trim(),
+            issue: `Invalid URL "${url.substring(0, 50)}..." - must start with http:// or https://`,
+            fix: 'Provide a complete URL starting with http:// or https://'
+          });
+          continue;
+        }
+        
+        // Validate parameters if present
+        if (params.trim()) {
+          // Check for common mistakes
+          if (params.includes('featured_img')) {
+            warnings.push({
+              line: number,
+              text: line.trim(),
+              issue: 'Found "featured_img" - should be "featured"',
+              fix: 'Change | featured_img: true to | featured: true'
+            });
+          }
+          
+          // Check for parameters without pipe separator
+          if (params.trim() && !params.trim().startsWith('|')) {
+            errors.push({
+              line: number,
+              text: line.trim(),
+              issue: 'Parameters must start with | separator',
+              fix: 'Add | before parameters: {{type: url | param: value}}'
+            });
+          }
+          
+          // Check parameter format
+          const paramParts = params.split('|').filter(p => p.trim());
+          for (const param of paramParts) {
+            if (param.trim() && !param.includes(':')) {
+              warnings.push({
+                line: number,
+                text: line.trim(),
+                issue: `Parameter "${param.trim()}" missing colon`,
+                fix: 'Parameters should be in format: | paramName: value'
+              });
+            }
+          }
+        }
+      }
+      
+      // Check for common closing mistakes
+      if (line.includes('{{') && line.match(/\)\s*\}\}|\}\s*\)/)) {
+        errors.push({
+          line: number,
+          text: line.trim(),
+          issue: 'Mixed closing characters - found ) instead of or mixed with }}',
+          fix: 'Use only }} to close shortcodes, not )'
+        });
+      }
+    }
+  }
+  
+  return { errors, warnings };
+}
+
+/**
  * Validate draft completeness before processing
  */
 async function validateDraft(draftContent, contentType) {
-  console.log('\n🔍 Validating draft completeness...\n');
+  console.log('\n🔍 Validating draft...\n');
+  
+  // First, validate shortcode syntax
+  console.log('══════════════════════════════════════════════════════════');
+  console.log('              MEDIA SHORTCODE SYNTAX CHECK');
+  console.log('══════════════════════════════════════════════════════════\n');
+  
+  const syntaxValidation = validateMediaShortcodeSyntax(draftContent);
+  
+  if (syntaxValidation.errors.length > 0) {
+    console.log('❌ SYNTAX ERRORS FOUND:\n');
+    syntaxValidation.errors.forEach((error, idx) => {
+      console.log(`${idx + 1}. Line ${error.line}:`);
+      console.log(`   ${error.text}`);
+      console.log(`   ❌ ${error.issue}`);
+      console.log(`   💡 ${error.fix}\n`);
+    });
+  } else {
+    console.log('✅ All shortcodes are properly formatted\n');
+  }
+  
+  if (syntaxValidation.warnings.length > 0) {
+    console.log('⚠️  WARNINGS:\n');
+    syntaxValidation.warnings.forEach((warning, idx) => {
+      console.log(`${idx + 1}. Line ${warning.line}:`);
+      console.log(`   ${warning.text}`);
+      console.log(`   ⚠️  ${warning.issue}`);
+      console.log(`   💡 ${warning.fix}\n`);
+    });
+  }
+  
+  if (syntaxValidation.errors.length > 0) {
+    console.log('══════════════════════════════════════════════════════════');
+    console.log('\n❌ VALIDATION FAILED: Fix syntax errors before publishing.\n');
+    process.exit(1);
+  }
+  
+  console.log('══════════════════════════════════════════════════════════\n');
+  
+  // Continue with content validation
+  console.log('══════════════════════════════════════════════════════════');
+  console.log('                CONTENT VALIDATION REPORT');
+  console.log('══════════════════════════════════════════════════════════\n');
   
   // Read content schema
   const schemaPath = path.join(ROOT_DIR, 'src', 'content', 'config.ts');
@@ -156,9 +332,7 @@ async function validateDraft(draftContent, contentType) {
   const validation = extractJSON(validationText);
   
   // Display validation results
-  console.log('═══════════════════════════════════════════════════════════');
-  console.log('                    DRAFT VALIDATION REPORT');
-  console.log('═══════════════════════════════════════════════════════════\n');
+  console.log('══════════════════════════════════════════════════════════\n');
   
   // Featured image status
   if (validation.hasFeaturedImage) {

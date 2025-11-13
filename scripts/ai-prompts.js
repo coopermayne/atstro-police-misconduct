@@ -215,6 +215,15 @@ export function createMetadataExtractionPrompt(draftContent, contentSchema, cont
     }
   }
   
+  // Extract featured image if marked
+  let featuredImageSection = '';
+  if (mediaAnalysis && mediaAnalysis.images && mediaAnalysis.images.length > 0) {
+    const featuredImage = mediaAnalysis.images.find(img => img.featured === true);
+    if (featuredImage) {
+      featuredImageSection = `\n**Featured Image (use this imageId for featured_image field):**\n${featuredImage.imageId}\n`;
+    }
+  }
+  
   return {
     system: SYSTEM_PROMPT,
     user: `Based on this draft content, generate appropriate metadata values.
@@ -224,9 +233,11 @@ ${draftContent}
 
 **Content Schema (from src/content/config.ts):**
 ${contentSchema}
-${documentsSection}
+${documentsSection}${featuredImageSection}
 **CRITICAL INSTRUCTION FOR DOCUMENTS FIELD:**
 ${documentsSection ? '- You MUST use the "Processed Documents" array above EXACTLY as provided for the documents field\n- DO NOT extract document URLs from the draft content\n- DO NOT use original external URLs\n- The documents have already been uploaded to our R2 storage and the URLs are ready to use\n' : '- Set documents field to null if no processed documents are provided\n'}
+**CRITICAL INSTRUCTION FOR FEATURED_IMAGE FIELD:**
+${featuredImageSection ? '- You MUST use the imageId provided in "Featured Image" section above\n- This is a Cloudflare Images ID, not a URL\n' : '- Set featured_image to null if no featured image is provided\n'}
 **Instructions:**
 1. Extract the schema for "${schemaSection}" from the provided TypeScript code
 2. Generate metadata that includes ALL fields defined in the schema (both required and optional)
@@ -238,14 +249,15 @@ ${documentsSection ? '- You MUST use the "Processed Documents" array above EXACT
    - Legal mentions ("lawsuit filed" → true, "settlement" → true) for civil_lawsuit_filed
    - Evidence mentions ("body camera footage" → true) for bodycam_available
 4. **CRITICAL**: For the documents field, use ONLY the "Processed Documents" array provided above (if any). DO NOT extract or use URLs from the draft content.
-5. For fields where information is NOT available AND cannot be reasonably inferred, use null
-6. Return ONLY the metadata as a JSON object
-7. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
-8. For dates, use "YYYY-MM-DD" format as a STRING
-9. For case_id, use format: ca-[agency-slug]-[year]-[number]
-10. For tags, choose 3-5 relevant tags from the draft content
-11. Be flexible - extract information from unstructured notes, lists, and links
-12. ALWAYS include every field from the schema - use null only if truly unknown after inference attempts
+5. **CRITICAL**: For the featured_image field, use ONLY the imageId provided in "Featured Image" section above (if any).
+6. For fields where information is NOT available AND cannot be reasonably inferred, use null
+7. Return ONLY the metadata as a JSON object
+8. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
+9. For dates, use "YYYY-MM-DD" format as a STRING
+10. For case_id, use format: ca-[agency-slug]-[year]-[number]
+11. For tags, choose 3-5 relevant tags from the draft content
+12. Be flexible - extract information from unstructured notes, lists, and links
+13. ALWAYS include every field from the schema - use null only if truly unknown after inference attempts
 
 Return ONLY valid JSON matching the schema:
 \`\`\`json
@@ -310,11 +322,20 @@ ${contentSchema}
     - Typically place it in a "## Related Documents" or "## Legal Documents" section
     - Place it before the "## Sources" section
 12. Reference documents naturally in the article text (e.g., "According to court filings...", "The police report states...")
+13. **USE CUSTOM MEDIA METADATA**: Each media item in "Available Media" may contain custom properties (caption, title, description, info, alt, featured, etc.). Use these intelligently:
+    - For captions/descriptions: Use them as the caption prop for components
+    - For titles: Reference in article text when introducing the media
+    - For info/context: Weave into the narrative around where media is embedded
+    - For alt text: Use title, description, or caption as appropriate for accessibility
+    - Let the custom metadata guide HOW you present and contextualize each piece of media
 
 **Component Usage Examples:**
 - For videos: <CloudflareVideo videoId="abc123" caption="Body camera footage shows..." />
+  - Use the caption property from the shortcode if provided, or craft based on description or info
 - For images: <CloudflareImage imageId="xyz789" alt="Scene photo" caption="Photo taken at scene" />
+  - Use alt or title from shortcode for alt text, caption or description for caption prop
 - For documents: <DocumentsList documents={frontmatter.documents} /> (REQUIRED if documents array exists)
+  - Document titles and descriptions from shortcodes are already in frontmatter
 
 **Output Format:**
 Return the complete MDX file content with frontmatter. Use this exact structure:
