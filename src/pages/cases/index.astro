@@ -23,21 +23,21 @@ const recentCases = sortedCases.slice(1, 4);
 
 <MainLayout content={{ title: 'Cases' }}>
   <!-- Hero Section -->
-  <header class="bg-white dark:bg-gray-900">
-    <div class="container px-6 py-8 mx-auto">
+  <header class="bg-white dark:bg-gray-900 mb-8">
+    <div class="container px-6 py-10 mx-auto border-b-4 border-red-600">
       <h1 class="text-3xl font-semibold text-gray-800 dark:text-white lg:text-4xl">
         California <span class="text-red-600">Deadly Force Cases</span>
       </h1>
-      <p class="mt-2 text-gray-600 dark:text-gray-400">
+      <p class="mt-3 text-gray-600 dark:text-gray-400">
         Comprehensive documentation of deadly force incidents across California
       </p>
     </div>
   </header>
 
   <!-- Featured Case Section -->
-  <section class="bg-white dark:bg-gray-900 px-6 py-10">
+  <section class="bg-white dark:bg-gray-900 px-6 py-10 mb-0 border-b border-gray-200 dark:border-gray-700">
     <div class="container mx-auto">
-      <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white mb-8">
+      <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-8">
         Recent Cases
       </h2>
       
@@ -53,16 +53,25 @@ const recentCases = sortedCases.slice(1, 4);
             
             <div>
               <p class="mt-6 text-sm text-red-600 uppercase">Most Recent Case</p>
-              <h1 class="max-w-lg mt-4 text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
-                {featuredCase.data.title}
-              </h1>
-              <div class="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <p><strong class="text-gray-800 dark:text-gray-300">Victim:</strong> {featuredCase.data.victim_name}</p>
-                {featuredCase.data.age && <p><strong class="text-gray-800 dark:text-gray-300">Age:</strong> {featuredCase.data.age}</p>}
-                <p><strong class="text-gray-800 dark:text-gray-300">Location:</strong> {featuredCase.data.city}, {featuredCase.data.county} County</p>
+              
+              <!-- Name with Age and Location -->
+              <div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-2">
+                <h1 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
+                  {featuredCase.data.victim_name}
+                </h1>
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
+                  {featuredCase.data.age && (
+                    <>
+                      <span class="text-gray-400">•</span>
+                      <span>Age {featuredCase.data.age}</span>
+                      <span class="text-gray-400">•</span>
+                    </>
+                  )}
+                  <span>{featuredCase.data.city}, {featuredCase.data.county} County</span>
+                </div>
               </div>
               
-              <!-- Agencies -->
+              <!-- Agency Pills -->
               <div class="flex flex-wrap gap-2 mt-4">
                 {featuredCase.data.agencies.slice(0, 3).map(agency => (
                   <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded border border-gray-300 dark:border-gray-600">
@@ -70,6 +79,11 @@ const recentCases = sortedCases.slice(1, 4);
                   </span>
                 ))}
               </div>
+              
+              <!-- Description -->
+              <p class="mt-4 text-gray-600 dark:text-gray-400">
+                {featuredCase.data.description}
+              </p>
               
               <a 
                 href={`/cases/${featuredCase.slug}`} 
@@ -108,9 +122,13 @@ const recentCases = sortedCases.slice(1, 4);
     </div>
   </section>
 
-  <!-- Search and Filter Bar -->
-  <section class="bg-white dark:bg-gray-900 px-6 py-6 border-t border-gray-200 dark:border-gray-700">
+  <!-- All Cases Section -->
+  <section class="bg-gray-50 dark:bg-gray-800 px-6 py-12">
     <div class="container mx-auto">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">All Cases</h2>
+        <p class="text-gray-600 dark:text-gray-400">Browse and filter our complete database of deadly force incidents</p>
+      </div>
       <div class="flex items-center gap-4 flex-wrap">
         <!-- Search Input -->
         <div class="flex-1 min-w-[300px] relative">
@@ -165,14 +183,12 @@ const recentCases = sortedCases.slice(1, 4);
       </div>
 
       <!-- Active Filters Pills -->
-      <div id="active-filters" class="flex flex-wrap gap-2 mt-3 empty:hidden">
+      <div id="active-filters" class="flex flex-wrap gap-2 mt-3 mb-6 empty:hidden">
         <!-- Active filter pills will be inserted here -->
       </div>
-    </div>
-  </section>
 
-  <!-- Filter Dropdowns (Hidden by default) -->
-  <div class="relative">
+      <!-- Filter Dropdowns (Hidden by default) -->
+      <div class="relative">
     <!-- Location Filter Dropdown -->
     <div id="location-filter-dropdown" class="hidden absolute left-0 right-0 bg-white dark:bg-gray-800 shadow-lg border-t border-gray-200 dark:border-gray-700 z-20">
       <div class="container mx-auto px-6 py-6">
@@ -216,12 +232,8 @@ const recentCases = sortedCases.slice(1, 4);
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- All Cases Grid -->
-  <section class="px-6 py-10">
-    <div class="container mx-auto">
-      <!-- No Results Message -->
+    <!-- No Results Message -->
       <div id="no-results" style="display: none;" class="text-center py-12">
         <p class="text-lg text-gray-600 dark:text-gray-400">No cases match your search criteria.</p>
         <button 
@@ -289,8 +301,8 @@ const recentCases = sortedCases.slice(1, 4);
         </article>
       ))}
     </div>
-    </section>
-  )}
+    </div>
+  </section>
 
   <!-- Load search script -->
   <script src="../../scripts/caseSearch.js"></script>
