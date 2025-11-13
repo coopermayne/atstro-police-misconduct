@@ -1,0 +1,37 @@
+---
+interface Props {
+  videoId: string;
+  customerCode?: string;
+  caption?: string;
+  poster?: string;
+}
+
+const { 
+  videoId, 
+  customerCode = "b2jil4qncbeg5z7d",
+  caption,
+  poster
+} = Astro.props;
+
+// Construct the iframe URL
+const posterUrl = poster || `https://customer-${customerCode}.cloudflarestream.com/${videoId}/thumbnails/thumbnail.jpg?time=&height=600`;
+const iframeSrc = `https://customer-${customerCode}.cloudflarestream.com/${videoId}/iframe?poster=${encodeURIComponent(posterUrl)}`;
+---
+
+<figure class="my-8">
+  <div style="position: relative; padding-top: 56.25%;">
+    <iframe
+      src={iframeSrc}
+      loading="lazy"
+      style="border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;"
+      class="rounded-lg shadow-lg"
+      allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+      allowfullscreen={true}
+    ></iframe>
+  </div>
+  {caption && (
+    <figcaption class="mt-3 text-sm text-gray-600 dark:text-gray-400 italic text-center">
+      {caption}
+    </figcaption>
+  )}
+</figure>

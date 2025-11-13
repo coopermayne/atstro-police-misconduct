@@ -9,7 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.2.5",
+    "@astrojs/mdx": "^4.3.10",
     "@astrojs/react": "^4.2.7",
     "@heroicons/react": "^2.2.0",
     "@portabletext/types": "^2.0.13",

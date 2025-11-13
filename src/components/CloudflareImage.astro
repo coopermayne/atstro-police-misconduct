@@ -1,0 +1,38 @@
+---
+interface Props {
+  imageId: string;
+  alt: string;
+  caption?: string;
+  accountHash?: string;
+}
+
+const { 
+  imageId, 
+  alt, 
+  caption,
+  accountHash = "3oZsG34qPq3SIXQhl47vqA"
+} = Astro.props;
+
+// Cloudflare Images URL format: https://imagedelivery.net/{account_hash}/{image_id}/{variant}
+const baseUrl = `https://imagedelivery.net/${accountHash}/${imageId}`;
+const thumbnailUrl = `${baseUrl}/thumbnail`;
+const mediumUrl = `${baseUrl}/medium`;
+const largeUrl = `${baseUrl}/large`;
+const publicUrl = `${baseUrl}/public`;
+---
+
+<figure class="my-8">
+  <img 
+    src={mediumUrl}
+    srcset={`${thumbnailUrl} 400w, ${mediumUrl} 800w, ${largeUrl} 1200w, ${publicUrl} 1600w`}
+    sizes="(max-width: 640px) 400px, (max-width: 1024px) 800px, (max-width: 1536px) 1200px, 1600px"
+    alt={alt}
+    class="w-full rounded-lg shadow-lg border border-gray-200 dark:border-gray-700"
+    loading="lazy"
+  />
+  {caption && (
+    <figcaption class="mt-3 text-sm text-gray-600 dark:text-gray-400 italic text-center">
+      {caption}
+    </figcaption>
+  )}
+</figure>

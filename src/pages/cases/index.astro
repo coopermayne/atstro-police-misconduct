@@ -1,0 +1,88 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Get all published cases
+const cases = await getCollection('cases', ({ data }) => data.published);
+
+// Sort by incident date (most recent first)
+const sortedCases = cases.sort((a, b) => 
+  new Date(b.data.incident_date).getTime() - new Date(a.data.incident_date).getTime()
+);
+
+// Get some stats
+const totalCases = sortedCases.length;
+const agencies = [...new Set(sortedCases.flatMap(c => c.data.agencies))];
+const counties = [...new Set(sortedCases.map(c => c.data.county))];
+---
+
+<MainLayout content={{ title: 'Cases' }}>
+  <!-- Hero Section -->
+  <header class="bg-white dark:bg-gray-900 mb-8">
+    <div class="container px-6 py-10 mx-auto border-b-4 border-red-600">
+      <h1 class="text-3xl font-semibold text-gray-800 dark:text-white lg:text-4xl">
+        California <span class="text-red-600">Deadly Force Cases</span>
+      </h1>
+      <p class="mt-3 text-gray-600 dark:text-gray-400">
+        Comprehensive documentation of deadly force incidents across California. Each case includes detailed information, timelines, and investigation status.
+      </p>
+      <div class="flex flex-wrap gap-6 mt-6 text-sm text-gray-600 dark:text-gray-400">
+        <span>Total Cases: <strong class="text-gray-800 dark:text-white">{totalCases}</strong></span>
+        <span>Agencies: <strong class="text-gray-800 dark:text-white">{agencies.length}</strong></span>
+        <span>Counties: <strong class="text-gray-800 dark:text-white">{counties.length}</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cases Grid -->
+  <div class="px-6 pb-10">
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {sortedCases.map(caseItem => (
+        <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700">
+          <div class="p-6">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-3">
+              <a href={`/cases/${caseItem.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
+                {caseItem.data.title}
+              </a>
+            </h2>
+            
+            <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
+              <p><strong class="text-gray-800 dark:text-gray-300">Victim:</strong> {caseItem.data.victim_name}</p>
+              <p><strong class="text-gray-800 dark:text-gray-300">Date:</strong> {new Date(caseItem.data.incident_date).toLocaleDateString()}</p>
+              <p><strong class="text-gray-800 dark:text-gray-300">Location:</strong> {caseItem.data.city}, {caseItem.data.county} County</p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mb-4">
+              {caseItem.data.agencies.map(agency => (
+                <span class="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs rounded">
+                  {agency}
+                </span>
+              ))}
+            </div>
+
+            <div class="flex items-center justify-between text-xs">
+              <span class={`px-2 py-1 rounded ${
+                caseItem.data.investigation_status === 'Closed' 
+                  ? 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
+                  : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200'
+              }`}>
+                {caseItem.data.investigation_status}
+              </span>
+              
+              {caseItem.data.bodycam_available && (
+                <span class="text-green-600 dark:text-green-400">📹 Body cam</span>
+              )}
+            </div>
+
+            <a 
+              href={`/cases/${caseItem.slug}`}
+              class="mt-4 inline-block text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 text-sm font-medium"
+            >
+              Read full case →
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</MainLayout>
