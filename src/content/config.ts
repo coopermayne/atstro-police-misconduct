@@ -6,6 +6,7 @@ const casesCollection = defineCollection({
     // Basic Info
     case_id: z.string(),
     title: z.string(),
+    description: z.string(),
     victim_name: z.string(),
     incident_date: z.string(),
     published: z.boolean().default(true),

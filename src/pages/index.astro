@@ -1,6 +1,28 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
 
+// Get recent cases
+const cases = await getCollection('cases', ({ data }) => data.published);
+const sortedCases = cases.sort((a, b) => 
+  new Date(b.data.incident_date).getTime() - new Date(a.data.incident_date).getTime()
+).slice(0, 3);
+
+// Get recent posts
+const posts = await getCollection('posts', ({ data }) => data.published);
+const sortedPosts = posts.sort((a, b) => 
+  new Date(b.data.published_date).getTime() - new Date(a.data.published_date).getTime()
+).slice(0, 3);
+
+// Get all unique counties and agencies
+const allCases = await getCollection('cases', ({ data }) => data.published);
+const counties = [...new Set(allCases.map(c => c.data.county))].sort();
+const agencies = [...new Set(allCases.flatMap(c => c.data.agencies))].sort();
+
+// Helper function to create slug
+function createSlug(name: string): string {
+  return name.toLowerCase().trim().replace(/\s+/g, '-');
+}
 ---
 
 <MainLayout content={{ title: 'Home' }}>
@@ -29,7 +51,135 @@ import MainLayout from '../layouts/MainLayout.astro';
       </div>
       </div>
     </div>
-    </header>
+  </header>
 
-  
+  <!-- Recent Cases Section -->
+  <section class="bg-gray-50 dark:bg-gray-800 px-6 py-10">
+    <div class="container mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Recent Cases</h2>
+        <a href="/cases" class="text-red-600 dark:text-red-500 hover:underline font-medium">View all →</a>
+      </div>
+      
+      <div class="grid gap-6 md:grid-cols-3">
+        {sortedCases.map(caseItem => (
+          <article class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">
+              <a href={`/cases/${caseItem.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
+                {caseItem.data.victim_name}
+              </a>
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              {caseItem.data.city}, {caseItem.data.county} County
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-500 mb-3">
+              {new Date(caseItem.data.incident_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+            <div class="flex flex-wrap gap-2 mb-3">
+              {caseItem.data.agencies.slice(0, 2).map(agency => (
+                <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded border border-gray-300 dark:border-gray-600">
+                  {agency}
+                </span>
+              ))}
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 italic mb-3">
+              {caseItem.data.description}
+            </p>
+            <a 
+              href={`/cases/${caseItem.slug}`}
+              class="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 text-sm font-medium"
+            >
+              Read more →
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Blog Posts Section -->
+  <section class="bg-white dark:bg-gray-900 px-6 py-10">
+    <div class="container mx-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Recent Blog Posts</h2>
+        <a href="/posts" class="text-red-600 dark:text-red-500 hover:underline font-medium">View all →</a>
+      </div>
+      
+      <div class="grid gap-6 md:grid-cols-3">
+        {sortedPosts.map(post => (
+          <article class="bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 p-6">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">
+              <a href={`/posts/${post.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
+                {post.data.title}
+              </a>
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              {post.data.description.substring(0, 100)}...
+            </p>
+            <p class="text-xs text-gray-500 dark:text-gray-500 mb-3">
+              {new Date(post.data.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+            <div class="flex flex-wrap gap-2 mb-3">
+              {post.data.tags.slice(0, 2).map(tag => (
+                <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded border border-gray-300 dark:border-gray-600">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <a 
+              href={`/posts/${post.slug}`}
+              class="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 text-sm font-medium"
+            >
+              Read more →
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Browse by Location/Agency Section -->
+  <section class="bg-white dark:bg-gray-900 px-6 py-10">
+    <div class="container mx-auto">
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 text-center">
+        Browse by Location or Agency
+      </h2>
+      <p class="text-center text-gray-600 dark:text-gray-400 mb-8">
+        Find cases specific to your county or law enforcement agency
+      </p>
+      
+      <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <!-- Counties -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">By County</h3>
+          <div class="space-y-2 max-h-64 overflow-y-auto">
+            {counties.map(county => (
+              <a 
+                href={`/counties/${createSlug(county)}`}
+                class="block px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-red-50 dark:hover:bg-gray-600 hover:text-red-600 dark:hover:text-red-500 transition-colors border border-gray-200 dark:border-gray-600"
+              >
+                {county} County
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- Agencies -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">By Agency</h3>
+          <div class="space-y-2 max-h-64 overflow-y-auto">
+            {agencies.map(agency => (
+              <a 
+                href={`/agencies/${createSlug(agency)}`}
+                class="block px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-red-50 dark:hover:bg-gray-600 hover:text-red-600 dark:hover:text-red-500 transition-colors border border-gray-200 dark:border-gray-600"
+              >
+                {agency}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </MainLayout>
