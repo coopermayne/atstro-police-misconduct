@@ -1,5 +1,6 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
+import DocumentsList from '../../components/DocumentsList.astro';
 import { getCollection } from 'astro:content';
 
 // Helper function to create slug from text
@@ -143,6 +144,13 @@ const { Content } = await caseItem.render();
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-8 prose prose-lg prose-gray dark:prose-invert max-w-none">
       <Content />
     </div>
+
+    <!-- Documents Section -->
+    {caseItem.data.documents && caseItem.data.documents.length > 0 && (
+      <div class="mt-8">
+        <DocumentsList documents={caseItem.data.documents} />
+      </div>
+    )}
 
     <!-- Back to Cases -->
     <div class="mt-8">

@@ -1,5 +1,6 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
+import DocumentsList from '../../components/DocumentsList.astro';
 import { getCollection } from 'astro:content';
 
 // Helper function to create slug from text
@@ -68,6 +69,13 @@ const relatedPosts = allPosts
       <div class="prose prose-lg prose-gray dark:prose-invert max-w-none">
         <Content />
       </div>
+
+      <!-- Documents Section -->
+      {post.data.documents && post.data.documents.length > 0 && (
+        <div class="mt-8">
+          <DocumentsList documents={post.data.documents} />
+        </div>
+      )}
     </header>
 
     <!-- Related Posts -->

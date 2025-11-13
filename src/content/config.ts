@@ -36,6 +36,13 @@ const casesCollection = defineCollection({
     
     // Media availability
     bodycam_available: z.boolean().optional(),
+    
+    // Documents
+    documents: z.array(z.object({
+      title: z.string(),
+      description: z.string(),
+      url: z.string(),
+    })).optional(),
   }),
 });
 
@@ -65,6 +72,13 @@ const postsCollection = defineCollection({
     published: z.boolean().default(true),
     tags: z.array(z.string()),
     featured_image: z.string().optional(),
+    
+    // Documents
+    documents: z.array(z.object({
+      title: z.string(),
+      description: z.string(),
+      url: z.string(),
+    })).optional(),
   }),
 });
 
