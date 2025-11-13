@@ -43,7 +43,7 @@ function convertGoogleDriveUrl(url) {
  * @param {string} url - Original URL
  * @returns {string} - Direct download URL
  */
-function convertToDirectUrl(url) {
+export function convertToDirectUrl(url) {
   if (url.includes('dropbox.com')) {
     return convertDropboxUrl(url);
   }

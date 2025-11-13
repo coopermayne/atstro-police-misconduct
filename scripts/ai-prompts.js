@@ -131,32 +131,35 @@ ${draftContent}
 Please suggest:
 
 1. **case_id**: Format as ca-[agency-slug]-[year]-[number] (e.g., ca-lapd-2023-001)
-2. **victim_name**: Full name of victim
-3. **incident_date**: YYYY-MM-DD format
-4. **location**: City, County format
-5. **agencies**: Array of involved agencies (e.g., ["Los Angeles Police Department"])
-6. **investigation_status**: One of: ongoing, closed, settled, dismissed
-7. **severity**: One of: low, medium, high, critical (based on nature of misconduct)
-8. **outcome**: Brief description (e.g., "Settled for $2.5M", "Criminal charges filed")
+2. **title**: Victim's full name (REQUIRED)
+3. **description**: One-sentence summary of the case (REQUIRED, 100-200 chars)
+4. **incident_date**: YYYY-MM-DD format as STRING (REQUIRED)
+5. **city**: City name only (REQUIRED)
+6. **county**: County name only (REQUIRED)
+7. **agencies**: Array of involved agencies (e.g., ["Los Angeles Police Department"])
+8. **investigation_status**: One of: ongoing, closed, settled, dismissed
 9. **tags**: 3-5 relevant tags from: excessive-force, wrongful-death, false-arrest, civil-rights-violation, qualified-immunity, bodycam-footage, settlement, criminal-charges, etc.
-10. **featured**: true/false (should this be featured on homepage?)
-11. **content_warning**: true/false (does this contain graphic content?)
+10. **featured_image**: Cloudflare Image ID if available (optional)
+11. **age**: Victim's age (optional)
+12. **race**: Victim's race (optional)
+13. **gender**: Victim's gender (optional)
 
 Return as JSON:
 \`\`\`json
 {
   "case_id": "...",
-  "victim_name": "...",
+  "title": "...",
+  "description": "...",
   "incident_date": "YYYY-MM-DD",
-  "location": "City, County",
+  "city": "...",
+  "county": "...",
   "agencies": ["..."],
   "investigation_status": "...",
-  "severity": "...",
-  "outcome": "...",
-  "tags": ["...", "...", "..."],
-  "featured": false,
-  "content_warning": false,
-  "published": true
+  "age": 0,
+  "race": "...",
+  "gender": "...",
+  "published": true,
+  "tags": ["tag1", "tag2", "tag3"]
 }
 \`\`\``
   };
@@ -197,17 +200,19 @@ Return the complete MDX file content with frontmatter. Use this exact structure:
 \`\`\`mdx
 ---
 case_id: "${metadata.case_id}"
-victim_name: "${metadata.victim_name}"
-incident_date: ${metadata.incident_date}
-location: "${metadata.location}"
+title: "${metadata.title}"
+description: "${metadata.description}"
+incident_date: "${metadata.incident_date}"
+city: "${metadata.city}"
+county: "${metadata.county}"
 agencies: ${JSON.stringify(metadata.agencies)}
 investigation_status: "${metadata.investigation_status}"
-severity: "${metadata.severity}"
-outcome: "${metadata.outcome}"
-tags: ${JSON.stringify(metadata.tags)}
-featured: ${metadata.featured}
-content_warning: ${metadata.content_warning}
 published: ${metadata.published}
+tags: ${JSON.stringify(metadata.tags || [])}
+age: ${metadata.age || 'null'}
+race: "${metadata.race || ''}"
+gender: "${metadata.gender || ''}"
+featured_image: "${metadata.featured_image || ''}"
 ---
 
 import CloudflareImage from '../../components/CloudflareImage.astro';

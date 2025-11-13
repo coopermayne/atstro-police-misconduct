@@ -21,9 +21,10 @@ import { execSync } from 'child_process';
 import Anthropic from '@anthropic-ai/sdk';
 
 import { downloadFile, extractUrlsFromMarkdown, categorizeUrls } from './file-downloader.js';
-import { uploadVideo } from './cloudflare-stream.js';
+import { uploadVideo, uploadVideoFromUrl } from './cloudflare-stream.js';
 import { uploadImage } from './cloudflare-images.js';
 import { uploadPDF } from './cloudflare-r2.js';
+import { convertToDirectUrl } from './file-downloader.js';
 import {
   createVideoAnalysisPrompt,
   createDocumentAnalysisPrompt,
@@ -101,22 +102,36 @@ async function callClaude(prompt, options = {}) {
  */
 function extractJSON(text) {
   // Try to find JSON in code blocks
-  const codeBlockMatch = text.match(/```(?:json)?\s*(\{[\s\S]*\})\s*```/);
+  const codeBlockMatch = text.match(/```(?:json)?\s*(\{[\s\S]*?\})\s*```/);
   if (codeBlockMatch) {
-    return JSON.parse(codeBlockMatch[1]);
+    try {
+      return JSON.parse(codeBlockMatch[1]);
+    } catch (e) {
+      // Continue to other methods
+    }
   }
   
   // Try to parse the whole thing
   try {
     return JSON.parse(text);
   } catch {
-    // Try to extract first JSON object
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    // Try to extract first JSON object (non-greedy)
+    const jsonMatch = text.match(/\{[\s\S]*?\n\}/);
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0]);
+      try {
+        return JSON.parse(jsonMatch[0]);
+      } catch (e) {
+        // Try greedy match
+        const greedyMatch = text.match(/\{[\s\S]*\}/);
+        if (greedyMatch) {
+          return JSON.parse(greedyMatch[0]);
+        }
+      }
     }
   }
   
+  // If all fails, log the response and throw
+  console.error('   Raw AI response:', text.substring(0, 500));
   throw new Error('Could not extract JSON from AI response');
 }
 
@@ -130,38 +145,29 @@ async function processVideos(videoUrls) {
     try {
       console.log(`\n📹 Processing video: ${url}`);
       
-      // Download
-      const download = await downloadFile(url, TEMP_DIR);
+      // Convert to direct URL
+      const directUrl = convertToDirectUrl(url);
+      console.log(`   ↳ Direct URL: ${directUrl.substring(0, 80)}...`);
       
-      // Upload to Stream
-      console.log('   ↳ Uploading to Cloudflare Stream...');
-      const upload = await uploadVideo(download.filePath, {
-        name: path.basename(download.filePath, path.extname(download.filePath))
+      // Try direct URL upload first (avoids download/filename issues)
+      console.log('   ↳ Uploading to Cloudflare Stream (direct from URL)...');
+      const upload = await uploadVideoFromUrl(directUrl, {
+        name: path.basename(url).split('?')[0] // Get filename before query params
       });
       
-      // Analyze with AI (if video is accessible - for now we'll use metadata)
-      console.log('   ↳ Analyzing with AI...');
-      const analysisPrompt = createVideoAnalysisPrompt({
-        filename: download.filename,
-        description: 'Police misconduct footage'
-      });
-      
-      const analysisText = await callClaude(analysisPrompt);
-      const analysis = extractJSON(analysisText);
+      // Note: AI cannot actually analyze video content, so we skip that
+      // Video analysis should be done manually and included in the draft
       
       results.push({
         type: 'video',
         originalUrl: url,
         videoId: upload.videoId,
         embedUrl: upload.embedUrl,
-        analysis,
+        analysis: null, // No automated analysis available
         metadata: upload
       });
       
-      console.log(`   ✓ Video processed: ${upload.videoId}`);
-      
-      // Clean up temp file
-      fs.unlinkSync(download.filePath);
+      console.log(`   ✓ Video uploaded to Stream: ${upload.videoId}`);
     } catch (error) {
       console.error(`   ❌ Failed to process video: ${error.message}`);
       results.push({
@@ -241,26 +247,19 @@ async function processPDFs(pdfUrls) {
         source: url
       });
       
-      // Analyze with AI
-      console.log('   ↳ Analyzing with AI...');
-      const analysisPrompt = createDocumentAnalysisPrompt({
-        filename: download.filename,
-        type: 'Legal document'
-      });
-      
-      const analysisText = await callClaude(analysisPrompt);
-      const analysis = extractJSON(analysisText);
+      // Note: PDF text extraction and analysis requires additional tools
+      // For now, we'll skip automated analysis and rely on manual notes in the draft
       
       results.push({
         type: 'document',
         originalUrl: url,
         r2Url: upload.url,
         r2Key: upload.key,
-        analysis,
+        analysis: null, // Manual analysis from draft notes
         metadata: upload
       });
       
-      console.log(`   ✓ PDF processed and analyzed: ${upload.key}`);
+      console.log(`   ✓ PDF uploaded to R2: ${upload.key}`);
       
       // Clean up temp file
       fs.unlinkSync(download.filePath);
