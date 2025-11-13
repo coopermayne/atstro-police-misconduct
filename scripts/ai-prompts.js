@@ -322,20 +322,24 @@ ${contentSchema}
     - Typically place it in a "## Related Documents" or "## Legal Documents" section
     - Place it before the "## Sources" section
 12. Reference documents naturally in the article text (e.g., "According to court filings...", "The police report states...")
-13. **USE CUSTOM MEDIA METADATA**: Each media item in "Available Media" may contain custom properties (caption, title, description, info, alt, featured, etc.). Use these intelligently:
-    - For captions/descriptions: Use them as the caption prop for components
-    - For titles: Reference in article text when introducing the media
-    - For info/context: Weave into the narrative around where media is embedded
-    - For alt text: Use title, description, or caption as appropriate for accessibility
-    - Let the custom metadata guide HOW you present and contextualize each piece of media
+13. **USE CUSTOM MEDIA METADATA INTELLIGENTLY**: Each media item in "Available Media" contains metadata from the draft. Transform this into publication-ready content:
+    - **Captions/Descriptions**: Clean up and make professional. Fix grammar, add proper punctuation, ensure complete sentences
+    - **Example**: "this is a video of the use of force incident" → "Body camera footage documenting the use of force incident"
+    - **Alt text**: Create descriptive, accessible text from available metadata (alt > title > caption > description)
+    - **Context**: Use info/details fields to inform narrative placement and surrounding text
+    - **Titles**: Clean up for professional presentation while preserving meaning
+    - Make all text publication-ready: proper capitalization, grammar, complete sentences
+    - Keep the core meaning and facts from the user's metadata but improve readability
 
 **Component Usage Examples:**
 - For videos: <CloudflareVideo videoId="abc123" caption="Body camera footage shows..." />
   - Use the caption property from the shortcode if provided, or craft based on description or info
 - For images: <CloudflareImage imageId="xyz789" alt="Scene photo" caption="Photo taken at scene" />
   - Use alt or title from shortcode for alt text, caption or description for caption prop
+  - Pull from available metadata intelligently: alt > title > caption > description
 - For documents: <DocumentsList documents={frontmatter.documents} /> (REQUIRED if documents array exists)
   - Document titles and descriptions from shortcodes are already in frontmatter
+  - Reference documents in the article text using their titles naturally
 
 **Output Format:**
 Return the complete MDX file content with frontmatter. Use this exact structure:

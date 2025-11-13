@@ -37,22 +37,34 @@ const r2Client = new S3Client({
 /**
  * Generate a unique filename to avoid collisions
  * @param {string} originalName - Original filename
- * @returns {string} - Unique filename with hash
+ * @param {string} customName - Optional custom name from metadata (title, description, etc.)
+ * @returns {string} - Unique filename with timestamp
  */
-function generateUniqueFilename(originalName) {
+function generateUniqueFilename(originalName, customName = null) {
   const ext = path.extname(originalName);
-  const nameWithoutExt = path.basename(originalName, ext);
-  const hash = crypto.randomBytes(8).toString('hex');
-  const timestamp = Date.now();
   
-  // Sanitize filename
-  const sanitized = nameWithoutExt
+  // Use custom name if provided, otherwise use original
+  let baseName = customName || path.basename(originalName, ext);
+  
+  // Sanitize filename: lowercase, alphanumeric and hyphens only
+  const sanitized = baseName
     .toLowerCase()
-    .replace(/[^a-z0-9-]/g, '-')
-    .replace(/-+/g, '-')
-    .substring(0, 50);
+    .replace(/[^a-z0-9-\s]/g, '')  // Remove special chars except spaces and hyphens
+    .replace(/\s+/g, '-')           // Replace spaces with hyphens
+    .replace(/-+/g, '-')            // Collapse multiple hyphens
+    .replace(/^-+|-+$/g, '')        // Remove leading/trailing hyphens
+    .substring(0, 50);              // Limit length
   
-  return `${sanitized}-${timestamp}-${hash}${ext}`;
+  // Generate timestamp in format: YYYYMMDDHHmmss
+  const now = new Date();
+  const timestamp = now.getFullYear().toString() +
+    (now.getMonth() + 1).toString().padStart(2, '0') +
+    now.getDate().toString().padStart(2, '0') +
+    now.getHours().toString().padStart(2, '0') +
+    now.getMinutes().toString().padStart(2, '0') +
+    now.getSeconds().toString().padStart(2, '0');
+  
+  return `${sanitized}-${timestamp}${ext}`;
 }
 
 /**
@@ -78,7 +90,7 @@ function getContentType(filePath) {
 /**
  * Upload a file to Cloudflare R2
  * @param {string} filePath - Local path to file
- * @param {object} options - Upload options (folder, metadata, publicRead)
+ * @param {object} options - Upload options (folder, metadata, customName)
  * @returns {Promise<object>} - Upload result with URL
  */
 export async function uploadToR2(filePath, options = {}) {
@@ -87,7 +99,7 @@ export async function uploadToR2(filePath, options = {}) {
   }
 
   const originalFileName = path.basename(filePath);
-  const uniqueFileName = generateUniqueFilename(originalFileName);
+  const uniqueFileName = generateUniqueFilename(originalFileName, options.customName);
   const folder = options.folder || '';
   const key = folder ? `${folder}/${uniqueFileName}` : uniqueFileName;
   

@@ -469,7 +469,7 @@ async function processImages(imageItems) {
       // Upload to Cloudflare Images
       console.log('   ↳ Uploading to Cloudflare Images...');
       const upload = await uploadImage(download.filePath, {
-        description: `Image from ${path.basename(url)}`
+        description: item.caption || item.description || item.title || item.alt || `Image from ${path.basename(url)}`
       });
       
       results.push({
@@ -480,8 +480,10 @@ async function processImages(imageItems) {
         mediumUrl: upload.mediumUrl,
         largeUrl: upload.largeUrl,
         publicUrl: upload.publicUrl,
-        caption: item.caption || null,
-        alt: item.alt || null,
+        caption: item.caption || item.description || null,
+        alt: item.alt || item.title || item.caption || null,
+        title: item.title || null,
+        info: item.info || null,
         featured: item.featured || false,
         metadata: upload
       });
@@ -514,19 +516,38 @@ async function processPDFs(documentItems) {
     try {
       console.log(`\n📄 Processing document: ${url}`);
       
-      // Download
-      const download = await downloadFile(url, TEMP_DIR);
+      // Determine intelligent filename from metadata
+      let customName = item.title || item.name || item.description || null;
       
-      // Upload to R2
+      // If we have custom name, clean it up and add extension hint
+      let downloadFilename = null;
+      if (customName) {
+        const sanitized = customName
+          .toLowerCase()
+          .replace(/[^a-z0-9-\s]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/-+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .substring(0, 50);
+        
+        // Add .pdf extension for download
+        downloadFilename = `${sanitized}.pdf`;
+      }
+      
+      // Download with intelligent name
+      const download = await downloadFile(url, TEMP_DIR, downloadFilename);
+      
+      // Upload to R2 (will use the intelligent name from download)
       console.log('   ↳ Uploading to Cloudflare R2...');
       const upload = await uploadPDF(download.filePath, {
-        source: url
+        source: url,
+        customName: customName  // This will be used to generate timestamped filename
       });
       
       // Build structured document object for schema using shortcode metadata
       const document = {
-        title: item.title || download.filename.replace(/\.(pdf|docx?|txt)$/i, ''),
-        description: item.description || 'Legal document related to the case',
+        title: item.title || item.name || download.filename.replace(/\.(pdf|docx?|txt)$/i, ''),
+        description: item.description || item.info || item.details || 'Legal document related to the case',
         url: upload.url // R2 public URL
       };
       
