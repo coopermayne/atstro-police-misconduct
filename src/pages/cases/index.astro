@@ -26,11 +26,6 @@ const counties = [...new Set(sortedCases.map(c => c.data.county))];
       <p class="mt-3 text-gray-600 dark:text-gray-400">
         Comprehensive documentation of deadly force incidents across California. Each case includes detailed information, timelines, and investigation status.
       </p>
-      <div class="flex flex-wrap gap-6 mt-6 text-sm text-gray-600 dark:text-gray-400">
-        <span>Total Cases: <strong class="text-gray-800 dark:text-white">{totalCases}</strong></span>
-        <span>Agencies: <strong class="text-gray-800 dark:text-white">{agencies.length}</strong></span>
-        <span>Counties: <strong class="text-gray-800 dark:text-white">{counties.length}</strong></span>
-      </div>
     </div>
   </header>
 
