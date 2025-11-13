@@ -117,54 +117,111 @@ If you cannot extract text from the document, indicate that and provide whatever
   };
 }
 
+
+/**
+ * Prompt for validating draft completeness
+ */
+export function createDraftValidationPrompt(draftContent, contentSchema, contentType = 'case') {
+  const schemaSection = contentType === 'case' ? 'casesCollection' : 'postsCollection';
+  
+  return {
+    system: SYSTEM_PROMPT,
+    user: `Review this draft and identify ONLY truly missing information that CANNOT be inferred or generated.
+
+**Draft Content:**
+${draftContent}
+
+**Content Schema (from src/content/config.ts):**
+${contentSchema}
+
+**IMPORTANT GUIDELINES:**
+- DO NOT flag fields that can be extracted, inferred, or generated from the draft
+- DO NOT flag auto-generated fields (like case_id, slugs, etc.)
+- ONLY flag information that is completely absent and cannot be reasonably inferred
+- Be smart about inference - if notes mention "tased" you can infer force type, if they mention "lawsuit filed" you know civil_lawsuit_filed
+
+**What CAN be generated/inferred (DO NOT flag these):**
+- title (victim's name if mentioned anywhere)
+- description (can be written from any case summary/notes)
+- case_id (auto-generated from agency + date)
+- tags (can be inferred from incident type)
+- investigation_status (can be inferred from legal status mentions)
+- force_type (can be inferred from incident description)
+- threat_level (can be inferred from incident description)
+- civil_lawsuit_filed (can be inferred if lawsuit is mentioned)
+- bodycam_available (can be inferred if bodycam footage URL is provided or mentioned)
+
+**What CANNOT be inferred (flag these if missing):**
+- Victim's name (if not mentioned at all)
+- Date of incident (if no date provided)
+- City/county (if location not specified)
+- Agency name (if no police department mentioned)
+- Age (specific number needed)
+- Race/ethnicity (cannot be assumed)
+- Gender (cannot be assumed without info)
+- Featured image URL (cannot be generated - needs actual image link)
+
+**Focus Areas:**
+1. Is there enough basic information to write a case (name, date, location, what happened)?
+2. Is there a featured image URL? (CRITICAL - this cannot be generated)
+3. Are there demographic details that would improve the article but are missing?
+
+Return your analysis as JSON:
+\`\`\`json
+{
+  "isComplete": true/false,
+  "canProceed": true/false,
+  "hasFeaturedImage": true/false,
+  "missingCritical": [],
+  "missingHelpful": [],
+  "issues": [],
+  "suggestions": []
+}
+\`\`\`
+
+Be pragmatic - if there's enough info to write a quality article, mark canProceed as true even if some optional fields are missing.
+`
+  };
+}
 /**
  * Prompt for generating case metadata
  */
-export function createMetadataExtractionPrompt(draftContent) {
+/**
+ * Prompt for generating case metadata
+ */
+export function createMetadataExtractionPrompt(draftContent, contentSchema, contentType = 'case') {
+  const schemaSection = contentType === 'case' ? 'casesCollection' : 'postsCollection';
+  
   return {
     system: SYSTEM_PROMPT,
-    user: `Based on this draft case content, generate appropriate metadata values.
+    user: `Based on this draft content, generate appropriate metadata values.
 
-Draft Content:
+**Draft Content:**
 ${draftContent}
 
-Please suggest:
+**Content Schema (from src/content/config.ts):**
+${contentSchema}
 
-1. **case_id**: Format as ca-[agency-slug]-[year]-[number] (e.g., ca-lapd-2023-001)
-2. **title**: Victim's full name (REQUIRED)
-3. **description**: One-sentence summary of the case (REQUIRED, 100-200 chars)
-4. **incident_date**: YYYY-MM-DD format as STRING (REQUIRED)
-5. **city**: City name only (REQUIRED)
-6. **county**: County name only (REQUIRED)
-7. **agencies**: Array of involved agencies (e.g., ["Los Angeles Police Department"])
-8. **investigation_status**: One of: ongoing, closed, settled, dismissed
-9. **tags**: 3-5 relevant tags from: excessive-force, wrongful-death, false-arrest, civil-rights-violation, qualified-immunity, bodycam-footage, settlement, criminal-charges, etc.
-10. **featured_image**: Cloudflare Image ID if available (optional)
-11. **age**: Victim's age (optional)
-12. **race**: Victim's race (optional)
-13. **gender**: Victim's gender (optional)
+**Instructions:**
+1. Extract the schema for "${schemaSection}" from the provided TypeScript code
+2. Generate metadata that matches ALL required fields in the schema
+3. For optional fields, include them if the information is available in the draft
+4. Return ONLY the metadata as a JSON object
+5. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
+6. For dates, use "YYYY-MM-DD" format as a STRING
+7. For case_id, use format: ca-[agency-slug]-[year]-[number]
+8. For tags, choose 3-5 relevant tags from the draft content
+9. Be flexible - extract information from unstructured notes, lists, and links
 
-Return as JSON:
+Return ONLY valid JSON matching the schema:
 \`\`\`json
 {
-  "case_id": "...",
-  "title": "...",
-  "description": "...",
-  "incident_date": "YYYY-MM-DD",
-  "city": "...",
-  "county": "...",
-  "agencies": ["..."],
-  "investigation_status": "...",
-  "age": 0,
-  "race": "...",
-  "gender": "...",
-  "published": true,
-  "tags": ["tag1", "tag2", "tag3"]
+  // Your extracted metadata here
 }
-\`\`\``
+\`\`\`
+`
   };
 }
-
 /**
  * Prompt for generating complete case article
  */

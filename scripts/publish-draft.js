@@ -31,7 +31,8 @@ import {
   createMetadataExtractionPrompt,
   createCaseArticlePrompt,
   createBlogPostPrompt,
-  createSlugGenerationPrompt
+  createSlugGenerationPrompt,
+  createDraftValidationPrompt
 } from './ai-prompts.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -133,6 +134,99 @@ function extractJSON(text) {
   // If all fails, log the response and throw
   console.error('   Raw AI response:', text.substring(0, 500));
   throw new Error('Could not extract JSON from AI response');
+}
+
+/**
+ * Validate draft completeness before processing
+ */
+async function validateDraft(draftContent, contentType) {
+  console.log('\n🔍 Validating draft completeness...\n');
+  
+  // Read content schema
+  const schemaPath = path.join(ROOT_DIR, 'src', 'content', 'config.ts');
+  const contentSchema = fs.readFileSync(schemaPath, 'utf-8');
+  
+  // Call AI to validate
+  const validationPrompt = createDraftValidationPrompt(draftContent, contentSchema, contentType);
+  const validationText = await callClaude(validationPrompt, {
+    max_tokens: 2000,
+    temperature: 0.3
+  });
+  
+  const validation = extractJSON(validationText);
+  
+  // Display validation results
+  console.log('═══════════════════════════════════════════════════════════');
+  console.log('                    DRAFT VALIDATION REPORT');
+  console.log('═══════════════════════════════════════════════════════════\n');
+  
+  // Featured image status
+  if (validation.hasFeaturedImage) {
+    console.log('✅ Featured image: Found');
+  } else {
+    console.log('⚠️  Featured image: Missing (highly recommended for visibility)');
+  }
+  
+  // Critical information
+  if (validation.missingCritical && validation.missingCritical.length > 0) {
+    console.log('\n❌ MISSING CRITICAL INFORMATION:');
+    validation.missingCritical.forEach(item => console.log(`   • ${item}`));
+  } else {
+    console.log('\n✅ All critical information present');
+  }
+  
+  // Helpful information
+  if (validation.missingHelpful && validation.missingHelpful.length > 0) {
+    console.log('\nℹ️  MISSING HELPFUL INFORMATION:');
+    validation.missingHelpful.forEach(item => console.log(`   • ${item}`));
+  }
+  
+  // Suggestions
+  if (validation.suggestions && validation.suggestions.length > 0) {
+    console.log('\n💡 SUGGESTIONS FOR IMPROVEMENT:');
+    validation.suggestions.forEach(item => console.log(`   • ${item}`));
+  }
+  
+  // Issues
+  if (validation.issues && validation.issues.length > 0) {
+    console.log('\n⚠️  ISSUES DETECTED:');
+    validation.issues.forEach(item => console.log(`   • ${item}`));
+  }
+  
+  console.log('\n═══════════════════════════════════════════════════════════');
+  
+  // Always require user confirmation
+  if (!validation.canProceed) {
+    console.log('\n❌ VALIDATION FAILED: Cannot proceed due to missing critical information.');
+    console.log('   Please update your draft and try again.\n');
+    process.exit(1);
+  }
+  
+  // Prompt user to continue
+  console.log('\nReview the validation report above.');
+  console.log('This is your last chance to cancel and make changes.\n');
+  
+  // Use readline to get user input
+  const readline = await import('readline');
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  
+  return new Promise((resolve, reject) => {
+    rl.question('Do you want to proceed with publishing? (yes/no): ', (answer) => {
+      rl.close();
+      
+      const normalized = answer.trim().toLowerCase();
+      if (normalized === 'yes' || normalized === 'y') {
+        console.log('\n✅ Proceeding with publishing...\n');
+        resolve(validation);
+      } else {
+        console.log('\n❌ Publishing cancelled by user.\n');
+        process.exit(0);
+      }
+    });
+  });
 }
 
 /**
@@ -342,6 +436,9 @@ async function publishDraft(draftFilename) {
   
   console.log(`Content Type: ${draftMeta.type}`);
   
+  // Validate draft completeness
+  const validation = await validateDraft(draftContent, draftMeta.type);
+  
   // Create temp directory
   if (!fs.existsSync(TEMP_DIR)) {
     fs.mkdirSync(TEMP_DIR);
@@ -413,28 +510,84 @@ async function publishDraft(draftFilename) {
 }
 
 // CLI interface
-const args = process.argv.slice(2);
-if (args.length === 0) {
-  console.log(`
-Usage: npm run publish:draft <draft-filename>
-
-Example: npm run publish:draft draft-john-doe-case.md
-
-This will:
-1. Download all external media files
-2. Upload to Cloudflare (Stream/R2)
-3. Analyze media with AI
-4. Generate complete article
-5. Save to content collection
-6. Archive draft
-7. Commit and push to GitHub
-  `);
-  process.exit(1);
+async function main() {
+  const args = process.argv.slice(2);
+  let draftFilename;
+  
+  // If filename provided, use it
+  if (args.length > 0) {
+    draftFilename = args[0];
+  } else {
+    // Interactive mode - show available drafts
+    console.log('\n📝 Available drafts:\n');
+    
+    // Get all .md files from drafts directory and subdirectories
+    const drafts = [];
+    
+    // Check cases folder
+    const casesDir = path.join(DRAFTS_DIR, 'cases');
+    if (fs.existsSync(casesDir)) {
+      const caseFiles = fs.readdirSync(casesDir)
+        .filter(f => f.endsWith('.md'))
+        .map(f => ({ name: f, path: `cases/${f}`, type: 'case' }));
+      drafts.push(...caseFiles);
+    }
+    
+    // Check posts folder
+    const postsDir = path.join(DRAFTS_DIR, 'posts');
+    if (fs.existsSync(postsDir)) {
+      const postFiles = fs.readdirSync(postsDir)
+        .filter(f => f.endsWith('.md'))
+        .map(f => ({ name: f, path: `posts/${f}`, type: 'post' }));
+      drafts.push(...postFiles);
+    }
+    
+    // Check root drafts folder
+    const rootFiles = fs.readdirSync(DRAFTS_DIR)
+      .filter(f => f.endsWith('.md') && fs.statSync(path.join(DRAFTS_DIR, f)).isFile())
+      .map(f => ({ name: f, path: f, type: 'unknown' }));
+    drafts.push(...rootFiles);
+    
+    if (drafts.length === 0) {
+      console.log('No draft files found in drafts/ directory.\n');
+      console.log('Create a draft:');
+      console.log('  cp drafts/templates/case-draft-template.md drafts/cases/my-case.md\n');
+      process.exit(1);
+    }
+    
+    // Display numbered list
+    drafts.forEach((draft, index) => {
+      const typeLabel = draft.type === 'case' ? '📋' : draft.type === 'post' ? '📰' : '📄';
+      console.log(`  ${index + 1}. ${typeLabel} ${draft.path}`);
+    });
+    
+    // Prompt user to select
+    const readline = await import('readline');
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+    
+    const selectedIndex = await new Promise((resolve) => {
+      rl.question('\nSelect a draft to publish (enter number): ', (answer) => {
+        rl.close();
+        const num = parseInt(answer.trim(), 10);
+        if (isNaN(num) || num < 1 || num > drafts.length) {
+          console.log('\n❌ Invalid selection\n');
+          process.exit(1);
+        }
+        resolve(num - 1);
+      });
+    });
+    
+    draftFilename = drafts[selectedIndex].path;
+    console.log(`\n✅ Selected: ${draftFilename}\n`);
+  }
+  
+  await publishDraft(draftFilename);
 }
 
-const draftFilename = args[0];
-
-publishDraft(draftFilename).catch(error => {
+main().catch(error => {
   console.error('\n❌ Publishing failed:', error.message);
   console.error(error.stack);
   process.exit(1);
