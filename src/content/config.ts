@@ -55,8 +55,21 @@ const countiesCollection = defineCollection({
   }),
 });
 
+const postsCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    published_date: z.string(),
+    published: z.boolean().default(true),
+    tags: z.array(z.string()),
+    featured_image: z.string().optional(),
+  }),
+});
+
 export const collections = {
   'cases': casesCollection,
   'agencies': agenciesCollection,
   'counties': countiesCollection,
+  'posts': postsCollection,
 };
