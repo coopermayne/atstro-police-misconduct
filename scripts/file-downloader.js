@@ -203,6 +203,64 @@ export async function downloadFiles(urls, outputDir) {
 }
 
 /**
+ * Parse shortcode-style media tags from markdown
+ * Format: {{type: url | param: value | param: value}}
+ * Examples:
+ *   {{video: https://example.com/video.mp4 | caption: Body camera footage}}
+ *   {{image: https://example.com/photo.jpg | featured: true | caption: Scene photo}}
+ *   {{document: https://example.com/file.pdf | title: Complaint | description: Civil rights complaint}}
+ * 
+ * @param {string} markdown - Markdown content
+ * @returns {object} - Categorized media items {videos: [], images: [], documents: []}
+ */
+export function parseMediaShortcodes(markdown) {
+  const media = {
+    videos: [],
+    images: [],
+    documents: []
+  };
+  
+  // Match {{type: url | params}}
+  const shortcodeRegex = /\{\{(\w+):\s*([^|}\s]+)([^}]*)\}\}/g;
+  
+  let match;
+  while ((match = shortcodeRegex.exec(markdown)) !== null) {
+    const type = match[1].toLowerCase();
+    const url = match[2].trim();
+    const paramsString = match[3] || '';
+    
+    // Parse parameters (| param: value | param: value)
+    const params = {};
+    const paramRegex = /\|\s*([^:]+):\s*([^|]+)/g;
+    let paramMatch;
+    while ((paramMatch = paramRegex.exec(paramsString)) !== null) {
+      const key = paramMatch[1].trim();
+      let value = paramMatch[2].trim();
+      
+      // Convert boolean strings
+      if (value === 'true') value = true;
+      else if (value === 'false') value = false;
+      
+      params[key] = value;
+    }
+    
+    // Create media item with URL and metadata
+    const item = { url, ...params };
+    
+    // Categorize by type
+    if (type === 'video') {
+      media.videos.push(item);
+    } else if (type === 'image') {
+      media.images.push(item);
+    } else if (type === 'document' || type === 'pdf') {
+      media.documents.push(item);
+    }
+  }
+  
+  return media;
+}
+
+/**
  * Extract URLs from markdown text
  * @param {string} markdown - Markdown content
  * @param {RegExp} pattern - Optional pattern to filter URLs
@@ -221,6 +279,55 @@ export function extractUrlsFromMarkdown(markdown, pattern = null) {
 }
 
 /**
+ * Parse document annotations from markdown
+ * Extracts title and description for each document URL
+ * @param {string} markdown - Markdown content
+ * @returns {Array<object>} - Array of {url, title, description}
+ */
+export function parseDocumentAnnotations(markdown) {
+  const documents = [];
+  
+  // Find the Documents section
+  const docSectionMatch = markdown.match(/###\s*Documents\s*\(PDFs\)([\s\S]*?)(?=###|$)/i);
+  if (!docSectionMatch) {
+    return documents;
+  }
+  
+  const docSection = docSectionMatch[1];
+  
+  // Split by code blocks and parse each document
+  const blocks = docSection.split('```');
+  
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i].trim();
+    
+    // Check if this is a URL block
+    if (block.match(/^https?:\/\//)) {
+      const url = block.split('\n')[0].trim();
+      
+      // Get the text after this code block for annotations
+      const afterBlock = blocks[i + 1] || '';
+      
+      // Extract title and description
+      const titleMatch = afterBlock.match(/Title:\s*(.+?)(?:\n|$)/i);
+      const descMatch = afterBlock.match(/Description:\s*(.+?)(?:\n|$)/i);
+      
+      // Infer from URL filename if not provided
+      const filename = url.split('/').pop().split('?')[0];
+      const defaultTitle = filename.replace(/\.(pdf|docx?|txt)$/i, '').replace(/[_-]/g, ' ');
+      
+      documents.push({
+        url: url,
+        title: titleMatch ? titleMatch[1].trim() : defaultTitle,
+        description: descMatch ? descMatch[1].trim() : 'Legal document related to the case'
+      });
+    }
+  }
+  
+  return documents;
+}
+
+/**
  * Categorize URLs by file type
  * @param {Array<string>} urls - Array of URLs
  * @returns {object} - Categorized URLs (videos, images, documents, other)
@@ -235,7 +342,7 @@ export function categorizeUrls(urls) {
 
   const videoExts = ['.mp4', '.mov', '.avi', '.mkv', '.webm'];
   const imageExts = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-  const docExts = ['.pdf', '.doc', '.docx'];
+  const docExts = ['.pdf', '.doc', '.docx', '.txt'];
 
   urls.forEach(url => {
     const urlLower = url.toLowerCase();

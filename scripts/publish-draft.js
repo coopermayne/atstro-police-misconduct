@@ -20,7 +20,7 @@ import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 import Anthropic from '@anthropic-ai/sdk';
 
-import { downloadFile, extractUrlsFromMarkdown, categorizeUrls } from './file-downloader.js';
+import { downloadFile, extractUrlsFromMarkdown, categorizeUrls, parseDocumentAnnotations, parseMediaShortcodes } from './file-downloader.js';
 import { uploadVideo, uploadVideoFromUrl } from './cloudflare-stream.js';
 import { uploadImage } from './cloudflare-images.js';
 import { uploadPDF } from './cloudflare-r2.js';
@@ -232,10 +232,11 @@ async function validateDraft(draftContent, contentType) {
 /**
  * Process videos: download and upload to Cloudflare Stream
  */
-async function processVideos(videoUrls) {
+async function processVideos(videoItems) {
   const results = [];
   
-  for (const url of videoUrls) {
+  for (const item of videoItems) {
+    const url = item.url;
     try {
       console.log(`\n📹 Processing video: ${url}`);
       
@@ -257,6 +258,8 @@ async function processVideos(videoUrls) {
         originalUrl: url,
         videoId: upload.videoId,
         embedUrl: upload.embedUrl,
+        caption: item.caption || null,
+        featured: item.featured || false,
         analysis: null, // No automated analysis available
         metadata: upload
       });
@@ -278,10 +281,11 @@ async function processVideos(videoUrls) {
 /**
  * Process images: download and upload to Cloudflare Images
  */
-async function processImages(imageUrls) {
+async function processImages(imageItems) {
   const results = [];
   
-  for (const url of imageUrls) {
+  for (const item of imageItems) {
+    const url = item.url;
     try {
       console.log(`\n🖼️  Processing image: ${url}`);
       
@@ -302,6 +306,9 @@ async function processImages(imageUrls) {
         mediumUrl: upload.mediumUrl,
         largeUrl: upload.largeUrl,
         publicUrl: upload.publicUrl,
+        caption: item.caption || null,
+        alt: item.alt || null,
+        featured: item.featured || false,
         metadata: upload
       });
       
@@ -323,14 +330,15 @@ async function processImages(imageUrls) {
 }
 
 /**
- * Process PDFs: download, upload to R2, and analyze with AI
+ * Process PDFs: download, upload to R2, and return structured document data
  */
-async function processPDFs(pdfUrls) {
+async function processPDFs(documentItems) {
   const results = [];
   
-  for (const url of pdfUrls) {
+  for (const item of documentItems) {
+    const url = item.url;
     try {
-      console.log(`\n📄 Processing PDF: ${url}`);
+      console.log(`\n📄 Processing document: ${url}`);
       
       // Download
       const download = await downloadFile(url, TEMP_DIR);
@@ -341,19 +349,24 @@ async function processPDFs(pdfUrls) {
         source: url
       });
       
-      // Note: PDF text extraction and analysis requires additional tools
-      // For now, we'll skip automated analysis and rely on manual notes in the draft
+      // Build structured document object for schema using shortcode metadata
+      const document = {
+        title: item.title || download.filename.replace(/\.(pdf|docx?|txt)$/i, ''),
+        description: item.description || 'Legal document related to the case',
+        url: upload.url // R2 public URL
+      };
       
       results.push({
         type: 'document',
         originalUrl: url,
         r2Url: upload.url,
         r2Key: upload.key,
-        analysis: null, // Manual analysis from draft notes
+        document: document, // Structured for frontmatter
         metadata: upload
       });
       
-      console.log(`   ✓ PDF uploaded to R2: ${upload.key}`);
+      console.log(`   ✓ PDF uploaded: ${document.title}`);
+      console.log(`   ✓ R2 URL: ${upload.url}`);
       
       // Clean up temp file
       fs.unlinkSync(download.filePath);
@@ -405,7 +418,7 @@ async function generateArticle(draftContent, mediaAnalysis, contentType) {
   console.log(`   ↳ Loaded ${Object.keys(components).length} component(s) for AI context`);
   
   // Extract metadata
-  const metadataPrompt = createMetadataExtractionPrompt(draftContent, contentSchema, contentType);
+  const metadataPrompt = createMetadataExtractionPrompt(draftContent, contentSchema, contentType, mediaAnalysis);
   const metadataText = await callClaude(metadataPrompt);
   const metadata = extractJSON(metadataText);
   
@@ -472,19 +485,38 @@ async function publishDraft(draftFilename) {
     fs.mkdirSync(TEMP_DIR);
   }
   
-  // Extract URLs
-  console.log('\n📋 Extracting media URLs...');
-  const urls = extractUrlsFromMarkdown(draftContent);
-  const categorized = categorizeUrls(urls);
+  // Extract media using shortcode parser
+  console.log('\n📋 Extracting media from shortcodes...');
+  const media = parseMediaShortcodes(draftContent);
   
-  console.log(`   Found: ${categorized.videos.length} videos, ${categorized.images.length} images, ${categorized.documents.length} documents`);
+  console.log(`   Found: ${media.videos.length} videos, ${media.images.length} images, ${media.documents.length} documents`);
+  
+  if (media.documents.length > 0) {
+    console.log(`   Document shortcodes found:`);
+    media.documents.forEach(doc => console.log(`     - ${doc.url} (${doc.title || 'untitled'})`));
+  }
   
   // Process media
   const mediaAnalysis = {
-    videos: await processVideos(categorized.videos),
-    images: await processImages(categorized.images),
-    documents: await processPDFs(categorized.documents)
+    videos: await processVideos(media.videos),
+    images: await processImages(media.images),
+    documents: await processPDFs(media.documents)
   };
+  
+  console.log(`\n📊 Media processing results:`);
+  console.log(`   Videos processed: ${mediaAnalysis.videos.length}`);
+  console.log(`   Images processed: ${mediaAnalysis.images.length}`);
+  console.log(`   Documents processed: ${mediaAnalysis.documents.length}`);
+  if (mediaAnalysis.documents.length > 0) {
+    console.log(`   Document details:`);
+    mediaAnalysis.documents.forEach(doc => {
+      if (doc.document) {
+        console.log(`     ✓ ${doc.document.title}: ${doc.document.url}`);
+      } else if (doc.error) {
+        console.log(`     ✗ Error: ${doc.error}`);
+      }
+    });
+  }
   
   // Generate article
   const article = await generateArticle(draftContent, mediaAnalysis, draftMeta.type);

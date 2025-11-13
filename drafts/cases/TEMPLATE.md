@@ -14,13 +14,25 @@
 [Write a summary in your own words - bullet points, paragraphs, whatever works]
 
 ## Media Files
-[Paste URLs to any files - videos, images, PDFs, documents]
-[Try to note what each file is so the AI knows how to use it]
 
-Example:
-- Body camera footage: https://...
-- Photo of victim: https://...
-- Court filing PDF: https://...
+Use the shortcode format below for each media file. This makes it easy for the AI to process them correctly.
+
+**Video Format:**
+{{video: URL | caption: Your caption here}}
+
+**Image Format:**
+{{image: URL | caption: Your caption here | featured: true}}
+(Set featured: true for the main/hero image)
+
+**Document Format:**
+{{document: URL | title: Document Title | description: Brief description}}
+
+**Examples:**
+{{video: https://dropbox.com/bodycam.mp4 | caption: Body camera footage from the incident}}
+
+{{image: https://example.com/photo.jpg | caption: Scene of the incident | featured: true}}
+
+{{document: https://example.com/complaint.pdf | title: Civil Rights Complaint | description: Original complaint filed by the victim}}
 
 ## Legal Details
 [If known - lawsuit details, settlement amount, charges, etc.]

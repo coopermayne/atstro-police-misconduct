@@ -200,8 +200,20 @@ Be pragmatic - if there's enough info to write a quality article, mark canProcee
 /**
  * Prompt for generating case metadata
  */
-export function createMetadataExtractionPrompt(draftContent, contentSchema, contentType = 'case') {
+export function createMetadataExtractionPrompt(draftContent, contentSchema, contentType = 'case', mediaAnalysis = null) {
   const schemaSection = contentType === 'case' ? 'casesCollection' : 'postsCollection';
+  
+  // Extract processed documents for frontmatter
+  let documentsSection = '';
+  if (mediaAnalysis && mediaAnalysis.documents && mediaAnalysis.documents.length > 0) {
+    const processedDocs = mediaAnalysis.documents
+      .filter(d => d.document)
+      .map(d => d.document);
+    
+    if (processedDocs.length > 0) {
+      documentsSection = `\n**Processed Documents (include these in metadata):**\n${JSON.stringify(processedDocs, null, 2)}\n`;
+    }
+  }
   
   return {
     system: SYSTEM_PROMPT,
@@ -212,7 +224,9 @@ ${draftContent}
 
 **Content Schema (from src/content/config.ts):**
 ${contentSchema}
-
+${documentsSection}
+**CRITICAL INSTRUCTION FOR DOCUMENTS FIELD:**
+${documentsSection ? '- You MUST use the "Processed Documents" array above EXACTLY as provided for the documents field\n- DO NOT extract document URLs from the draft content\n- DO NOT use original external URLs\n- The documents have already been uploaded to our R2 storage and the URLs are ready to use\n' : '- Set documents field to null if no processed documents are provided\n'}
 **Instructions:**
 1. Extract the schema for "${schemaSection}" from the provided TypeScript code
 2. Generate metadata that includes ALL fields defined in the schema (both required and optional)
@@ -223,14 +237,15 @@ ${contentSchema}
    - Incident descriptions ("tased" → ["Taser"], "beaten" → ["Beating"]) for force_type
    - Legal mentions ("lawsuit filed" → true, "settlement" → true) for civil_lawsuit_filed
    - Evidence mentions ("body camera footage" → true) for bodycam_available
-4. For fields where information is NOT available AND cannot be reasonably inferred, use null
-5. Return ONLY the metadata as a JSON object
-6. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
-7. For dates, use "YYYY-MM-DD" format as a STRING
-8. For case_id, use format: ca-[agency-slug]-[year]-[number]
-9. For tags, choose 3-5 relevant tags from the draft content
-10. Be flexible - extract information from unstructured notes, lists, and links
-11. ALWAYS include every field from the schema - use null only if truly unknown after inference attempts
+4. **CRITICAL**: For the documents field, use ONLY the "Processed Documents" array provided above (if any). DO NOT extract or use URLs from the draft content.
+5. For fields where information is NOT available AND cannot be reasonably inferred, use null
+6. Return ONLY the metadata as a JSON object
+7. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
+8. For dates, use "YYYY-MM-DD" format as a STRING
+9. For case_id, use format: ca-[agency-slug]-[year]-[number]
+10. For tags, choose 3-5 relevant tags from the draft content
+11. Be flexible - extract information from unstructured notes, lists, and links
+12. ALWAYS include every field from the schema - use null only if truly unknown after inference attempts
 
 Return ONLY valid JSON matching the schema:
 \`\`\`json
@@ -289,11 +304,17 @@ ${contentSchema}
 8. Use proper heading hierarchy (## for main sections)
 9. Write in clear, accessible language
 10. Be factual and objective
+11. **IMPORTANT: If documents exist in metadata, you MUST:**
+    - Import DocumentsList component
+    - Add <DocumentsList documents={frontmatter.documents} /> in an appropriate section
+    - Typically place it in a "## Related Documents" or "## Legal Documents" section
+    - Place it before the "## Sources" section
+12. Reference documents naturally in the article text (e.g., "According to court filings...", "The police report states...")
 
 **Component Usage Examples:**
 - For videos: <CloudflareVideo videoId="abc123" caption="Body camera footage shows..." />
 - For images: <CloudflareImage imageId="xyz789" alt="Scene photo" caption="Photo taken at scene" />
-- For documents: <DocumentsList documents={frontmatter.documents} /> (if documents exist in frontmatter)
+- For documents: <DocumentsList documents={frontmatter.documents} /> (REQUIRED if documents array exists)
 
 **Output Format:**
 Return the complete MDX file content with frontmatter. Use this exact structure:
@@ -340,7 +361,10 @@ ${metadata.content_warning ? '**Content Warning:** This article contains descrip
 
 [Current legal status and outcomes]
 
-${metadata.documents ? '\n<DocumentsList documents={frontmatter.documents} />\n' : ''}
+${metadata.documents && metadata.documents.length > 0 ? `## Related Documents
+
+<DocumentsList documents={frontmatter.documents} />
+` : ''}
 
 ## Sources
 
@@ -396,11 +420,12 @@ ${contentSchema}
 6. Embed media using the available MDX components shown above
 7. Import only the components you actually use
 8. Include a clear takeaway/conclusion
+9. If documents exist in frontmatter, include <DocumentsList documents={frontmatter.documents} /> in the appropriate section (usually before Related Resources)
 
 **Component Usage Examples:**
 - For videos: <CloudflareVideo videoId="abc123" caption="Example of..." />
 - For images: <CloudflareImage imageId="xyz789" alt="Diagram" caption="Visual explanation" />
-- For documents: <DocumentsList documents={frontmatter.documents} /> (if documents exist)
+- For documents: <DocumentsList documents={frontmatter.documents} /> (REQUIRED if documents array exists in metadata)
 
 **Output Format:**
 Return the complete MDX file content with frontmatter:

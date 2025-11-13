@@ -7,11 +7,16 @@ This folder contains the automated content generation workflow scripts.
 ### Main Script
 - **`publish-draft.js`** - Main orchestration script that runs the entire publishing workflow
 
+### Test Scripts
+- **`test-r2-upload.js`** - Standalone script to test R2 uploads and verify URLs
+
 ### Utility Modules
 - **`file-downloader.js`** - Downloads files from external URLs (Dropbox, Google Drive, etc.)
 - **`cloudflare-stream.js`** - Uploads videos to Cloudflare Stream
 - **`cloudflare-r2.js`** - Uploads images and PDFs to Cloudflare R2 storage
+- **`cloudflare-images.js`** - Uploads images to Cloudflare Images
 - **`ai-prompts.js`** - AI prompt templates for content analysis and generation
+- **`validate-config.js`** - Validates environment configuration
 
 ## Usage
 
@@ -29,6 +34,22 @@ This command:
 5. Saves to content collection
 6. Commits to Git
 
+### Test R2 Upload (Standalone)
+
+Test uploading PDFs to R2 and verify URL generation without running the full publish workflow:
+
+```bash
+npm run test:r2
+```
+
+This simple test:
+- ✅ Downloads a real court PDF from a test URL
+- ✅ Uploads it to Cloudflare R2
+- ✅ Displays the public URL
+- ✅ Shows frontmatter format for the documents array
+
+This verifies that the R2 upload function properly uploads files and generates working URLs for referencing documents later.
+
 ### Manual Usage of Utilities
 
 You can also use the utilities independently:
@@ -41,6 +62,18 @@ const result = await downloadFile(
   'https://dropbox.com/s/abc/file.mp4',
   './downloads'
 );
+```
+
+#### Upload to R2 (PDFs/Documents)
+```javascript
+import { uploadPDF } from './cloudflare-r2.js';
+
+const result = await uploadPDF('./document.pdf', {
+  source: 'court-filing',
+  case: 'john-doe'
+});
+
+console.log(result.url); // Public URL to use in frontmatter
 ```
 
 #### Upload Video

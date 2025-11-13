@@ -12,8 +12,16 @@
 - Point 3
 
 ## Media Files
-[Any images, videos, or documents to include]
-- Description: URL
+
+Use the shortcode format below for each media file:
+
+**Video:** {{video: URL | caption: Your caption here}}
+**Image:** {{image: URL | caption: Your caption here | featured: true}}
+**Document:** {{document: URL | title: Document Title | description: Brief description}}
+
+Examples:
+{{image: https://example.com/diagram.jpg | caption: Diagram showing legal process | featured: true}}
+{{document: https://example.com/guide.pdf | title: Legal Rights Guide | description: Know your rights during police encounters}}
 
 ## Target Tags
 [What topics does this relate to? e.g., qualified-immunity, legal-strategy, etc.]

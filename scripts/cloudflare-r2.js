@@ -18,7 +18,7 @@ const CLOUDFLARE_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const R2_ACCESS_KEY_ID = process.env.CLOUDFLARE_R2_ACCESS_KEY_ID;
 const R2_SECRET_ACCESS_KEY = process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY;
 const R2_BUCKET_NAME = process.env.CLOUDFLARE_R2_BUCKET_NAME || 'police-misconduct';
-const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL; // e.g., https://files.yoursite.com
+const R2_PUBLIC_URL = process.env.CLOUDFLARE_R2_PUBLIC_URL?.replace(/\/$/, ''); // Remove trailing slash
 
 if (!CLOUDFLARE_ACCOUNT_ID || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY) {
   console.error('⚠️  Missing Cloudflare R2 credentials. Set required environment variables in .env');
@@ -88,8 +88,8 @@ export async function uploadToR2(filePath, options = {}) {
 
   const originalFileName = path.basename(filePath);
   const uniqueFileName = generateUniqueFilename(originalFileName);
-  const folder = options.folder || 'uploads';
-  const key = `${folder}/${uniqueFileName}`;
+  const folder = options.folder || '';
+  const key = folder ? `${folder}/${uniqueFileName}` : uniqueFileName;
   
   const fileContent = fs.readFileSync(filePath);
   const contentType = getContentType(filePath);
@@ -105,10 +105,17 @@ export async function uploadToR2(filePath, options = {}) {
   try {
     await r2Client.send(command);
     
-    // Construct public URL (if R2_PUBLIC_URL is set)
-    const publicUrl = R2_PUBLIC_URL 
-      ? `${R2_PUBLIC_URL}/${key}`
-      : `https://${R2_BUCKET_NAME}.${CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com/${key}`;
+    // Construct public URL
+    let publicUrl;
+    if (R2_PUBLIC_URL) {
+      // Use custom domain if set
+      publicUrl = `${R2_PUBLIC_URL}/${key}`;
+    } else {
+      // Default: Construct R2 dev URL - user needs to enable public access in dashboard
+      publicUrl = `https://pub-[YOUR-HASH].r2.dev/${key}`;
+      console.warn('⚠️  CLOUDFLARE_R2_PUBLIC_URL not set. Update .env with your R2 public URL.');
+      console.warn('   Enable public access in Cloudflare dashboard to get your pub-*.r2.dev URL');
+    }
 
     return {
       success: true,
@@ -117,7 +124,8 @@ export async function uploadToR2(filePath, options = {}) {
       bucket: R2_BUCKET_NAME,
       contentType,
       originalFileName,
-      uniqueFileName
+      uniqueFileName,
+      needsPublicUrl: !R2_PUBLIC_URL
     };
   } catch (error) {
     throw new Error(`R2 upload failed: ${error.message}`);
@@ -148,7 +156,7 @@ export async function uploadImage(filePath, metadata = {}) {
  */
 export async function uploadPDF(filePath, metadata = {}) {
   return uploadToR2(filePath, {
-    folder: 'documents',
+    folder: '', // No subfolder - files go to bucket root
     metadata: {
       type: 'document',
       ...metadata

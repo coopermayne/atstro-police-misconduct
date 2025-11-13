@@ -8,7 +8,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "publish": "node scripts/publish-draft.js",
-    "validate:config": "node scripts/validate-config.js"
+    "validate:config": "node scripts/validate-config.js",
+    "test:r2": "node scripts/test-r2-upload.js"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.10",
