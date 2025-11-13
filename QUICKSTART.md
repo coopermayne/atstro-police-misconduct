@@ -2,26 +2,31 @@
 
 ## ⚡ 5-Minute Setup
 
-### 1. Install Dependencies
-```bash
-npm install
+### 1. Open GitHub Codespace
+```
+Go to repository → Code → Codespaces → Create/Open
+Wait ~30-60 seconds for environment to load
+Environment variables automatically configured!
 ```
 
-### 2. Configure Environment
+### 2. Create a Draft
 ```bash
-cp .env.example .env
-# Edit .env with your API keys
+cp drafts/templates/case-draft-template.md drafts/cases/my-first-case.md
+# Edit the draft file with your notes and media URLs
 ```
 
-### 3. Create a Draft
+### 3. Publish (Interactive)
 ```bash
-cp drafts/templates/case-draft-template.md drafts/draft-my-first-case.md
-# Edit the draft file
+npm run publish:draft
+# Select draft from numbered list
+# Review validation report
+# Type 'yes' to proceed
 ```
 
-### 4. Publish
-```bash
-npm run publish:draft draft-my-first-case.md
+### 4. Done!
+```
+Article automatically published and deployed
+View at the URL shown in terminal output
 ```
 
 ## 📋 Minimal Draft Example
@@ -36,47 +41,57 @@ Here's the absolute minimum you need in a draft:
 ## Case Summary / Notes
 
 John Doe was subjected to excessive force by LAPD officers on January 15, 2023.
+He was 28 years old. The incident occurred in Los Angeles.
 The incident was captured on body camera footage. The case settled for $500,000.
 
 ## External Media Files
+
+### Images
+https://example.com/featured-photo.jpg
 
 ### Videos
 https://example.com/bodycam.mp4
 ```
 
-That's it! The AI will:
-- Generate all metadata
-- Create case ID and tags
-- Write the full article
-- Embed the video properly
+That's it! The validation will check completeness, then the AI will:
+- Generate all metadata (case ID, tags, etc.)
+- Download and upload media to Cloudflare
+- Write the full article with proper formatting
+- Embed media with correct components
+- Save, archive, commit, and deploy
 
 ## 🎯 Common Commands
 
 ```bash
-# Publish a case draft
-npm run publish:draft draft-case-name.md
+# Publish a draft (interactive - recommended)
+npm run publish:draft
 
-# Publish a blog post draft
-npm run publish:draft draft-blog-post.md
+# Publish specific draft (direct)
+npm run publish:draft cases/my-case.md
 
-# Start dev server to preview
+# Start dev server to preview locally
 npm run dev
 
 # Build for production
 npm run build
+
+# Preview production build
+npm run preview
 ```
 
 ## 🔑 Required Environment Variables
 
-**All 6 required as Codespaces Secrets:**
+**All 6 required as Codespaces Secrets** (automatically loaded in Codespace):
 ```
-ANTHROPIC_API_KEY=sk-ant-...
-CLOUDFLARE_ACCOUNT_ID=...
-CLOUDFLARE_API_TOKEN=...
-CLOUDFLARE_R2_ACCESS_KEY_ID=...
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=...
-CLOUDFLARE_R2_BUCKET_NAME=...
+ANTHROPIC_API_KEY=sk-ant-...          # Claude API for content generation
+CLOUDFLARE_ACCOUNT_ID=...             # Your Cloudflare account
+CLOUDFLARE_API_TOKEN=...              # Stream + Images access
+CLOUDFLARE_R2_ACCESS_KEY_ID=...       # R2 storage access
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=...   # R2 storage secret
+CLOUDFLARE_R2_BUCKET_NAME=...         # R2 bucket name
 ```
+
+**Setup Once:** Add these to GitHub Codespaces Secrets at https://github.com/settings/codespaces
 
 **See [CLOUDFLARE-SETUP.md](./CLOUDFLARE-SETUP.md) for detailed setup instructions.**
 
@@ -110,15 +125,21 @@ CLOUDFLARE_R2_BUCKET_NAME=...
 ## ✅ Publishing Checklist
 
 Before running `publish:draft`:
-- [ ] Draft has basic information filled in
+- [ ] Draft has victim name, date, city, agency
+- [ ] At least one image URL (for featured image)
 - [ ] External URLs are publicly accessible
-- [ ] You have API credits (OpenAI, Cloudflare)
+- [ ] You have API credits (Anthropic, Cloudflare)
+
+During publishing:
+- [ ] Review validation report carefully
+- [ ] Decide if you want to add more info or proceed
+- [ ] Type 'yes' to confirm and start processing
 
 After publishing:
 - [ ] Review generated article for accuracy
 - [ ] Check embedded media displays correctly
 - [ ] Verify metadata (dates, names, amounts)
-- [ ] Preview on local dev server
+- [ ] Edit published MDX file if needed
 
 ## 💡 Tips
 

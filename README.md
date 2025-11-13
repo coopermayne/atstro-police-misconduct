@@ -21,42 +21,45 @@ This is a work-in-progress website built with [Astro](https://astro.build) and s
 
 ## 🚀 AI Content Generation
 
-This project includes a powerful automated workflow for creating content:
+This project includes a powerful automated workflow for creating content using GitHub Codespaces and AI.
 
 ### Quick Start
 
-1. **Setup** (one-time):
-   ```bash
-   npm install
-   cp .env.example .env
-   # Add your API keys to .env
-   ```
+1. **Open GitHub Codespace** (sets up everything automatically)
 
 2. **Create a draft**:
    ```bash
-   cp drafts/templates/case-draft-template.md drafts/draft-my-case.md
+   cp drafts/templates/case-draft-template.md drafts/cases/my-case.md
    # Edit the draft with your case notes and media URLs
    ```
 
-3. **Publish**:
+3. **Publish** (interactive):
    ```bash
-   npm run publish:draft draft-my-case.md
+   npm run publish:draft
+   # Select from numbered list
+   # Review validation report
+   # Confirm to proceed
    ```
 
-The script will automatically:
+The workflow will automatically:
+- Validate draft completeness before processing
 - Download media from external URLs (Dropbox, Google Drive, etc.)
 - Upload videos to Cloudflare Stream
-- Upload images/PDFs to Cloudflare R2
-- Analyze content with AI
-- Generate a complete article with proper formatting
+- Upload images to Cloudflare Images
+- Upload PDFs to Cloudflare R2
+- Generate metadata and complete article with AI
+- Embed media with proper components
 - Save to your content collection
-- Commit and push to GitHub
+- Archive draft to published folder
+- Commit and push to GitHub (triggers Netlify deploy)
 
 ### Documentation
 
+- **[PROJECT-ROADMAP.md](./PROJECT-ROADMAP.md)** - Project status and future plans
 - **[QUICKSTART.md](./QUICKSTART.md)** - Get started in 5 minutes
-- **[PUBLISHING.md](./PUBLISHING.md)** - Complete workflow documentation
-- **[scripts/README.md](./scripts/README.md)** - Technical reference
+- **[PUBLISHING.md](./PUBLISHING.md)** - Complete workflow documentation (550+ lines)
+- **[CLOUDFLARE-SETUP.md](./CLOUDFLARE-SETUP.md)** - Media hosting setup guide
+- **[scripts/README.md](./scripts/README.md)** - Technical API reference
 
 ## 🛠️ Development Setup
 

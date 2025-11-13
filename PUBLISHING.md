@@ -102,41 +102,100 @@ You should see the usage message. If you see warnings about missing credentials,
 
 ## 📝 Workflow
 
+### Quick Start Summary
+
+**Draft content anywhere** → **Open GitHub Codespace** → **Run publish script** → **Live on site**
+
+That's it! The entire workflow is designed for ease of use.
+
 ### Step-by-Step Process
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ 1. CREATE DRAFT                                             │
-│    - Use template from /drafts/templates/                   │
+│ 1. CREATE DRAFT (Anywhere)                                  │
+│    - Draft in Notes, Google Docs, or markdown editor        │
+│    - Use template structure from /drafts/templates/         │
 │    - Add case notes, metadata ideas, media URLs             │
-│    - Save as draft-[name].md in /drafts/                    │
+│    - No need for GitHub yet - just write!                   │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 2. RUN PUBLISH COMMAND                                      │
-│    npm run publish:draft draft-[name].md                    │
+│ 2. OPEN CODESPACE                                           │
+│    - Go to GitHub repo                                      │
+│    - Click Code → Codespaces → Create/Open                  │
+│    - Wait ~30-60 seconds for environment to load            │
+│    - Your dev environment is ready!                         │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 3. AUTOMATED PROCESSING                                     │
+│ 3. ADD DRAFT TO REPO                                        │
+│    - Copy your draft markdown                               │
+│    - Create file in /drafts/cases/ or /drafts/posts/        │
+│    - Name it descriptively (e.g., john-doe-case.md)         │
+│    - Paste content and save                                 │
+└─────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 4. RUN PUBLISH COMMAND                                      │
+│    npm run publish:draft                                    │
+│    - Shows numbered list of available drafts                │
+│    - Select number (1, 2, 3, etc.)                          │
+│    - Press Enter                                            │
+└─────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 5. VALIDATION CHECKPOINT                                    │
+│    - AI analyzes draft for completeness                     │
+│    - Shows validation report:                               │
+│      • Featured image status                                │
+│      • Missing critical info (stops if found)               │
+│      • Missing helpful info (warnings only)                 │
+│      • Suggestions for improvement                          │
+│    - You review and decide: proceed or cancel?              │
+│    - Type 'yes' to continue, anything else to cancel        │
+└─────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 6. AUTOMATED PROCESSING                                     │
 │    ├─ Extract URLs from draft                               │
 │    ├─ Download all external files                           │
 │    ├─ Upload videos → Cloudflare Stream                     │
-│    ├─ Upload images/PDFs → Cloudflare R2                    │
-│    ├─ AI analyzes videos (timestamps, warnings)             │
-│    ├─ AI analyzes PDFs (extract key info)                   │
+│    ├─ Upload images → Cloudflare Images                     │
+│    ├─ Upload PDFs → Cloudflare R2                           │
 │    ├─ AI generates metadata (case ID, tags, etc.)           │
 │    └─ AI writes complete article                            │
+│    (You watch progress in real-time)                        │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 4. SAVE & DEPLOY                                            │
+│ 7. SAVE & DEPLOY                                            │
 │    ├─ Save article to /src/content/cases/ or /posts/        │
-│    ├─ Move draft to /drafts/published/[date]-[slug].md      │
+│    ├─ Archive draft to /drafts/published/[date]-[slug].md   │
 │    ├─ Git commit and push                                   │
-│    └─ Netlify automatically deploys                         │
+│    └─ Netlify automatically deploys (2-3 minutes)           │
+└─────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────┐
+│ 8. DONE!                                                    │
+│    - Article live on site                                   │
+│    - Draft archived for reference                           │
+│    - Close Codespace (or leave open for next time)          │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+### Why This Workflow Works
+
+**✅ Flexible Drafting**: Write anywhere, anytime. Use your favorite tools.
+
+**✅ No Local Setup**: GitHub Codespaces handles all dependencies and environment.
+
+**✅ Interactive**: You review and approve before publishing - not fully automated.
+
+**✅ Fast**: Active time is ~2 minutes. Automation handles the rest.
+
+**✅ Safe**: Validation catches issues before you waste time processing media.
+
+**✅ Reversible**: Draft is archived, you can always edit the published MDX file.
 
 ## 💻 Usage
 
@@ -192,23 +251,84 @@ https://example.com/settlement.pdf
 
 ### Publishing a Draft
 
+#### Interactive Mode (Recommended)
+
+Simply run:
 ```bash
-npm run publish:draft draft-john-doe-case.md
+npm run publish:draft
 ```
 
+You'll see a numbered list of all available drafts:
+```
+📝 Available drafts:
+
+  1. 📋 cases/john-doe-case.md
+  2. 📋 cases/sarah-johnson-case.md
+  3. 📰 posts/qualified-immunity-explained.md
+
+Select a draft to publish (enter number): 
+```
+
+Type the number and press Enter. The script handles the rest!
+
+#### Direct Mode (Optional)
+
+If you know the exact filename:
+```bash
+npm run publish:draft cases/john-doe-case.md
+```
+
+#### What Happens Next
+
 The script will:
-1. Show progress for each step
-2. Download and process all media
-3. Generate the article
-4. Save and commit everything
-5. Display the final URL
+1. Validate draft completeness (with interactive review)
+2. Show progress for each step
+3. Download and process all media
+4. Generate the article with AI
+5. Save and commit everything
+6. Display the final URL
 
 Example output:
 ```
+📝 Available drafts:
+
+  1. 📋 cases/john-doe-case.md
+
+Select a draft to publish (enter number): 1
+
+✅ Selected: cases/john-doe-case.md
+
 🚀 Starting draft publishing workflow...
 
-Draft: draft-john-doe-case.md
+Draft: cases/john-doe-case.md
+
 Content Type: case
+
+🔍 Validating draft completeness...
+
+═══════════════════════════════════════════════════════════
+                    DRAFT VALIDATION REPORT
+═══════════════════════════════════════════════════════════
+
+✅ Featured image: Found
+✅ All critical information present
+
+ℹ️  MISSING HELPFUL INFORMATION:
+   • Victim's age
+   • Race/ethnicity
+
+💡 SUGGESTIONS FOR IMPROVEMENT:
+   • Consider adding demographic details for context
+   • Include officer names if available in source documents
+
+═══════════════════════════════════════════════════════════
+
+Review the validation report above.
+This is your last chance to cancel and make changes.
+
+Do you want to proceed with publishing? (yes/no): yes
+
+✅ Proceeding with publishing...
 
 📋 Extracting media URLs...
    Found: 2 videos, 3 images, 1 documents
@@ -444,46 +564,112 @@ Expected processing times (approximate):
 
 ## 🎯 Best Practices
 
-### 1. Start Simple
-Begin with cases that have:
-- 1-2 videos
-- A few images
-- 1-2 documents
-This helps you learn the workflow.
+### 1. Draft Organization
 
-### 2. Organize Your Files
-Keep source files organized in Dropbox/Drive by case:
+**Create drafts in the right folder:**
+- Cases → `/drafts/cases/`
+- Blog posts → `/drafts/posts/`
+- Use descriptive filenames: `john-doe-lapd-2023.md` (not `draft1.md`)
+
+**Why it matters:** The publish script automatically detects content type from the folder, and organized files make it easier to find drafts later.
+
+### 2. Pre-Publishing Checklist
+
+Before running the publish script, ensure your draft has:
+- [ ] Victim/subject name clearly stated
+- [ ] Incident date (at least month/year)
+- [ ] City and county/state
+- [ ] Police agency/department name
+- [ ] At least one featured image URL (highly recommended)
+- [ ] Basic incident summary or notes
+
+**Why it matters:** The validation step will catch missing critical info, but having this ready saves time.
+
+### 3. Use the Validation Checkpoint Wisely
+
+When you see the validation report:
+- **Read it carefully** - AI might spot gaps you missed
+- **Cancel if needed** - No penalty for going back to add more info
+- **Featured image matters** - Cases/posts with images get more visibility
+- **Optional fields are optional** - Don't feel pressured to have everything
+
+**Why it matters:** This is your safety net. Use it to ensure quality before spending time on media processing.
+
+### 4. Media File Management
+
+**Organize source files by case:**
 ```
-/Cases/
+Dropbox/Cases/
   /john-doe-lapd-2023/
     bodycam-1.mp4
     bodycam-2.mp4
-    complaint.pdf
-    settlement.pdf
+    photos/
+      scene-photo-1.jpg
+      evidence-photo.jpg
+    documents/
+      complaint.pdf
+      settlement.pdf
 ```
 
-### 3. Review Before Publishing
-The AI is powerful but not perfect. Always:
-- Fact-check dates and names
-- Verify dollar amounts
-- Check embedded media captions
-- Read the full article
+**Share settings:**
+- Set Dropbox/Drive links to "Anyone with link can view"
+- Test links in incognito/private browsing
+- Use direct download links when possible
 
-### 4. Iterate on Prompts
-If the AI consistently misses something:
-- Update the prompts in `scripts/ai-prompts.js`
-- Add more specific instructions in your drafts
-- Provide examples in the "Special Instructions" section
+**Why it matters:** Broken links waste time during processing. Good organization makes it easy to find files months later.
 
-### 5. Track Your Work
-Use the draft templates' "Notes / To Do" section:
+### 5. Review After Publishing
+
+The AI generates high-quality content but isn't perfect. After publishing, check:
+- [ ] Dates are accurate (incident date, filing dates, etc.)
+- [ ] Names are spelled correctly
+- [ ] Dollar amounts are correct
+- [ ] Embedded videos have appropriate captions
+- [ ] Content warnings are present if needed
+- [ ] No factual hallucinations
+
+**Where to edit:** Published files are in `/src/content/cases/` or `/src/content/posts/` as `.mdx` files. Just edit and commit like any other file.
+
+**Why it matters:** Published content represents your research. Small errors undermine credibility.
+
+### 6. Iterate on AI Instructions
+
+If the AI consistently misses something or makes the same mistake:
+- Add specific instructions in your draft's "Special Instructions" section
+- Update the system prompts in `scripts/ai-prompts.js`
+- Provide examples of what you want
+
+**Example:**
 ```markdown
-## Notes / To Do
-- [ ] Verify officer badge numbers
-- [ ] Confirm settlement amount
-- [ ] Check if case is still under seal
-- [ ] Review for legal accuracy
+## Special Instructions for AI
+
+- Always include content warning for videos showing use of force
+- Link to related cases when the same agency is involved
+- Emphasize legal precedents, not just facts
+- Use analytical tone, not sensational
 ```
+
+**Why it matters:** The AI learns from your instructions. Better prompts = better articles.
+
+### 7. Keep Drafts Simple
+
+**Start with:**
+- 1-2 videos max
+- A few images
+- 1-2 PDFs
+- Basic incident notes
+
+**Why it matters:** Simpler drafts process faster and help you learn the workflow. You can always edit the published article to add more media later.
+
+### 8. Use GitHub Codespaces Efficiently
+
+**Keep it open:** Codespaces stay alive for a while after you close the browser. Reopen within a few hours and it's instant.
+
+**Process multiple drafts:** If you have several ready, process them all in one session.
+
+**Free tier limits:** 60 hours/month free. Each publishing session uses ~10-30 minutes of compute time.
+
+**Why it matters:** Starting/stopping Codespaces wastes time. Batch your work for efficiency.
 
 ## 🔐 Security Notes
 
@@ -514,10 +700,93 @@ If you encounter issues not covered here:
 
 ---
 
+## 🎓 Learning Path
+
+### First Time Publishing
+
+1. **Read this entire document** (you're almost done!)
+2. **Verify setup:** Run `npm run publish:draft` to check environment
+3. **Start with a simple case:**
+   - Copy template: `cp drafts/templates/case-draft-template.md drafts/cases/test-case.md`
+   - Fill in minimal info (name, date, city, agency)
+   - Add 1 image URL and 1 video URL
+   - Don't worry about perfection
+4. **Run publish:** `npm run publish:draft`
+5. **Review validation report** carefully
+6. **Watch the automation** work its magic
+7. **Check the published article** at the URL shown
+8. **Edit if needed** - the MDX file is in `/src/content/cases/`
+
+### After Your First Success
+
+1. **Try a blog post** using the blog template
+2. **Add more media** to test Cloudflare uploads
+3. **Experiment with AI instructions** in drafts
+4. **Review archived drafts** in `/drafts/published/` to see what worked
+
+### Become a Pro
+
+1. **Customize AI prompts** in `scripts/ai-prompts.js`
+2. **Create your own templates** for specific case types
+3. **Build a library** of reusable media (agency logos, maps, etc.)
+4. **Document patterns** - what makes a good article?
+
+---
+
+## 📞 Quick Reference Card
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ CONTENT CREATION QUICK REFERENCE                        │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│ 1. Draft anywhere → Copy to /drafts/cases/ or /posts/  │
+│                                                          │
+│ 2. Open GitHub Codespace                                │
+│                                                          │
+│ 3. npm run publish:draft                                │
+│                                                          │
+│ 4. Select number → Review validation → Type 'yes'       │
+│                                                          │
+│ 5. Wait 5-10 minutes → Article published!               │
+│                                                          │
+├─────────────────────────────────────────────────────────┤
+│ FILES                                                    │
+│  Templates:     /drafts/templates/                      │
+│  Your drafts:   /drafts/cases/ or /drafts/posts/        │
+│  Published:     /src/content/cases/ or /posts/          │
+│  Archived:      /drafts/published/                      │
+│                                                          │
+├─────────────────────────────────────────────────────────┤
+│ REQUIRED IN DRAFT                                        │
+│  ✓ Victim/subject name                                  │
+│  ✓ Incident date                                        │
+│  ✓ City & county                                        │
+│  ✓ Agency name                                          │
+│  ✓ Basic incident summary                               │
+│                                                          │
+├─────────────────────────────────────────────────────────┤
+│ RECOMMENDED                                              │
+│  ✓ Featured image URL                                   │
+│  ✓ Demographics (age, race, gender)                     │
+│  ✓ Media files (videos, PDFs)                           │
+│  ✓ Source citations                                     │
+│                                                          │
+├─────────────────────────────────────────────────────────┤
+│ TROUBLESHOOTING                                          │
+│  Media download failed?  → Check share link permissions │
+│  Validation failed?      → Add missing critical info    │
+│  Bad AI output?          → Edit the published MDX file  │
+│  Git push failed?        → Manually commit/push         │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+```
+
 **Next Steps:**
-1. Set up your environment (`.env`)
+1. Verify your environment is set up (`.env` file)
 2. Create your first draft using a template
-3. Run the publishing script
-4. Review and iterate!
+3. Run the publish script and follow the prompts
+4. Review the published article and edit if needed
+5. Iterate and improve!
 
 Happy publishing! 🚀
