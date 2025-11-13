@@ -26,6 +26,9 @@ const casesCollection = defineCollection({
     // Incident Details
     cause_of_death: z.string().optional(),
     armed_status: z.string().optional(),
+    threat_level: z.enum(['No threat', 'Low', 'Moderate', 'High', 'Deadly']).optional(),
+    force_type: z.array(z.string()).optional(), // e.g., ['Shooting', 'Beating', 'Taser', 'Restraint']
+    shooting_officers: z.array(z.string()).optional(), // Officer names involved
     
     // Investigation
     investigation_status: z.string().optional(),
