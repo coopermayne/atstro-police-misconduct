@@ -158,8 +158,8 @@ ${contentSchema}
 - Agency name (if no police department mentioned)
 - Age (specific number needed)
 - Race/ethnicity (cannot be assumed)
-- Gender (cannot be assumed without info)
-- Featured image URL (cannot be generated - needs actual image link)
+- Gender (can be inferred from pronouns or gendered name - only flag if truly ambiguous)
+- Featured image URL, unless it's obvious that an image provided makes sense as featured image or it's specified as the featured image
 
 **Focus Areas:**
 1. Is there enough basic information to write a case (name, date, location, what happened)?
@@ -204,14 +204,15 @@ ${contentSchema}
 
 **Instructions:**
 1. Extract the schema for "${schemaSection}" from the provided TypeScript code
-2. Generate metadata that matches ALL required fields in the schema
-3. For optional fields, include them if the information is available in the draft
+2. Generate metadata that includes ALL fields defined in the schema (both required and optional)
+3. For fields where information is NOT available, use null (not empty string, not omitted)
 4. Return ONLY the metadata as a JSON object
 5. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
 6. For dates, use "YYYY-MM-DD" format as a STRING
 7. For case_id, use format: ca-[agency-slug]-[year]-[number]
 8. For tags, choose 3-5 relevant tags from the draft content
 9. Be flexible - extract information from unstructured notes, lists, and links
+10. ALWAYS include every field from the schema - use null if data is missing
 
 Return ONLY valid JSON matching the schema:
 \`\`\`json
@@ -225,7 +226,14 @@ Return ONLY valid JSON matching the schema:
 /**
  * Prompt for generating complete case article
  */
-export function createCaseArticlePrompt(draftContent, mediaAnalysis, metadata) {
+export function createCaseArticlePrompt(draftContent, mediaAnalysis, metadata, components = {}, contentSchema = '') {
+  // Format components for the prompt
+  const componentsSection = Object.keys(components).length > 0 
+    ? `\n**Available Components:**\n${Object.entries(components).map(([name, code]) => 
+        `\n### ${name}\n\`\`\`astro\n${code}\n\`\`\`\n`
+      ).join('\n')}`
+    : '';
+
   return {
     system: SYSTEM_PROMPT,
     user: `Generate a complete, publication-ready article for this police misconduct case.
@@ -238,18 +246,36 @@ ${JSON.stringify(metadata, null, 2)}
 
 **Available Media:**
 ${JSON.stringify(mediaAnalysis, null, 2)}
+${componentsSection}
+
+**CONTENT SCHEMA (MUST FOLLOW EXACTLY):**
+${contentSchema}
+
+**CRITICAL: Your frontmatter MUST match the casesCollection schema exactly. Every field must use the correct data type:**
+- Strings must be quoted: "value"
+- Numbers must be unquoted: 35
+- Booleans must be unquoted: true or false
+- Arrays must use bracket notation: ["item1", "item2"]
+- Nullable/optional fields must be either the correct type or null (unquoted)
+- Do NOT use "null" (string), use null (literal)
+- Do NOT omit optional fields - include them with null if no data
 
 **Instructions:**
 1. Write a comprehensive case summary (3-5 paragraphs minimum)
 2. Include a clear timeline of events
-3. Embed media using these MDX components:
-   - CloudflareVideo: <CloudflareVideo videoId="..." caption="..." />
-   - CloudflareImage: <CloudflareImage imageId="..." alt="..." caption="..." />
-4. Include content warnings at the top if needed
-5. Cite all sources
-6. Use proper heading hierarchy (## for main sections)
-7. Write in clear, accessible language
-8. Be factual and objective
+3. Embed media using the available MDX components shown above
+4. Import only the components you actually use
+5. Use components intelligently based on their props and functionality
+6. Include content warnings at the top if needed
+7. Cite all sources
+8. Use proper heading hierarchy (## for main sections)
+9. Write in clear, accessible language
+10. Be factual and objective
+
+**Component Usage Examples:**
+- For videos: <CloudflareVideo videoId="abc123" caption="Body camera footage shows..." />
+- For images: <CloudflareImage imageId="xyz789" alt="Scene photo" caption="Photo taken at scene" />
+- For documents: <DocumentsList documents={frontmatter.documents} /> (if documents exist in frontmatter)
 
 **Output Format:**
 Return the complete MDX file content with frontmatter. Use this exact structure:
@@ -263,19 +289,29 @@ incident_date: "${metadata.incident_date}"
 city: "${metadata.city}"
 county: "${metadata.county}"
 agencies: ${JSON.stringify(metadata.agencies)}
-investigation_status: "${metadata.investigation_status}"
 published: ${metadata.published}
 tags: ${JSON.stringify(metadata.tags || [])}
+featured_image: ${metadata.featured_image || 'null'}
 age: ${metadata.age || 'null'}
-race: "${metadata.race || ''}"
-gender: "${metadata.gender || ''}"
-featured_image: "${metadata.featured_image || ''}"
+race: ${metadata.race ? '"' + metadata.race + '"' : 'null'}
+gender: ${metadata.gender ? '"' + metadata.gender + '"' : 'null'}
+cause_of_death: ${metadata.cause_of_death ? '"' + metadata.cause_of_death + '"' : 'null'}
+armed_status: ${metadata.armed_status ? '"' + metadata.armed_status + '"' : 'null'}
+threat_level: ${metadata.threat_level ? '"' + metadata.threat_level + '"' : 'null'}
+force_type: ${metadata.force_type ? JSON.stringify(metadata.force_type) : 'null'}
+shooting_officers: ${metadata.shooting_officers ? JSON.stringify(metadata.shooting_officers) : 'null'}
+investigation_status: ${metadata.investigation_status ? '"' + metadata.investigation_status + '"' : 'null'}
+charges_filed: ${metadata.charges_filed !== undefined ? metadata.charges_filed : 'null'}
+civil_lawsuit_filed: ${metadata.civil_lawsuit_filed !== undefined ? metadata.civil_lawsuit_filed : 'null'}
+bodycam_available: ${metadata.bodycam_available !== undefined ? metadata.bodycam_available : 'null'}
+documents: ${metadata.documents ? JSON.stringify(metadata.documents) : 'null'}
 ---
 
 import CloudflareImage from '../../components/CloudflareImage.astro';
 import CloudflareVideo from '../../components/CloudflareVideo.astro';
+${metadata.documents ? "import DocumentsList from '../../components/DocumentsList.astro';" : ''}
 
-${metadata.content_warning ? '> **Content Warning**: This article contains descriptions and footage of [violence/death/etc]. Reader discretion is advised.\n\n' : ''}
+${metadata.content_warning ? '**Content Warning:** This article contains descriptions of [violence/death/etc].\n\n' : ''}
 [Your article content here with proper headings, embedded media, citations, etc.]
 
 ## Timeline
@@ -286,9 +322,7 @@ ${metadata.content_warning ? '> **Content Warning**: This article contains descr
 
 [Current legal status and outcomes]
 
-## Media
-
-[Description and context for embedded media]
+${metadata.documents ? '\n<DocumentsList documents={frontmatter.documents} />\n' : ''}
 
 ## Sources
 
@@ -303,7 +337,14 @@ Generate the complete article now.`
 /**
  * Prompt for generating blog post
  */
-export function createBlogPostPrompt(draftContent, mediaAnalysis, metadata) {
+export function createBlogPostPrompt(draftContent, mediaAnalysis, metadata, components = {}, contentSchema = '') {
+  // Format components for the prompt
+  const componentsSection = Object.keys(components).length > 0 
+    ? `\n**Available Components:**\n${Object.entries(components).map(([name, code]) => 
+        `\n### ${name}\n\`\`\`astro\n${code}\n\`\`\`\n`
+      ).join('\n')}`
+    : '';
+
   return {
     system: SYSTEM_PROMPT,
     user: `Generate a complete, publication-ready blog post.
@@ -316,6 +357,17 @@ ${JSON.stringify(metadata, null, 2)}
 
 **Available Media:**
 ${JSON.stringify(mediaAnalysis, null, 2)}
+${componentsSection}
+
+**CONTENT SCHEMA (MUST FOLLOW EXACTLY):**
+${contentSchema}
+
+**CRITICAL: Your frontmatter MUST match the postsCollection schema exactly. Every field must use the correct data type:**
+- Strings must be quoted: "value"
+- Booleans must be unquoted: true or false
+- Arrays must use bracket notation: ["item1", "item2"]
+- Nullable/optional fields must be either the correct type or null (unquoted)
+- Do NOT use "null" (string), use null (literal)
 
 **Instructions:**
 1. Write an engaging, informative article
@@ -323,8 +375,14 @@ ${JSON.stringify(mediaAnalysis, null, 2)}
 3. Use clear section headings
 4. Include examples and explanations
 5. Link to related cases when relevant
-6. Embed media where appropriate using MDX components
-7. Include a clear takeaway/conclusion
+6. Embed media using the available MDX components shown above
+7. Import only the components you actually use
+8. Include a clear takeaway/conclusion
+
+**Component Usage Examples:**
+- For videos: <CloudflareVideo videoId="abc123" caption="Example of..." />
+- For images: <CloudflareImage imageId="xyz789" alt="Diagram" caption="Visual explanation" />
+- For documents: <DocumentsList documents={frontmatter.documents} /> (if documents exist)
 
 **Output Format:**
 Return the complete MDX file content with frontmatter:
@@ -333,20 +391,24 @@ Return the complete MDX file content with frontmatter:
 ---
 title: "${metadata.title}"
 description: "${metadata.description}"
-published_date: ${metadata.published_date}
+published_date: "${metadata.published_date}"
 tags: ${JSON.stringify(metadata.tags)}
-featured_image: "${metadata.featured_image || ''}"
 published: ${metadata.published}
+featured_image: ${metadata.featured_image || 'null'}
+documents: ${metadata.documents || 'null'}
 ---
 
 import CloudflareImage from '../../components/CloudflareImage.astro';
 import CloudflareVideo from '../../components/CloudflareVideo.astro';
+${metadata.documents ? "import DocumentsList from '../../components/DocumentsList.astro';" : ''}
 
 [Your article content with proper headings, embedded media, examples, etc.]
 
 ## Key Takeaways
 
 [Summary bullets]
+
+${metadata.documents ? '\n<DocumentsList documents={frontmatter.documents} />\n' : ''}
 
 ## Related Resources
 

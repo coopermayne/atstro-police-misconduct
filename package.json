@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "publish:draft": "node scripts/publish-draft.js",
+    "publish": "node scripts/publish-draft.js",
     "validate:config": "node scripts/validate-config.js"
   },
   "dependencies": {

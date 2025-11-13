@@ -371,13 +371,41 @@ async function processPDFs(pdfUrls) {
 }
 
 /**
+ * Load available component code for AI context
+ */
+function loadComponentCode() {
+  const componentsDir = path.join(ROOT_DIR, 'src', 'components');
+  const componentFiles = fs.readdirSync(componentsDir)
+    .filter(f => f.endsWith('.astro') && !['Navbar.astro', 'Footer.astro'].includes(f));
+  
+  const components = {};
+  for (const file of componentFiles) {
+    const componentName = file.replace('.astro', '');
+    const componentPath = path.join(componentsDir, file);
+    const componentCode = fs.readFileSync(componentPath, 'utf-8');
+    components[componentName] = componentCode;
+  }
+  
+  return components;
+}
+
+/**
  * Generate article using AI
  */
 async function generateArticle(draftContent, mediaAnalysis, contentType) {
   console.log('\n🤖 Generating article with AI...\n');
   
+  // Load schema
+  const schemaPath = path.join(ROOT_DIR, 'src', 'content', 'config.ts');
+  const contentSchema = fs.readFileSync(schemaPath, 'utf-8');
+  console.log('   ↳ Loaded content schema');
+  
+  // Load available components
+  const components = loadComponentCode();
+  console.log(`   ↳ Loaded ${Object.keys(components).length} component(s) for AI context`);
+  
   // Extract metadata
-  const metadataPrompt = createMetadataExtractionPrompt(draftContent);
+  const metadataPrompt = createMetadataExtractionPrompt(draftContent, contentSchema, contentType);
   const metadataText = await callClaude(metadataPrompt);
   const metadata = extractJSON(metadataText);
   
@@ -385,8 +413,8 @@ async function generateArticle(draftContent, mediaAnalysis, contentType) {
   
   // Generate article
   const articlePrompt = contentType === 'case' 
-    ? createCaseArticlePrompt(draftContent, mediaAnalysis, metadata)
-    : createBlogPostPrompt(draftContent, mediaAnalysis, metadata);
+    ? createCaseArticlePrompt(draftContent, mediaAnalysis, metadata, components, contentSchema)
+    : createBlogPostPrompt(draftContent, mediaAnalysis, metadata, components, contentSchema);
   
   const articleContent = await callClaude(articlePrompt, {
     max_tokens: 6000,
@@ -490,23 +518,15 @@ async function publishDraft(draftFilename) {
   if (fs.existsSync(TEMP_DIR)) {
     fs.rmSync(TEMP_DIR, { recursive: true });
   }
-  
-  // Git operations
-  console.log('\n📤 Committing to Git...');
-  try {
-    execSync(`git add "${outputPath}" "${archivePath}"`, { cwd: ROOT_DIR });
-    execSync(`git commit -m "Publish: ${title}"`, { cwd: ROOT_DIR });
-    execSync('git push', { cwd: ROOT_DIR });
-    console.log('   ✓ Pushed to GitHub (Netlify deploy triggered)');
-  } catch (error) {
-    console.log('   ⚠️  Git operations failed (you may need to commit manually)');
-    console.log(`   ${error.message}`);
-  }
-  
+    
   console.log('\n✅ Publishing complete!\n');
   console.log(`Published article: ${outputPath}`);
   console.log(`Archived draft: ${archivePath}`);
   console.log(`\nView at: /${draftMeta.type === 'case' ? 'cases' : 'posts'}/${slug}`);
+  console.log('\n💡 Next steps:');
+  console.log('   1. Run "npm run dev" to preview the published article');
+  console.log('   2. Review the article in your browser');
+  console.log('   3. Stage and push to Git to automatically deploy to Netlify\n');
 }
 
 // CLI interface

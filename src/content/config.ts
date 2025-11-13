@@ -9,43 +9,43 @@ const casesCollection = defineCollection({
     description: z.string(),
     incident_date: z.string(),
     published: z.boolean().default(true),
-    featured_image: z.string().optional(), // Cloudflare Image ID for featured display
+    featured_image: z.string().nullable().optional(), // Cloudflare Image ID for featured display
     
     // Location
     city: z.string(),
     county: z.string(),
     
     // Demographics
-    age: z.number().optional(),
-    race: z.string().optional(),
-    gender: z.string().optional(),
+    age: z.number().nullable().optional(),
+    race: z.string().nullable().optional(),
+    gender: z.string().nullable().optional(),
     
     // Agencies
     agencies: z.array(z.string()),
     
     // Incident Details
-    cause_of_death: z.string().optional(),
-    armed_status: z.string().optional(),
-    threat_level: z.enum(['No threat', 'Low', 'Moderate', 'High', 'Deadly']).optional(),
-    force_type: z.array(z.string()).optional(), // e.g., ['Shooting', 'Beating', 'Taser', 'Restraint']
-    shooting_officers: z.array(z.string()).optional(), // Officer names involved
+    cause_of_death: z.string().nullable().optional(),
+    armed_status: z.string().nullable().optional(),
+    threat_level: z.enum(['No threat', 'Low', 'Moderate', 'High', 'Deadly']).nullable().optional(),
+    force_type: z.array(z.string()).nullable().optional(), // e.g., ['Shooting', 'Beating', 'Taser', 'Restraint']
+    shooting_officers: z.array(z.string()).nullable().optional(), // Officer names involved
     
     // Investigation
-    investigation_status: z.string().optional(),
+    investigation_status: z.string().nullable().optional(),
     
     // Legal
-    charges_filed: z.boolean().optional(),
-    civil_lawsuit_filed: z.boolean().optional(),
+    charges_filed: z.boolean().nullable().optional(),
+    civil_lawsuit_filed: z.boolean().nullable().optional(),
     
     // Media availability
-    bodycam_available: z.boolean().optional(),
+    bodycam_available: z.boolean().nullable().optional(),
     
     // Documents
     documents: z.array(z.object({
       title: z.string(),
       description: z.string(),
       url: z.string(),
-    })).optional(),
+    })).nullable().optional(),
   }),
 });
 
@@ -74,14 +74,14 @@ const postsCollection = defineCollection({
     published_date: z.string(),
     published: z.boolean().default(true),
     tags: z.array(z.string()),
-    featured_image: z.string().optional(),
+    featured_image: z.string().nullable().optional(),
     
     // Documents
     documents: z.array(z.object({
       title: z.string(),
       description: z.string(),
       url: z.string(),
-    })).optional(),
+    })).nullable().optional(),
   }),
 });
 
