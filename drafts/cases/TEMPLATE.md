@@ -27,12 +27,20 @@ Use the shortcode format below for each media file. This makes it easy for the A
 **Document Format:**
 {{document: URL | title: Document Title | description: Brief description}}
 
+**External Link Format:**
+{{link: URL | title: Link Title | description: Brief description | icon: news}}
+(icon options: news, video, generic)
+
 **Examples:**
 {{video: https://dropbox.com/bodycam.mp4 | caption: Body camera footage from the incident}}
 
 {{image: https://example.com/photo.jpg | caption: Scene of the incident | featured: true}}
 
 {{document: https://example.com/complaint.pdf | title: Civil Rights Complaint | description: Original complaint filed by the victim}}
+
+{{link: https://news.example.com/article | title: Local News Coverage | description: Initial reporting on the incident | icon: news}}
+
+{{link: https://youtu.be/abc123 | title: Analysis Video | description: Expert breakdown of body cam footage | icon: video}}
 
 ## Legal Details
 [If known - lawsuit details, settlement amount, charges, etc.]

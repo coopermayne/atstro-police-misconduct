@@ -1,0 +1,98 @@
+---
+/**
+ * ExternalLinkCard Component
+ *
+ * Props:
+ *  - url (string, required): The external link URL. Always opens in a new tab.
+ *  - title? (string, optional): Short title for the link. Falls back to hostname if omitted.
+ *  - description? (string, optional): Additional context below the title.
+ *  - icon? ("video" | "news" | "generic", optional): Chooses icon variant.
+ *        "video"  => Video play icon (e.g., YouTube/Vimeo)
+ *        "news"   => Newspaper/article icon (news sources)
+ *        "generic" (default) => External link icon
+ *
+ * Examples:
+ *  <ExternalLinkCard url="https://youtu.be/abc123" title="Incident Video" icon="video" />
+ *  <ExternalLinkCard url="https://news.example.com/story" title="Coverage" description="Local news analysis" icon="news" />
+ *  <ExternalLinkCard url="https://example.org" description="Reference material" />
+ */
+interface Props {
+  url: string;
+  title?: string;
+  description?: string;
+  icon?: 'video' | 'news' | 'generic';
+}
+
+const { url, title, description, icon = 'generic' } = Astro.props as Props;
+
+function getDisplayTitle(): string {
+  if (title && title.trim().length > 0) return title.trim();
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return 'External Resource';
+  }
+}
+---
+
+<div class="my-6 not-prose">
+  <a
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="group block bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow focus:outline-none focus:ring-2 focus:ring-red-500"
+  >
+    <div class="flex items-start gap-4">
+      <div class="flex-shrink-0">
+        <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center text-red-600 dark:text-red-400">
+          {icon === 'video' && (
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v3l3.553-2.132A1 1 0 0 1 21 6.732v10.536a1 1 0 0 1-1.447.864L16 16v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5Zm4 2v10l8-5-8-5Z" />
+            </svg>
+          )}
+          {icon === 'news' && (
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5Z" />
+              <path d="M16 3v4" />
+              <path d="M8 9h8" />
+              <path d="M8 13h8" />
+              <path d="M8 17h4" />
+            </svg>
+          )}
+          {icon === 'generic' && (
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 3h7v7" />
+              <path d="M10 14 21 3" />
+              <path d="M5 10v11h11" />
+            </svg>
+          )}
+        </div>
+      </div>
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-1">
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white group-hover:underline">
+            {getDisplayTitle()}
+          </h3>
+          <svg class="w-4 h-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 3h7v7" />
+            <path d="M10 14 21 3" />
+            <path d="M5 10v11h11" />
+          </svg>
+        </div>
+        {description && (
+          <p class="text-sm text-gray-600 dark:text-gray-400">{description}</p>
+        )}
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-500 truncate">
+          {url}
+        </p>
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- Usage Reference:
+import ExternalLinkCard from '../../components/ExternalLinkCard.astro';
+<ExternalLinkCard url="https://youtu.be/xyz" title="Incident Video" icon="video" />
+<ExternalLinkCard url="https://news.site/story" title="Coverage" icon="news" description="Local reporting" />
+<ExternalLinkCard url="https://example.org/resource" description="Reference material" icon="generic" />
+-->

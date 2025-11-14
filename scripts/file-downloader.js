@@ -235,15 +235,17 @@ export async function downloadFiles(urls, outputDir) {
  *   {{video: https://example.com/video.mp4 | caption: Body camera footage}}
  *   {{image: https://example.com/photo.jpg | featured: true | caption: Scene photo}}
  *   {{document: https://example.com/file.pdf | title: Complaint | description: Civil rights complaint}}
+ *   {{link: https://news.example.com/article | title: News Coverage | description: Local reporting | icon: news}}
  * 
  * @param {string} markdown - Markdown content
- * @returns {object} - Categorized media items {videos: [], images: [], documents: []}
+ * @returns {object} - Categorized media items {videos: [], images: [], documents: [], links: []}
  */
 export function parseMediaShortcodes(markdown) {
   const media = {
     videos: [],
     images: [],
-    documents: []
+    documents: [],
+    links: []
   };
   
   // Match {{type: url | params}}
@@ -280,6 +282,8 @@ export function parseMediaShortcodes(markdown) {
       media.images.push(item);
     } else if (type === 'document' || type === 'pdf') {
       media.documents.push(item);
+    } else if (type === 'link') {
+      media.links.push(item);
     }
   }
   

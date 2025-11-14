@@ -830,18 +830,24 @@ async function publishDraft(draftFilename) {
   console.log('\n📋 Extracting media from shortcodes...');
   const media = parseMediaShortcodes(draftContent);
   
-  console.log(`   Found: ${media.videos.length} videos, ${media.images.length} images, ${media.documents.length} documents`);
+  console.log(`   Found: ${media.videos.length} videos, ${media.images.length} images, ${media.documents.length} documents, ${media.links.length} external links`);
   
   if (media.documents.length > 0) {
     console.log(`   Document shortcodes found:`);
     media.documents.forEach(doc => console.log(`     - ${doc.url} (${doc.title || 'untitled'})`));
   }
   
+  if (media.links.length > 0) {
+    console.log(`   External link shortcodes found:`);
+    media.links.forEach(link => console.log(`     - ${link.url} (${link.title || 'untitled'})`));
+  }
+  
   // Process media
   const mediaAnalysis = {
     videos: await processVideos(media.videos),
     images: await processImages(media.images),
-    documents: await processPDFs(media.documents)
+    documents: await processPDFs(media.documents),
+    links: media.links // Pass through links without processing
   };
   
   console.log(`\n📊 Media processing results:`);
