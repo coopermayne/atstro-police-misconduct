@@ -25,6 +25,12 @@ import { uploadVideo, uploadVideoFromUrl } from './cloudflare-stream.js';
 import { uploadImage } from './cloudflare-images.js';
 import { uploadPDF } from './cloudflare-r2.js';
 import { convertToDirectUrl } from './file-downloader.js';
+import { 
+  findAssetBySourceUrl, 
+  addVideoToLibrary, 
+  addImageToLibrary, 
+  addDocumentToLibrary 
+} from './media-library.js';
 import {
   createVideoAnalysisPrompt,
   createDocumentAnalysisPrompt,
@@ -414,15 +420,54 @@ async function processVideos(videoItems) {
     try {
       console.log(`\n📹 Processing video: ${url}`);
       
+      // Check media library first
+      const existingAsset = findAssetBySourceUrl(url);
+      if (existingAsset) {
+        console.log('   ✓ Found in media library - reusing existing upload');
+        console.log(`   Asset ID: ${existingAsset.id}`);
+        console.log(`   Video ID: ${existingAsset.videoId}`);
+        
+        results.push({
+          type: 'video',
+          originalUrl: url,
+          videoId: existingAsset.videoId,
+          embedUrl: `https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/${existingAsset.videoId}/iframe`,
+          caption: item.caption || null,
+          featured: item.featured || false,
+          analysis: null,
+          metadata: existingAsset.cloudflareData || {},
+          fromLibrary: true,
+          assetId: existingAsset.id
+        });
+        continue;
+      }
+      
+      // Not in library - upload and add to library
+      console.log('   ↳ Not in library - uploading to Cloudflare Stream...');
+      
       // Convert to direct URL
       const directUrl = convertToDirectUrl(url);
       console.log(`   ↳ Direct URL: ${directUrl.substring(0, 80)}...`);
       
       // Try direct URL upload first (avoids download/filename issues)
-      console.log('   ↳ Uploading to Cloudflare Stream (direct from URL)...');
       const upload = await uploadVideoFromUrl(directUrl, {
         name: path.basename(url).split('?')[0] // Get filename before query params
       });
+      
+      console.log(`   ✓ Video uploaded to Stream: ${upload.videoId}`);
+      
+      // Add to media library for future reuse
+      console.log('   ↳ Adding to media library...');
+      const libraryAsset = addVideoToLibrary({
+        videoId: upload.videoId,
+        fileName: upload.originalFileName || path.basename(url).split('?')[0],
+        sourceUrl: url,
+        description: item.info || item.caption || '',
+        caption: item.caption || '',
+        tags: item.tags || [],
+        metadata: upload
+      });
+      console.log(`   ✓ Added to library: ${libraryAsset.id}`);
       
       // Note: AI cannot actually analyze video content, so we skip that
       // Video analysis should be done manually and included in the draft
@@ -435,10 +480,10 @@ async function processVideos(videoItems) {
         caption: item.caption || null,
         featured: item.featured || false,
         analysis: null, // No automated analysis available
-        metadata: upload
+        metadata: upload,
+        fromLibrary: false,
+        assetId: libraryAsset.id
       });
-      
-      console.log(`   ✓ Video uploaded to Stream: ${upload.videoId}`);
     } catch (error) {
       console.error(`   ❌ Failed to process video: ${error.message}`);
       results.push({
@@ -463,6 +508,36 @@ async function processImages(imageItems) {
     try {
       console.log(`\n🖼️  Processing image: ${url}`);
       
+      // Check media library first
+      const existingAsset = findAssetBySourceUrl(url);
+      if (existingAsset) {
+        console.log('   ✓ Found in media library - reusing existing upload');
+        console.log(`   Asset ID: ${existingAsset.id}`);
+        console.log(`   Image ID: ${existingAsset.imageId}`);
+        
+        results.push({
+          type: 'image',
+          originalUrl: url,
+          imageId: existingAsset.imageId,
+          thumbnailUrl: existingAsset.urls?.thumbnail,
+          mediumUrl: existingAsset.urls?.medium,
+          largeUrl: existingAsset.urls?.large,
+          publicUrl: existingAsset.urls?.public,
+          caption: item.caption || item.description || existingAsset.caption || null,
+          alt: item.alt || item.title || existingAsset.alt || null,
+          title: item.title || null,
+          info: item.info || null,
+          featured: item.featured || false,
+          metadata: existingAsset,
+          fromLibrary: true,
+          assetId: existingAsset.id
+        });
+        continue;
+      }
+      
+      // Not in library - download and upload
+      console.log('   ↳ Not in library - downloading and uploading...');
+      
       // Download
       const download = await downloadFile(url, TEMP_DIR);
       
@@ -471,6 +546,27 @@ async function processImages(imageItems) {
       const upload = await uploadImage(download.filePath, {
         description: item.caption || item.description || item.title || item.alt || `Image from ${path.basename(url)}`
       });
+      
+      console.log(`   ✓ Image uploaded: ${upload.imageId}`);
+      
+      // Add to media library for future reuse
+      console.log('   ↳ Adding to media library...');
+      const libraryAsset = addImageToLibrary({
+        imageId: upload.imageId,
+        fileName: upload.originalFileName || download.filename,
+        sourceUrl: url,
+        description: item.caption || item.description || '',
+        alt: item.alt || item.title || item.caption || '',
+        caption: item.caption || item.description || '',
+        tags: item.tags || [],
+        urls: {
+          thumbnail: upload.thumbnailUrl,
+          medium: upload.mediumUrl,
+          large: upload.largeUrl,
+          public: upload.publicUrl
+        }
+      });
+      console.log(`   ✓ Added to library: ${libraryAsset.id}`);
       
       results.push({
         type: 'image',
@@ -485,10 +581,10 @@ async function processImages(imageItems) {
         title: item.title || null,
         info: item.info || null,
         featured: item.featured || false,
-        metadata: upload
+        metadata: upload,
+        fromLibrary: false,
+        assetId: libraryAsset.id
       });
-      
-      console.log(`   ✓ Image uploaded: ${upload.imageId}`);
       
       // Clean up temp file
       fs.unlinkSync(download.filePath);
@@ -515,6 +611,36 @@ async function processPDFs(documentItems) {
     const url = item.url;
     try {
       console.log(`\n📄 Processing document: ${url}`);
+      
+      // Check media library first
+      const existingAsset = findAssetBySourceUrl(url);
+      if (existingAsset) {
+        console.log('   ✓ Found in media library - reusing existing upload');
+        console.log(`   Asset ID: ${existingAsset.id}`);
+        console.log(`   R2 URL: ${existingAsset.publicUrl}`);
+        
+        // Build structured document object for schema
+        const document = {
+          title: item.title || item.name || existingAsset.linkText || existingAsset.fileName,
+          description: item.description || item.info || item.details || existingAsset.description || 'Legal document related to the case',
+          url: existingAsset.publicUrl
+        };
+        
+        results.push({
+          type: 'document',
+          originalUrl: url,
+          r2Url: existingAsset.publicUrl,
+          r2Key: existingAsset.r2Key,
+          document: document,
+          metadata: existingAsset,
+          fromLibrary: true,
+          assetId: existingAsset.id
+        });
+        continue;
+      }
+      
+      // Not in library - download and upload
+      console.log('   ↳ Not in library - downloading and uploading...');
       
       // Determine intelligent filename from metadata
       let customName = item.title || item.name || item.description || null;
@@ -544,6 +670,24 @@ async function processPDFs(documentItems) {
         customName: customName  // This will be used to generate timestamped filename
       });
       
+      console.log(`   ✓ PDF uploaded to R2`);
+      console.log(`   ✓ R2 URL: ${upload.url}`);
+      
+      // Add to media library for future reuse
+      console.log('   ↳ Adding to media library...');
+      const libraryAsset = addDocumentToLibrary({
+        fileName: upload.originalFileName || download.filename,
+        r2Key: upload.key,
+        publicUrl: upload.url,
+        sourceUrl: url,
+        description: item.description || item.info || item.details || '',
+        linkText: item.title || item.name || download.filename.replace(/\.(pdf|docx?|txt)$/i, ''),
+        fileType: path.extname(upload.originalFileName || download.filename).slice(1).toUpperCase(),
+        tags: item.tags || [],
+        metadata: upload
+      });
+      console.log(`   ✓ Added to library: ${libraryAsset.id}`);
+      
       // Build structured document object for schema using shortcode metadata
       const document = {
         title: item.title || item.name || download.filename.replace(/\.(pdf|docx?|txt)$/i, ''),
@@ -557,11 +701,10 @@ async function processPDFs(documentItems) {
         r2Url: upload.url,
         r2Key: upload.key,
         document: document, // Structured for frontmatter
-        metadata: upload
+        metadata: upload,
+        fromLibrary: false,
+        assetId: libraryAsset.id
       });
-      
-      console.log(`   ✓ PDF uploaded: ${document.title}`);
-      console.log(`   ✓ R2 URL: ${upload.url}`);
       
       // Clean up temp file
       fs.unlinkSync(download.filePath);

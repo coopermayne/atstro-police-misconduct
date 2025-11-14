@@ -82,6 +82,21 @@ function getFileExtension(url, contentType = '') {
 }
 
 /**
+ * Sanitize filename to remove invalid characters
+ * @param {string} filename - Original filename
+ * @returns {string} - Sanitized filename
+ */
+function sanitizeFilename(filename) {
+  // Remove or replace invalid characters for file systems
+  return filename
+    .replace(/[<>:"|?*]/g, '') // Remove invalid Windows chars
+    .replace(/[^\x20-\x7E]/g, '') // Remove non-ASCII chars
+    .replace(/\s+/g, ' ') // Collapse multiple spaces
+    .trim()
+    .substring(0, 255); // Limit length
+}
+
+/**
  * Download a file from a URL
  * @param {string} url - URL to download from
  * @param {string} outputDir - Directory to save file
@@ -124,8 +139,16 @@ export async function downloadFile(url, outputDir, filename = null) {
       if (!finalFilename) {
         const contentDisposition = response.headers['content-disposition'];
         if (contentDisposition) {
-          const match = contentDisposition.match(/filename="?(.+?)"?$/);
-          if (match) finalFilename = match[1];
+          // Try to extract filename from content-disposition header
+          const filenameMatch = contentDisposition.match(/filename\*?=["']?(?:UTF-8'')?([^"';]+)/i);
+          if (filenameMatch) {
+            // Decode URL-encoded filename if needed
+            try {
+              finalFilename = decodeURIComponent(filenameMatch[1]);
+            } catch {
+              finalFilename = filenameMatch[1];
+            }
+          }
         }
         
         if (!finalFilename) {
@@ -135,6 +158,9 @@ export async function downloadFile(url, outputDir, filename = null) {
           finalFilename = `download-${timestamp}${ext}`;
         }
       }
+      
+      // Sanitize the filename
+      finalFilename = sanitizeFilename(finalFilename);
 
       // Ensure output directory exists
       if (!fs.existsSync(outputDir)) {

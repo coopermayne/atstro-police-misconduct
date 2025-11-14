@@ -1,0 +1,125 @@
+{
+  "videos": {
+    "video-b6b3da2b-759d-41d0-8186-76ebb31b5ae4": {
+      "id": "video-b6b3da2b-759d-41d0-8186-76ebb31b5ae4",
+      "videoId": "f24f6c0d9886f79723581fe8329d5db3",
+      "fileName": "Ross-Body-Cam-Video-2.51.mp4",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/praadneyy8ojgrbqabbui/Ross-Body-Cam-Video-2.51.mp4?rlkey=il6v7gxg4j731onhji8yytill&st=kk9iw5g8&dl=0",
+      "description": "this is a video of the use of force incident",
+      "alt": "this is a video of the use of force incident",
+      "caption": "",
+      "tags": [],
+      "addedAt": "2025-11-14T02:45:30.638Z",
+      "componentProps": {
+        "videoId": "f24f6c0d9886f79723581fe8329d5db3",
+        "title": "",
+        "poster": ""
+      },
+      "cloudflareData": {
+        "success": true,
+        "videoId": "f24f6c0d9886f79723581fe8329d5db3",
+        "embedUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/f24f6c0d9886f79723581fe8329d5db3/iframe",
+        "streamUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/f24f6c0d9886f79723581fe8329d5db3/manifest/video.m3u8",
+        "thumbnailUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/f24f6c0d9886f79723581fe8329d5db3/thumbnails/thumbnail.jpg",
+        "metadata": {
+          "uid": "f24f6c0d9886f79723581fe8329d5db3",
+          "creator": null,
+          "thumbnail": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/f24f6c0d9886f79723581fe8329d5db3/thumbnails/thumbnail.jpg",
+          "thumbnailTimestampPct": 0,
+          "readyToStream": false,
+          "readyToStreamAt": null,
+          "status": {
+            "state": "downloading",
+            "errorReasonCode": "",
+            "errorReasonText": ""
+          },
+          "meta": {
+            "downloaded-from": "https://dl.dropboxusercontent.com/scl/fi/praadneyy8ojgrbqabbui/Ross-Body-Cam-Video-2.51.mp4?rlkey=il6v7gxg4j731onhji8yytill&st=kk9iw5g8&dl=0",
+            "name": "Ross-Body-Cam-Video-2.51.mp4"
+          },
+          "created": "2025-11-14T02:45:30.581249Z",
+          "modified": "2025-11-14T02:45:30.581249Z",
+          "scheduledDeletion": null,
+          "size": 55171994,
+          "preview": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/f24f6c0d9886f79723581fe8329d5db3/watch",
+          "allowedOrigins": [],
+          "requireSignedURLs": false,
+          "uploaded": "2025-11-14T02:45:30.579806Z",
+          "uploadExpiry": null,
+          "maxSizeBytes": null,
+          "maxDurationSeconds": null,
+          "duration": -1,
+          "input": {
+            "width": -1,
+            "height": -1
+          },
+          "playback": {
+            "hls": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/f24f6c0d9886f79723581fe8329d5db3/manifest/video.m3u8",
+            "dash": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/f24f6c0d9886f79723581fe8329d5db3/manifest/video.mpd"
+          },
+          "watermark": null,
+          "clippedFrom": null,
+          "publicDetails": null
+        },
+        "originalUrl": "https://dl.dropboxusercontent.com/scl/fi/praadneyy8ojgrbqabbui/Ross-Body-Cam-Video-2.51.mp4?rlkey=il6v7gxg4j731onhji8yytill&st=kk9iw5g8&dl=0"
+      }
+    }
+  },
+  "images": {
+    "image-ac20f6b0-bd71-4914-8605-bb9804f554d5": {
+      "id": "image-ac20f6b0-bd71-4914-8605-bb9804f554d5",
+      "imageId": "0411e995-77a3-4000-c55f-a34b1149b900",
+      "fileName": "download-1763088330813.jpeg",
+      "sourceUrl": "https://images.pexels.com/photos/3380743/pexels-photo-3380743.jpeg",
+      "description": "",
+      "alt": "download-1763088330813.jpeg",
+      "caption": "",
+      "tags": [],
+      "addedAt": "2025-11-14T02:45:32.329Z",
+      "componentProps": {
+        "imageId": "0411e995-77a3-4000-c55f-a34b1149b900",
+        "alt": "download-1763088330813.jpeg",
+        "variant": "public",
+        "class": ""
+      },
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/0411e995-77a3-4000-c55f-a34b1149b900/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/0411e995-77a3-4000-c55f-a34b1149b900/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/0411e995-77a3-4000-c55f-a34b1149b900/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/0411e995-77a3-4000-c55f-a34b1149b900/public"
+      }
+    }
+  },
+  "documents": {
+    "document-59f7eac0-2e06-4fcd-88fc-efa72b8a9d51": {
+      "id": "document-59f7eac0-2e06-4fcd-88fc-efa72b8a9d51",
+      "fileName": "download-1763088332443.pdf",
+      "r2Key": "download-1763088332443-20251114024532.pdf",
+      "publicUrl": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1763088332443-20251114024532.pdf",
+      "sourceUrl": "https://www.caed.uscourts.gov/caednew/assets/File/DJC's%20Standing%20Order%20in%20Civil%20Cases%20(rev_%205_28_25).pdf",
+      "description": "ignore doc url this is actually a police report about the incdient",
+      "linkText": "download-1763088332443",
+      "fileType": "PDF",
+      "fileSize": null,
+      "tags": [],
+      "addedAt": "2025-11-14T02:45:32.811Z",
+      "componentProps": {
+        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1763088332443-20251114024532.pdf",
+        "text": "download-1763088332443",
+        "download": false,
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      "metadata": {
+        "success": true,
+        "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1763088332443-20251114024532.pdf",
+        "key": "download-1763088332443-20251114024532.pdf",
+        "bucket": "police-misconduct-website",
+        "contentType": "application/pdf",
+        "originalFileName": "download-1763088332443.pdf",
+        "uniqueFileName": "download-1763088332443-20251114024532.pdf",
+        "needsPublicUrl": false
+      }
+    }
+  }
+}
