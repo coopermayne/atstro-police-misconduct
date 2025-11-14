@@ -40,7 +40,10 @@ async function initializePagefind() {
     const searchContainer = document.getElementById('search-container');
     if (searchContainer) {
       searchContainer.innerHTML = 
-        '<p class="text-gray-600 dark:text-gray-400">Search is not available in development mode. Build the site first with <code class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">npm run build</code></p>';
+        '<div class="text-center py-8">' +
+        '<p class="text-gray-600 dark:text-gray-400 mb-4">Search requires a production build.</p>' +
+        '<p class="text-sm text-gray-500 dark:text-gray-500">Run <code class="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded font-mono text-xs">npm run build && npm run preview</code> to test search functionality.</p>' +
+        '</div>';
     }
   }
 }
@@ -55,15 +58,15 @@ function openSearchModal() {
     // Initialize Pagefind if not already loaded
     if (!pagefindLoaded) {
       initializePagefind();
+    } else {
+      // Focus on search input if already loaded
+      setTimeout(() => {
+        const searchInput = document.querySelector('#search-container input');
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }, 100);
     }
-    
-    // Focus on search input after a brief delay
-    setTimeout(() => {
-      const searchInput = document.querySelector('#search-container input');
-      if (searchInput) {
-        searchInput.focus();
-      }
-    }, 100);
   }
 }
 

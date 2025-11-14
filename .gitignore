@@ -3,6 +3,9 @@ dist/
 # generated types
 .astro/
 
+# search index (generated during build)
+public/pagefind/
+
 # dependencies
 node_modules/
 
