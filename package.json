@@ -10,6 +10,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "publish": "node scripts/publish-draft.js",
+    "rebuild-registry": "node scripts/rebuild-registry.js",
     "validate:config": "node scripts/validate-config.js",
     "test:r2": "node scripts/test-r2-upload.js"
   },

@@ -33,8 +33,6 @@ import {
   addDocumentToLibrary 
 } from './media-library.js';
 import {
-  createVideoAnalysisPrompt,
-  createDocumentAnalysisPrompt,
   createMetadataExtractionPrompt,
   createCaseArticlePrompt,
   createBlogPostPrompt,
@@ -59,7 +57,10 @@ const anthropic = new Anthropic({
 /**
  * Parse frontmatter from draft markdown
  */
-function parseDraftMetadata(content) {
+/**
+ * Parse draft metadata from content and filename
+ */
+function parseDraftMetadata(content, filename = '') {
   const lines = content.split('\n');
   let inFrontmatter = false;
   let metadata = {};
@@ -69,8 +70,18 @@ function parseDraftMetadata(content) {
   const statusMatch = content.match(/\*\*Status:\*\*\s*(.+)/i);
   const createdMatch = content.match(/\*\*Created:\*\*\s*(.+)/i);
   
+  // Determine type from content or filename path
+  let type = 'case'; // default
+  if (typeMatch) {
+    type = typeMatch[1].trim().toLowerCase();
+  } else if (filename.includes('/posts/') || filename.startsWith('posts/')) {
+    type = 'post';
+  } else if (filename.includes('/cases/') || filename.startsWith('cases/')) {
+    type = 'case';
+  }
+  
   return {
-    type: typeMatch ? typeMatch[1].trim().toLowerCase() : 'case',
+    type: type,
     status: statusMatch ? statusMatch[1].trim() : 'draft',
     created: createdMatch ? createdMatch[1].trim() : new Date().toISOString().split('T')[0]
   };
@@ -316,8 +327,26 @@ async function validateDraft(draftContent, contentType) {
   
   if (syntaxValidation.errors.length > 0) {
     console.log('══════════════════════════════════════════════════════════');
-    console.log('\n❌ VALIDATION FAILED: Fix syntax errors before publishing.\n');
-    process.exit(1);
+    console.log('\n❌ VALIDATION FAILED: Syntax errors detected.\n');
+    
+    const overrideResponse = await prompts({
+      type: 'confirm',
+      name: 'override',
+      message: 'Publish anyway despite syntax errors?',
+      initial: false
+    }, {
+      onCancel: () => {
+        console.log('\n❌ Cancelled.\n');
+        process.exit(0);
+      }
+    });
+    
+    if (!overrideResponse.override) {
+      console.log('\n❌ Publishing cancelled. Please fix errors and try again.\n');
+      process.exit(1);
+    }
+    
+    console.log('\n⚠️  Proceeding with syntax errors (override enabled)...\n');
   }
   
   console.log('══════════════════════════════════════════════════════════\n');
@@ -380,9 +409,27 @@ async function validateDraft(draftContent, contentType) {
   
   // Always require user confirmation
   if (!validation.canProceed) {
-    console.log('\n❌ VALIDATION FAILED: Cannot proceed due to missing critical information.');
-    console.log('   Please update your draft and try again.\n');
-    process.exit(1);
+    console.log('\n❌ VALIDATION FAILED: Missing critical information detected.');
+    console.log('   The AI recommends updating your draft before proceeding.\n');
+    
+    const overrideResponse = await prompts({
+      type: 'confirm',
+      name: 'override',
+      message: 'Publish anyway despite validation issues?',
+      initial: false
+    }, {
+      onCancel: () => {
+        console.log('\n❌ Cancelled.\n');
+        process.exit(0);
+      }
+    });
+    
+    if (!overrideResponse.override) {
+      console.log('\n❌ Publishing cancelled. Please update your draft and try again.\n');
+      process.exit(1);
+    }
+    
+    console.log('\n⚠️  Proceeding despite validation issues (override enabled)...\n');
   }
   
   // Prompt user to continue
@@ -815,7 +862,7 @@ async function publishDraft(draftFilename) {
   
   // Read draft
   const draftContent = fs.readFileSync(draftPath, 'utf-8');
-  const draftMeta = parseDraftMetadata(draftContent);
+  const draftMeta = parseDraftMetadata(draftContent, draftFilename);
   
   console.log(`Content Type: ${draftMeta.type}`);
   

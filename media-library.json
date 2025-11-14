@@ -413,6 +413,29 @@
         "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00/large",
         "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00/public"
       }
+    },
+    "image-a99eabb5-2771-4c57-8bc6-20be0871c9c1": {
+      "id": "image-a99eabb5-2771-4c57-8bc6-20be0871c9c1",
+      "imageId": "67007eb4-973a-476a-6764-248457c38200",
+      "fileName": "download-1763155987348.jpg",
+      "sourceUrl": "https://cdn.pixabay.com/photo/2015/10/05/17/09/minion-972908_640.jpg",
+      "description": "X-Men and civil rights themes",
+      "alt": "X-Men and civil rights themes",
+      "caption": "X-Men and civil rights themes",
+      "tags": [],
+      "addedAt": "2025-11-14T21:33:08.073Z",
+      "componentProps": {
+        "imageId": "67007eb4-973a-476a-6764-248457c38200",
+        "alt": "X-Men and civil rights themes",
+        "variant": "public",
+        "class": ""
+      },
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67007eb4-973a-476a-6764-248457c38200/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67007eb4-973a-476a-6764-248457c38200/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67007eb4-973a-476a-6764-248457c38200/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67007eb4-973a-476a-6764-248457c38200/public"
+      }
     }
   },
   "documents": {
