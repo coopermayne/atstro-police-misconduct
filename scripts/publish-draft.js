@@ -205,12 +205,12 @@ function validateMediaShortcodeSyntax(draftContent) {
         const normalizedType = type.toLowerCase();
         
         // Validate type
-        if (!['video', 'image', 'document', 'pdf'].includes(normalizedType)) {
+        if (!['video', 'image', 'document', 'pdf', 'link'].includes(normalizedType)) {
           errors.push({
             line: number,
             text: line.trim(),
             issue: `Unknown media type "${type}"`,
-            fix: 'Valid types are: video, image, document, pdf'
+            fix: 'Valid types are: video, image, document, pdf, link'
           });
           continue;
         }

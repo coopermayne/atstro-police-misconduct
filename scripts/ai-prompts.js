@@ -148,6 +148,8 @@ ${contentSchema}
 - published_date (will be set automatically)
 - tags (can be inferred from topic and content)
 - published (will be set to true)
+- documents (extracted from {{document: ...}} shortcodes)
+- external_links (extracted from {{link: ...}} shortcodes)
 
 **What to CHECK:**
 1. **Clear Topic**: Is there a clear topic or subject matter?
@@ -212,6 +214,8 @@ ${contentSchema}
 - bodycam_available (can be inferred if bodycam footage URL is provided or mentioned)
 - gender (CAN AND SHOULD be inferred from pronouns like "he/his/him" or "she/her" or gendered names)
 - age (can be inferred if context provides clues like "35-year-old" or job/role suggests age range)
+- documents (extracted from {{document: ...}} shortcodes)
+- external_links (extracted from {{link: ...}} shortcodes)
 
 **What CANNOT be inferred (flag these if missing):**
 - Victim's name (if not mentioned at all)
@@ -269,6 +273,12 @@ export function createMetadataExtractionPrompt(draftContent, contentSchema, cont
     }
   }
   
+  // Extract external links for frontmatter
+  let externalLinksSection = '';
+  if (mediaAnalysis && mediaAnalysis.links && mediaAnalysis.links.length > 0) {
+    externalLinksSection = `\n**External Links (include these in metadata):**\n${JSON.stringify(mediaAnalysis.links, null, 2)}\n`;
+  }
+  
   // Extract featured image if marked
   let featuredImageSection = '';
   if (mediaAnalysis && mediaAnalysis.images && mediaAnalysis.images.length > 0) {
@@ -292,9 +302,11 @@ ${registrySection}
 
 **Content Schema (from src/content/config.ts):**
 ${contentSchema}
-${documentsSection}${featuredImageSection}
+${documentsSection}${externalLinksSection}${featuredImageSection}
 **CRITICAL INSTRUCTION FOR DOCUMENTS FIELD:**
 ${documentsSection ? '- You MUST use the "Processed Documents" array above EXACTLY as provided for the documents field\n- DO NOT extract document URLs from the draft content\n- DO NOT use original external URLs\n- The documents have already been uploaded to our R2 storage and the URLs are ready to use\n' : '- Set documents field to null if no processed documents are provided\n'}
+**CRITICAL INSTRUCTION FOR EXTERNAL_LINKS FIELD:**
+${externalLinksSection ? '- You MUST use the "External Links" array above EXACTLY as provided for the external_links field\n- DO NOT extract or modify external link URLs from the draft content\n- Use the link data exactly as parsed from {{link: ...}} shortcodes\n' : '- Set external_links field to null if no external links are provided\n'}
 **CRITICAL INSTRUCTION FOR FEATURED_IMAGE FIELD:**
 ${featuredImageSection ? '- You MUST use the imageId provided in "Featured Image" section above\n- This is a Cloudflare Images ID, not a URL\n' : '- Set featured_image to null if no featured image is provided\n'}
 **Instructions:**
@@ -308,15 +320,16 @@ ${featuredImageSection ? '- You MUST use the imageId provided in "Featured Image
    - Legal mentions ("lawsuit filed" → true, "settlement" → true) for civil_lawsuit_filed
    - Evidence mentions ("body camera footage" → true) for bodycam_available
 4. **CRITICAL**: For the documents field, use ONLY the "Processed Documents" array provided above (if any). DO NOT extract or use URLs from the draft content.
-5. **CRITICAL**: For the featured_image field, use ONLY the imageId provided in "Featured Image" section above (if any).
-6. For fields where information is NOT available AND cannot be reasonably inferred, use null
-7. Return ONLY the metadata as a JSON object
-8. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
-9. For dates, use "YYYY-MM-DD" format as a STRING
-10. For case_id, use format: ca-[agency-slug]-[year]-[number]
-11. For tags, choose 3-5 relevant tags from the draft content
-12. Be flexible - extract information from unstructured notes, lists, and links
-13. ALWAYS include every field from the schema - use null only if truly unknown after inference attempts
+5. **CRITICAL**: For the external_links field, use ONLY the "External Links" array provided above (if any). DO NOT extract or modify URLs from the draft content.
+6. **CRITICAL**: For the featured_image field, use ONLY the imageId provided in "Featured Image" section above (if any).
+7. For fields where information is NOT available AND cannot be reasonably inferred, use null
+8. Return ONLY the metadata as a JSON object
+9. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
+10. For dates, use "YYYY-MM-DD" format as a STRING
+11. For case_id, use format: ca-[agency-slug]-[year]-[number]
+12. For tags, choose 3-5 relevant tags from the draft content
+13. Be flexible - extract information from unstructured notes, lists, and links
+14. ALWAYS include every field from the schema - use null only if truly unknown after inference attempts
 
 Return ONLY valid JSON matching the schema:
 \`\`\`json
@@ -375,14 +388,22 @@ ${contentSchema}
 8. Use proper heading hierarchy (## for main sections)
 9. Write in clear, accessible language
 10. Be factual and objective
-11. **CRITICAL: DO NOT create sections for documents, external links, or related cases:**
+11. **CRITICAL - ARTICLE STRUCTURE AND FLOW:**
+    - DO NOT follow the order or layout of content in the draft markdown file
+    - The draft is raw notes - your job is to craft a compelling, well-structured article
+    - Reorganize information to create the most logical and engaging narrative flow
+    - Integrate images and videos naturally throughout the article where they enhance understanding
+    - Place media strategically: after introducing relevant context, before detailed analysis, etc.
+    - Only reference documents or external links inline if they're critical to understanding a specific point
+    - Think like a journalist: lead with the most important information, build context, provide analysis
+12. **CRITICAL: DO NOT create sections for documents, external links, or related cases:**
     - Documents are automatically displayed in a "Related Documents" section via DocumentsList component
     - External links are automatically displayed in an "External Coverage & Resources" section via ExternalLinkCard components
     - Related cases are automatically shown at the bottom of the page
     - DO NOT manually create these sections or list these items in your article
     - DO NOT include "## Related Documents" or "## External Links" headings
-12. Reference documents and external sources naturally in the article text (e.g., "According to court filings...", "News outlets reported...")
-13. End your article with a ## Sources section listing primary sources only (not the documents or external links)
+13. Reference documents and external sources naturally in the article text (e.g., "According to court filings...", "News outlets reported...")
+14. End your article with a ## Sources section listing primary sources only (not the documents or external links)
     - **Captions/Descriptions**: Clean up and make professional. Fix grammar, add proper punctuation, ensure complete sentences
     - **Example**: "this is a video of the use of force incident" → "Body camera footage documenting the use of force incident"
     - **Alt text**: Create descriptive, accessible text from available metadata (alt > title > caption > description)
@@ -500,12 +521,20 @@ ${contentSchema}
 6. Embed media using the available MDX components shown above
 7. Import only the components you actually use
 8. Include a clear takeaway/conclusion
-9. **CRITICAL: DO NOT create sections for documents or external links:**
+9. **CRITICAL - ARTICLE STRUCTURE AND CREATIVE FREEDOM:**
+    - DO NOT follow the order or layout of content in the draft markdown file
+    - The draft is raw ideas and notes - transform it into a polished, well-structured article
+    - Reorganize content to create the most effective narrative and educational flow
+    - Integrate images and videos naturally where they best support the content
+    - Use media to break up text, illustrate concepts, and maintain reader engagement
+    - Only mention documents or external links inline if they directly enhance a specific point
+    - Structure the article for maximum clarity and impact, not based on draft order
+10. **CRITICAL: DO NOT create sections for documents or external links:**
     - Documents are automatically displayed in a "Related Documents" section
     - External links are automatically displayed in an "External Resources" section
     - Related posts are automatically shown at the bottom
     - DO NOT manually create these sections or list these items
-10. Reference documents and external resources naturally in the article text when relevant
+11. Reference documents and external resources naturally in the article text when relevant
 
 **Component Usage Examples:**
 - For videos: <CloudflareVideo videoId="abc123" caption="Example of..." />
