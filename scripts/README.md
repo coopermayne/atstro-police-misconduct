@@ -17,6 +17,11 @@ This folder contains the automated content generation workflow scripts.
 - **`cloudflare-images.js`** - Uploads images to Cloudflare Images
 - **`ai-prompts.js`** - AI prompt templates for content analysis and generation
 - **`validate-config.js`** - Validates environment configuration
+- **`media-library.js`** - Tracks uploaded media assets to avoid duplicates
+- **`metadata-registry.js`** - Manages canonical metadata values (agencies, counties, tags)
+- **`metadata-registry-cli.js`** - CLI tool for managing metadata registry
+- **`update-registry-from-content.js`** - Scans published content and adds new metadata to registry
+- **`normalize-metadata.js`** - Normalizes existing content metadata against registry
 
 ## Usage
 
@@ -32,7 +37,8 @@ This command:
 3. Uploads to Cloudflare services
 4. Generates article with AI
 5. Saves to content collection
-6. Commits to Git
+6. **Updates metadata registry** with any new agencies, counties, or tags
+7. Commits to Git
 
 ### Test R2 Upload (Standalone)
 
@@ -49,6 +55,34 @@ This simple test:
 - ✅ Shows frontmatter format for the documents array
 
 This verifies that the R2 upload function properly uploads files and generates working URLs for referencing documents later.
+
+### Update Metadata Registry from Published Content
+
+If you need to manually scan a published file and update the registry:
+
+```bash
+node scripts/update-registry-from-content.js src/content/cases/anthony-silva.mdx case
+```
+
+This scans the frontmatter and adds any new agencies, counties, or tags to the registry. This happens automatically after publishing, but can be run manually if needed.
+
+### Manage Metadata Registry
+
+View and manage canonical metadata values:
+
+```bash
+# List all entries of a type
+node scripts/metadata-registry-cli.js list agencies
+node scripts/metadata-registry-cli.js list counties
+node scripts/metadata-registry-cli.js list case-tags
+
+# Add new entries manually
+node scripts/metadata-registry-cli.js add-agency "Berkeley PD" "BPD,Berkeley Police"
+node scripts/metadata-registry-cli.js add-tag "Excessive Force" case
+
+# View registry statistics
+node scripts/metadata-registry-cli.js stats
+```
 
 ### Manual Usage of Utilities
 

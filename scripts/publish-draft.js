@@ -42,6 +42,7 @@ import {
   createDraftValidationPrompt
 } from './ai-prompts.js';
 import { normalizeMetadata } from './metadata-registry.js';
+import { updateRegistryFromFile } from './update-registry-from-content.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -976,6 +977,37 @@ async function main() {
   }
   
   const result = await publishDraft(draftFilename);
+  
+  // Update metadata registry with any new values
+  console.log('\n📝 Updating metadata registry...');
+  try {
+    const newEntries = updateRegistryFromFile(result.outputPath, result.contentType);
+    
+    if (newEntries.agencies.length > 0) {
+      console.log('✅ Added new agencies to registry:');
+      newEntries.agencies.forEach(agency => console.log(`   - ${agency}`));
+    }
+    
+    if (newEntries.counties.length > 0) {
+      console.log('✅ Added new counties to registry:');
+      newEntries.counties.forEach(county => console.log(`   - ${county}`));
+    }
+    
+    if (newEntries.tags.length > 0) {
+      console.log(`✅ Added new ${result.contentType} tags to registry:`);
+      newEntries.tags.forEach(tag => console.log(`   - ${tag}`));
+    }
+    
+    const totalNew = newEntries.agencies.length + newEntries.counties.length + newEntries.tags.length;
+    
+    if (totalNew === 0) {
+      console.log('✓ No new entries needed - all metadata values already in registry');
+    } else {
+      console.log(`\n📝 Registry updated with ${totalNew} new ${totalNew === 1 ? 'entry' : 'entries'}`);
+    }
+  } catch (error) {
+    console.log(`⚠️  Could not update registry: ${error.message}`);
+  }
   
   // Prompt to start dev server
   console.log('\n💡 Next steps:');

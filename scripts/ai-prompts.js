@@ -9,116 +9,12 @@ import { formatRegistryForAI } from './metadata-registry.js';
 export const SYSTEM_PROMPT = `You are an expert legal writer specializing in civil rights law and police misconduct cases. Your role is to analyze case materials and create clear, accurate, factual documentation for a public-facing website.
 
 Your writing should:
-- Be factual and objective
-- Use clear, accessible language for general audiences
-- Maintain legal accuracy
-- Include appropriate content warnings
-- Cite sources properly
-- Follow journalistic standards for sensitive content`;
-
-/**
- * Prompt for analyzing video content
- */
-export function createVideoAnalysisPrompt(videoMetadata) {
-  return {
-    system: SYSTEM_PROMPT,
-    user: `Analyze this video file for a police misconduct case documentation website.
-
-Video: ${videoMetadata.filename || 'Uploaded video'}
-Description: ${videoMetadata.description || 'Body camera or surveillance footage'}
-
-Please provide:
-
-1. **Content Summary** (2-3 sentences describing what the video shows)
-
-2. **Key Timestamps** (important moments in MM:SS format):
-   - List 3-5 critical moments with brief descriptions
-   - Example: "02:45 - Officer draws weapon"
-
-3. **Content Warnings** (if applicable):
-   - Does this video contain graphic violence?
-   - Does it contain disturbing audio (screaming, gunshots)?
-   - Should viewers be warned before watching?
-
-4. **Contextual Notes**:
-   - Camera angle/perspective
-   - Audio quality
-   - Any important visual details
-   - Gaps or missing footage
-
-5. **Suggested Caption**:
-   - A brief 1-2 sentence caption for embedding in the article
-
-Return your analysis in JSON format:
-\`\`\`json
-{
-  "summary": "...",
-  "timestamps": [
-    {"time": "00:00", "description": "..."}
-  ],
-  "contentWarnings": ["warning1", "warning2"],
-  "contextualNotes": "...",
-  "suggestedCaption": "..."
-}
-\`\`\``
-  };
-}
-
-/**
- * Prompt for analyzing PDF documents
- */
-export function createDocumentAnalysisPrompt(documentMetadata, extractedText = null) {
-  return {
-    system: SYSTEM_PROMPT,
-    user: `Analyze this legal document for a police misconduct case.
-
-Document: ${documentMetadata.filename || 'Uploaded document'}
-Type: ${documentMetadata.type || 'Legal document'}
-${extractedText ? `\n\nExtracted Text Preview:\n${extractedText.substring(0, 2000)}...\n` : ''}
-
-Please extract:
-
-1. **Document Type**: (e.g., complaint, settlement agreement, police report, court filing)
-
-2. **Key Information**:
-   - Case names/numbers
-   - Dates (incident date, filing date, etc.)
-   - Parties involved
-   - Monetary amounts (damages, settlements)
-   - Key allegations or findings
-
-3. **Important Quotes**:
-   - 2-3 significant excerpts (with page numbers if available)
-
-4. **Summary**:
-   - 2-3 paragraph summary of the document's content and significance
-
-5. **Suggested Citation**:
-   - How this document should be cited in the article
-
-Return your analysis in JSON format:
-\`\`\`json
-{
-  "documentType": "...",
-  "keyInformation": {
-    "caseNumbers": ["..."],
-    "dates": {"incident": "YYYY-MM-DD", "filed": "YYYY-MM-DD"},
-    "parties": ["plaintiff", "defendant"],
-    "amounts": {"settlement": "$X"},
-    "allegations": ["..."]
-  },
-  "importantQuotes": [
-    {"quote": "...", "page": "X", "context": "..."}
-  ],
-  "summary": "...",
-  "suggestedCitation": "..."
-}
-\`\`\`
-
-If you cannot extract text from the document, indicate that and provide whatever analysis you can from the metadata.`
-  };
-}
-
+- Use an encyclopedic tone similar to Wikipedia - neutral, factual, and objective
+- Avoid emotional language, editorializing, or subjective characterizations (avoid phrases like "tragically," "unfortunately," "shockingly," or other emotive modifiers)
+- Present information in a balanced, dispassionate manner
+- Use clear, accessible language for general audiences while maintaining formality
+- Maintain accuracy
+- State facts directly without dramatic framing or narrative embellishment`;
 
 /**
  * Prompt for validating draft completeness
@@ -154,12 +50,12 @@ ${contentSchema}
 **What to CHECK:**
 1. **Clear Topic**: Is there a clear topic or subject matter?
 2. **Key Points**: Are there enough ideas/points to write a substantial article?
-3. **Featured Image**: Is there a featured image marked? (Recommended but not required)
+3. **Featured Image**: Is there a featured image marked? (Required)
 
 **Focus Areas:**
 1. Is there a clear topic/subject for the blog post?
 2. Are there enough key points or ideas to write a quality article (at least 2-3 main ideas)?
-3. Is there a featured image? (Not critical but highly recommended)
+3. Is there a featured image? (Required)
 
 Return your analysis as JSON:
 \`\`\`json
@@ -200,7 +96,6 @@ ${contentSchema}
   * "he/his/him" pronouns → gender = "Male"
   * "she/her" pronouns → gender = "Female"
   * Gendered names (John, Mary) → gender can be inferred
-  * "teacher" + context → can infer approximate age range if reasonable
 
 **What CAN be generated/inferred (DO NOT flag these):**
 - title (victim's name if mentioned anywhere)
@@ -219,11 +114,15 @@ ${contentSchema}
 
 **What CANNOT be inferred (flag these if missing):**
 - Victim's name (if not mentioned at all)
+- Victim's age (if not mentioned at all)
 - Date of incident (if no date provided)
-- City/county (if location not specified)
+- Location (if location not specified)
 - Agency name (if no police department mentioned)
 - Race/ethnicity (NEVER assume - must be explicitly stated)
-- Featured image URL (unless explicitly marked as featured image in the draft)
+
+**Be conservative but reasonable:**
+- if no featured image is explicitly marked, try to see if there is an obvious candidate image in the draft content that could serve as the featured image. If none can be reasonably identified, then flag as missing.
+- if there isn't, flag as missing.
 
 **Be conservative but reasonable:**
 - Gender: Use pronouns (he/she) or clearly gendered names to infer. Only flag if no evidence.
@@ -252,9 +151,7 @@ Be pragmatic - if there's enough info to write a quality article, mark canProcee
 `
   };
 }
-/**
- * Prompt for generating case metadata
- */
+
 /**
  * Prompt for generating case metadata
  */
@@ -298,6 +195,9 @@ export function createMetadataExtractionPrompt(draftContent, contentSchema, cont
 **Draft Content:**
 ${draftContent}
 
+**Canonical Metadata Registry:**
+The following is our canonical registry of standardized metadata values. Use these exact values when they match the case details (e.g., for agencies, counties, statuses, force types). This ensures consistency across all cases.
+
 ${registrySection}
 
 **Content Schema (from src/content/config.ts):**
@@ -327,9 +227,9 @@ ${featuredImageSection ? '- You MUST use the imageId provided in "Featured Image
 9. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
 10. For dates, use "YYYY-MM-DD" format as a STRING
 11. For case_id, use format: ca-[agency-slug]-[year]-[number]
-12. For tags, choose 3-5 relevant tags from the draft content
+12. For tags, choose 3-5 relevant tags based on what you think is best fit... first check the registry for existing tags but if you think it's important to use a new one, you can.
 13. Be flexible - extract information from unstructured notes, lists, and links
-14. ALWAYS include every field from the schema - use null only if truly unknown after inference attempts
+14. ALWAYS include every field from the schema - use null if you don't have enough information to infer after attempts.
 
 Return ONLY valid JSON matching the schema:
 \`\`\`json
@@ -344,12 +244,6 @@ Return ONLY valid JSON matching the schema:
  * Prompt for generating complete case article
  */
 export function createCaseArticlePrompt(draftContent, mediaAnalysis, metadata, components = {}, contentSchema = '') {
-  // Format components for the prompt
-  const componentsSection = Object.keys(components).length > 0 
-    ? `\n**Available Components:**\n${Object.entries(components).map(([name, code]) => 
-        `\n### ${name}\n\`\`\`astro\n${code}\n\`\`\`\n`
-      ).join('\n')}`
-    : '';
 
   return {
     system: SYSTEM_PROMPT,
@@ -358,36 +252,25 @@ export function createCaseArticlePrompt(draftContent, mediaAnalysis, metadata, c
 **Draft Content:**
 ${draftContent}
 
-**Metadata:**
-${JSON.stringify(metadata, null, 2)}
-
 **Available Media:**
 ${JSON.stringify(mediaAnalysis, null, 2)}
-${componentsSection}
-
-**CONTENT SCHEMA (MUST FOLLOW EXACTLY):**
-${contentSchema}
-
-**CRITICAL: Your frontmatter MUST match the casesCollection schema exactly. Every field must use the correct data type:**
-- Strings must be quoted: "value"
-- Numbers must be unquoted: 35
-- Booleans must be unquoted: true or false
-- Arrays must use bracket notation: ["item1", "item2"]
-- Nullable/optional fields must be either the correct type or null (unquoted)
-- Do NOT use "null" (string), use null (literal)
-- Do NOT omit optional fields - include them with null if no data
 
 **Instructions:**
-1. Write a comprehensive case summary (3-5 paragraphs minimum)
-2. Include a clear timeline of events
-3. Embed media using the available MDX components shown above
-4. Import only the components you actually use
-5. Use components intelligently based on their props and functionality
-6. Include content warnings at the top if needed
-7. Cite all sources in a ## Sources section
+1. Write in an ENCYCLOPEDIC TONE similar to Wikipedia:
+   - Neutral, dispassionate, and objective throughout
+   - Avoid emotional language, dramatic framing, or subjective characterizations
+   - No phrases like "tragically," "unfortunately," "shockingly," "forever altered," etc.
+   - Present facts directly without editorial commentary or value judgments
+   - State outcomes matter-of-factly (e.g., "died from injuries" not "tragically lost their life")
+2. Write a comprehensive case summary (3-5 paragraphs minimum)
+3. Include a clear timeline of events
+4. Embed media using the available MDX components shown above
+5. Import ONLY the components you actually use (only CloudflareImage and CloudflareVideo are available)
+6. Use components intelligently based on their props and functionality
+7. Include content warnings at the top if needed
 8. Use proper heading hierarchy (## for main sections)
-9. Write in clear, accessible language
-10. Be factual and objective
+9. Write in clear, accessible language while maintaining encyclopedic formality
+10. Be strictly factual and objective
 11. **CRITICAL - ARTICLE STRUCTURE AND FLOW:**
     - DO NOT follow the order or layout of content in the draft markdown file
     - The draft is raw notes - your job is to craft a compelling, well-structured article
@@ -402,8 +285,11 @@ ${contentSchema}
     - Related cases are automatically shown at the bottom of the page
     - DO NOT manually create these sections or list these items in your article
     - DO NOT include "## Related Documents" or "## External Links" headings
-13. Reference documents and external sources naturally in the article text (e.g., "According to court filings...", "News outlets reported...")
-14. End your article with a ## Sources section listing primary sources only (not the documents or external links)
+11. Reference documents and external sources naturally in the article text (e.g., "According to court filings...", "News outlets reported...")
+14. **CRITICAL: DO NOT include a ## Sources section**
+    - Documents and external links are already in frontmatter and displayed automatically
+    - Do not create any bibliography, references, or sources section
+    - All source citations are handled through frontmatter metadata
     - **Captions/Descriptions**: Clean up and make professional. Fix grammar, add proper punctuation, ensure complete sentences
     - **Example**: "this is a video of the use of force incident" → "Body camera footage documenting the use of force incident"
     - **Alt text**: Create descriptive, accessible text from available metadata (alt > title > caption > description)
@@ -418,10 +304,12 @@ ${contentSchema}
 - For images: <CloudflareImage imageId="xyz789" alt="Scene photo" caption="Photo taken at scene" />
   - Use alt or title from shortcode for alt text, caption or description for caption prop
   - Pull from available metadata intelligently: alt > title > caption > description
-- For documents: <DocumentsList documents={frontmatter.documents} /> (REQUIRED if documents array exists)
-  - Document titles and descriptions from shortcodes are already in frontmatter
-  - Reference documents in the article text using their titles naturally
-
+- For documents: <DocumentCard title="Federal Civil Rights Complaint" description="Legal complaint filed against the police department alleging excessive force and civil rights violations" url="https://pub-example.r2.dev/complaint-20231114.pdf" />
+  - Document titles and descriptions from shortcodes are already in frontmatter - reference them naturally in article text
+  - You don't need to use all of them - just the most relevant ones (all will be listed automatically in a documents section after the article, so only reference key ones inline if you want to highlight them)
+- For external links: <ExternalLinkCard title="News Article on Incident" url="https://news.example.com/article" />
+    - Use titles and URLs from shortcodes - reference them naturally in article text
+    - You don't need to use all of them - just the most relevant ones (all will be listed automatically in an index after the article, so only reference key ones inline if you want to highlight them)
 **Output Format:**
 Return the complete MDX file content with frontmatter. Use this exact structure:
 
@@ -455,23 +343,13 @@ external_links: ${metadata.external_links ? JSON.stringify(metadata.external_lin
 
 import CloudflareImage from '../../components/CloudflareImage.astro';
 import CloudflareVideo from '../../components/CloudflareVideo.astro';
+import DocumentCard from '../../components/DocumentCard.astro';
+import ExternalLinkCard from '../../components/ExternalLinkCard.astro';
 
-${metadata.content_warning ? '**Content Warning:** This article contains descriptions of [violence/death/etc].\\n\\n' : ''}
-[Your article content here with proper headings, embedded media, citations, etc.]
-
-## Timeline
-
-[Chronological timeline of events]
-
-## Legal Status
-
-[Current legal status and outcomes]
-
-## Sources
-
-- [Source 1]
-- [Source 2]
+[Your article content with proper headings, embedded media, timeline, etc.]
 \`\`\`
+
+**REMEMBER:** Write in an encyclopedic, Wikipedia-style tone. Be neutral, factual, and objective throughout. Avoid emotional language and dramatic framing.
 
 Generate the complete article now.`
   };
@@ -481,12 +359,6 @@ Generate the complete article now.`
  * Prompt for generating blog post
  */
 export function createBlogPostPrompt(draftContent, mediaAnalysis, metadata, components = {}, contentSchema = '') {
-  // Format components for the prompt
-  const componentsSection = Object.keys(components).length > 0 
-    ? `\n**Available Components:**\n${Object.entries(components).map(([name, code]) => 
-        `\n### ${name}\n\`\`\`astro\n${code}\n\`\`\`\n`
-      ).join('\n')}`
-    : '';
 
   return {
     system: SYSTEM_PROMPT,
@@ -495,33 +367,25 @@ export function createBlogPostPrompt(draftContent, mediaAnalysis, metadata, comp
 **Draft Content:**
 ${draftContent}
 
-**Metadata:**
-${JSON.stringify(metadata, null, 2)}
-
 **Available Media:**
 ${JSON.stringify(mediaAnalysis, null, 2)}
-${componentsSection}
-
-**CONTENT SCHEMA (MUST FOLLOW EXACTLY):**
-${contentSchema}
-
-**CRITICAL: Your frontmatter MUST match the postsCollection schema exactly. Every field must use the correct data type:**
-- Strings must be quoted: "value"
-- Booleans must be unquoted: true or false
-- Arrays must use bracket notation: ["item1", "item2"]
-- Nullable/optional fields must be either the correct type or null (unquoted)
-- Do NOT use "null" (string), use null (literal)
 
 **Instructions:**
-1. Write an engaging, informative article
-2. Target reading time: ${metadata.targetReadingTime || '8-10 minutes'}
-3. Use clear section headings
-4. Include examples and explanations
-5. Link to related cases when relevant
-6. Embed media using the available MDX components shown above
-7. Import only the components you actually use
-8. Include a clear takeaway/conclusion
-9. **CRITICAL - ARTICLE STRUCTURE AND CREATIVE FREEDOM:**
+1. Write in an ENCYCLOPEDIC TONE similar to Wikipedia:
+   - Neutral, educational, and objective
+   - Avoid emotional language or dramatic framing
+   - Present information in a balanced, dispassionate manner
+   - Focus on facts, analysis, and educational value
+   - Maintain formal but accessible language
+2. Write an informative, educational article
+3. Target reading time: ${metadata.targetReadingTime || '8-10 minutes'}
+4. Use clear section headings
+5. Include examples and explanations
+6. Link to related cases when relevant
+7. Embed media using the available MDX components shown above
+8. Import ONLY the components you actually use (only CloudflareImage and CloudflareVideo are available)
+9. Include a clear takeaway/conclusion
+10. **CRITICAL - ARTICLE STRUCTURE AND CREATIVE FREEDOM:**
     - DO NOT follow the order or layout of content in the draft markdown file
     - The draft is raw ideas and notes - transform it into a polished, well-structured article
     - Reorganize content to create the most effective narrative and educational flow
@@ -529,18 +393,22 @@ ${contentSchema}
     - Use media to break up text, illustrate concepts, and maintain reader engagement
     - Only mention documents or external links inline if they directly enhance a specific point
     - Structure the article for maximum clarity and impact, not based on draft order
-10. **CRITICAL: DO NOT create sections for documents or external links:**
-    - Documents are automatically displayed in a "Related Documents" section
-    - External links are automatically displayed in an "External Resources" section
-    - Related posts are automatically shown at the bottom
-    - DO NOT manually create these sections or list these items
-11. Reference documents and external resources naturally in the article text when relevant
+12. Reference documents and external resources naturally in the article text when relevant
 
 **Component Usage Examples:**
-- For videos: <CloudflareVideo videoId="abc123" caption="Example of..." />
-- For images: <CloudflareImage imageId="xyz789" alt="Diagram" caption="Visual explanation" />
+- For videos: <CloudflareVideo videoId="abc123" caption="Body camera footage shows..." />
+  - Use the caption property from the shortcode if provided, or craft based on description or info
+- For images: <CloudflareImage imageId="xyz789" alt="Scene photo" caption="Photo taken at scene" />
+  - Use alt or title from shortcode for alt text, caption or description for caption prop
+  - Pull from available metadata intelligently: alt > title > caption > description
+- For documents: <DocumentCard title="Federal Civil Rights Complaint" description="Legal complaint filed against the police department alleging excessive force and civil rights violations" url="https://pub-example.r2.dev/complaint-20231114.pdf" />
+  - Document titles and descriptions from shortcodes are already in frontmatter - reference them naturally in article text
+  - You don't need to use all of them - just the most relevant ones (all will be listed automatically in a documents section after the article, so only reference key ones inline if you want to highlight them)
+- For external links: <ExternalLinkCard title="News Article on Incident" url="https://news.example.com/article" />
+    - Use titles and URLs from shortcodes - reference them naturally in article text
+    - You don't need to use all of them - just the most relevant ones (all will be listed automatically in an index after the article, so only reference key ones inline if you want to highlight them)
 
-**Output Format:**
+    **Output Format:**
 Return the complete MDX file content with frontmatter:
 
 \`\`\`mdx
@@ -557,8 +425,10 @@ external_links: ${metadata.external_links || 'null'}
 
 import CloudflareImage from '../../components/CloudflareImage.astro';
 import CloudflareVideo from '../../components/CloudflareVideo.astro';
+import DocumentCard from '../../components/DocumentCard.astro';
+import ExternalLinkCard from '../../components/ExternalLinkCard.astro';
 
-[Your article content with proper headings, embedded media, examples, etc.]
+[Your article content with proper headings, embedded media, etc.]
 
 ## Key Takeaways
 
