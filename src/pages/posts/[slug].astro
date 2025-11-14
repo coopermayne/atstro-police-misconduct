@@ -27,9 +27,9 @@ const relatedPosts = allPosts
 ---
 
 <MainLayout content={{ title: post.data.title }}>
-  <article class="px-6 py-8" data-pagefind-body>
+  <article class="py-8" data-pagefind-body>
 
-    <nav class="text-sm text-gray-600 dark:text-gray-400 mb-6">
+    <nav class="text-sm text-gray-600 dark:text-gray-400 mb-6 px-6">
       <a href="/" class="hover:text-red-600 dark:hover:text-red-500">Home</a>
       <span class="mx-2">/</span>
       <a href="/posts" class="hover:text-red-600 dark:hover:text-red-500">Blog</a>
@@ -37,8 +37,8 @@ const relatedPosts = allPosts
       <span class="text-gray-800 dark:text-gray-300">{post.data.title}</span>
     </nav>
 
-    <!-- Post Header -->
-    <header class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 p-8 mb-8">
+    <!-- Post Header and Content -->
+    <div class="bg-white dark:bg-gray-800 rounded-none md:rounded-lg shadow-md border-x-0 md:border-x border-y md:border border-gray-200 dark:border-gray-700 p-8 mb-8">
       <div class="mb-4">
         <span class="text-sm text-gray-500 dark:text-gray-400">
           Published: {new Date(post.data.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
@@ -76,11 +76,11 @@ const relatedPosts = allPosts
           <DocumentsList documents={post.data.documents} />
         </div>
       )}
-    </header>
+    </div>
 
     <!-- Related Posts -->
     {relatedPosts.length > 0 && (
-      <section class="mt-12">
+      <section class="mt-12 px-6">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Related Articles</h2>
         <div class="grid gap-6 md:grid-cols-3">
           {relatedPosts.map(relatedPost => (
@@ -106,7 +106,7 @@ const relatedPosts = allPosts
     )}
 
     <!-- Back to Blog -->
-    <div class="mt-8">
+    <div class="mt-8 px-6">
       <a 
         href="/posts"
         class="inline-flex items-center text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 font-medium"
