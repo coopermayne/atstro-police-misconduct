@@ -63,6 +63,262 @@
         },
         "originalUrl": "https://dl.dropboxusercontent.com/scl/fi/praadneyy8ojgrbqabbui/Ross-Body-Cam-Video-2.51.mp4?rlkey=il6v7gxg4j731onhji8yytill&st=kk9iw5g8&dl=0"
       }
+    },
+    "video-3d1ea6ad-5bf8-4b64-9e8b-ba674653abaf": {
+      "id": "video-3d1ea6ad-5bf8-4b64-9e8b-ba674653abaf",
+      "videoId": "c9754eeefea33aab0b20a9647d654947",
+      "fileName": "All-Videos-Combined.mov",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/uxjyvxzlya4j6lj2h3gmb/All-Videos-Combined.mov?rlkey=tad46yig21tx4hhm66zxcrz7j&st=9t5jahgd&dl=0",
+      "description": "",
+      "alt": "",
+      "caption": "",
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:30.860Z",
+      "componentProps": {
+        "videoId": "c9754eeefea33aab0b20a9647d654947",
+        "title": "",
+        "poster": ""
+      },
+      "cloudflareData": {
+        "success": true,
+        "videoId": "c9754eeefea33aab0b20a9647d654947",
+        "embedUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/c9754eeefea33aab0b20a9647d654947/iframe",
+        "streamUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/c9754eeefea33aab0b20a9647d654947/manifest/video.m3u8",
+        "thumbnailUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/c9754eeefea33aab0b20a9647d654947/thumbnails/thumbnail.jpg",
+        "metadata": {
+          "uid": "c9754eeefea33aab0b20a9647d654947",
+          "creator": null,
+          "thumbnail": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/c9754eeefea33aab0b20a9647d654947/thumbnails/thumbnail.jpg",
+          "thumbnailTimestampPct": 0,
+          "readyToStream": false,
+          "readyToStreamAt": null,
+          "status": {
+            "state": "downloading",
+            "errorReasonCode": "",
+            "errorReasonText": ""
+          },
+          "meta": {
+            "downloaded-from": "https://dl.dropboxusercontent.com/scl/fi/uxjyvxzlya4j6lj2h3gmb/All-Videos-Combined.mov?rlkey=tad46yig21tx4hhm66zxcrz7j&st=9t5jahgd&dl=0",
+            "name": "All-Videos-Combined.mov"
+          },
+          "created": "2025-11-14T19:16:30.906429Z",
+          "modified": "2025-11-14T19:16:30.906429Z",
+          "scheduledDeletion": null,
+          "size": 7877405382,
+          "preview": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/c9754eeefea33aab0b20a9647d654947/watch",
+          "allowedOrigins": [],
+          "requireSignedURLs": false,
+          "uploaded": "2025-11-14T19:16:30.904839Z",
+          "uploadExpiry": null,
+          "maxSizeBytes": null,
+          "maxDurationSeconds": null,
+          "duration": -1,
+          "input": {
+            "width": -1,
+            "height": -1
+          },
+          "playback": {
+            "hls": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/c9754eeefea33aab0b20a9647d654947/manifest/video.m3u8",
+            "dash": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/c9754eeefea33aab0b20a9647d654947/manifest/video.mpd"
+          },
+          "watermark": null,
+          "clippedFrom": null,
+          "publicDetails": null
+        },
+        "originalUrl": "https://dl.dropboxusercontent.com/scl/fi/uxjyvxzlya4j6lj2h3gmb/All-Videos-Combined.mov?rlkey=tad46yig21tx4hhm66zxcrz7j&st=9t5jahgd&dl=0"
+      }
+    },
+    "video-1f0bd47b-6525-44e8-a861-1ea5d6819fd8": {
+      "id": "video-1f0bd47b-6525-44e8-a861-1ea5d6819fd8",
+      "videoId": "51c38f48c1c1e83cbd9ec3b1d6183da3",
+      "fileName": "vlc-record-2024-08-06-16h11m32s-DEF-00027-Xiong.mp4.mp4",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/dr5bwjiy5raysjt42coso/vlc-record-2024-08-06-16h11m32s-DEF-00027-Xiong.mp4.mp4?rlkey=49js6piqr0r51enj56usdic4a&st=3jlqjc71&dl=0",
+      "description": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Xiong",
+      "alt": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Xiong",
+      "caption": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Xiong",
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:32.175Z",
+      "componentProps": {
+        "videoId": "51c38f48c1c1e83cbd9ec3b1d6183da3",
+        "title": "",
+        "poster": ""
+      },
+      "cloudflareData": {
+        "success": true,
+        "videoId": "51c38f48c1c1e83cbd9ec3b1d6183da3",
+        "embedUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/51c38f48c1c1e83cbd9ec3b1d6183da3/iframe",
+        "streamUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/51c38f48c1c1e83cbd9ec3b1d6183da3/manifest/video.m3u8",
+        "thumbnailUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/51c38f48c1c1e83cbd9ec3b1d6183da3/thumbnails/thumbnail.jpg",
+        "metadata": {
+          "uid": "51c38f48c1c1e83cbd9ec3b1d6183da3",
+          "creator": null,
+          "thumbnail": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/51c38f48c1c1e83cbd9ec3b1d6183da3/thumbnails/thumbnail.jpg",
+          "thumbnailTimestampPct": 0,
+          "readyToStream": false,
+          "readyToStreamAt": null,
+          "status": {
+            "state": "downloading",
+            "errorReasonCode": "",
+            "errorReasonText": ""
+          },
+          "meta": {
+            "downloaded-from": "https://dl.dropboxusercontent.com/scl/fi/dr5bwjiy5raysjt42coso/vlc-record-2024-08-06-16h11m32s-DEF-00027-Xiong.mp4.mp4?rlkey=49js6piqr0r51enj56usdic4a&st=3jlqjc71&dl=0",
+            "name": "vlc-record-2024-08-06-16h11m32s-DEF-00027-Xiong.mp4.mp4"
+          },
+          "created": "2025-11-14T19:16:32.089013Z",
+          "modified": "2025-11-14T19:16:32.089013Z",
+          "scheduledDeletion": null,
+          "size": 16503015,
+          "preview": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/51c38f48c1c1e83cbd9ec3b1d6183da3/watch",
+          "allowedOrigins": [],
+          "requireSignedURLs": false,
+          "uploaded": "2025-11-14T19:16:32.087046Z",
+          "uploadExpiry": null,
+          "maxSizeBytes": null,
+          "maxDurationSeconds": null,
+          "duration": -1,
+          "input": {
+            "width": -1,
+            "height": -1
+          },
+          "playback": {
+            "hls": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/51c38f48c1c1e83cbd9ec3b1d6183da3/manifest/video.m3u8",
+            "dash": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/51c38f48c1c1e83cbd9ec3b1d6183da3/manifest/video.mpd"
+          },
+          "watermark": null,
+          "clippedFrom": null,
+          "publicDetails": null
+        },
+        "originalUrl": "https://dl.dropboxusercontent.com/scl/fi/dr5bwjiy5raysjt42coso/vlc-record-2024-08-06-16h11m32s-DEF-00027-Xiong.mp4.mp4?rlkey=49js6piqr0r51enj56usdic4a&st=3jlqjc71&dl=0"
+      }
+    },
+    "video-55eb2c4d-224b-400e-a5f3-027b9ff21b18": {
+      "id": "video-55eb2c4d-224b-400e-a5f3-027b9ff21b18",
+      "videoId": "bb1e21a4cba80844f5550165badc8b14",
+      "fileName": "vlc-record-2024-08-06-16h09m53s-DEF-00029-Bavaro.mp4.mp4",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/9i5nvpruzngn7y30637td/vlc-record-2024-08-06-16h09m53s-DEF-00029-Bavaro.mp4.mp4?rlkey=kqtdv2yvkfh2442rrrlbuq1ap&st=234d199e&dl=0",
+      "description": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Bavaro",
+      "alt": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Bavaro",
+      "caption": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Bavaro",
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:33.541Z",
+      "componentProps": {
+        "videoId": "bb1e21a4cba80844f5550165badc8b14",
+        "title": "",
+        "poster": ""
+      },
+      "cloudflareData": {
+        "success": true,
+        "videoId": "bb1e21a4cba80844f5550165badc8b14",
+        "embedUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/bb1e21a4cba80844f5550165badc8b14/iframe",
+        "streamUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/bb1e21a4cba80844f5550165badc8b14/manifest/video.m3u8",
+        "thumbnailUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/bb1e21a4cba80844f5550165badc8b14/thumbnails/thumbnail.jpg",
+        "metadata": {
+          "uid": "bb1e21a4cba80844f5550165badc8b14",
+          "creator": null,
+          "thumbnail": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/bb1e21a4cba80844f5550165badc8b14/thumbnails/thumbnail.jpg",
+          "thumbnailTimestampPct": 0,
+          "readyToStream": false,
+          "readyToStreamAt": null,
+          "status": {
+            "state": "downloading",
+            "errorReasonCode": "",
+            "errorReasonText": ""
+          },
+          "meta": {
+            "downloaded-from": "https://dl.dropboxusercontent.com/scl/fi/9i5nvpruzngn7y30637td/vlc-record-2024-08-06-16h09m53s-DEF-00029-Bavaro.mp4.mp4?rlkey=kqtdv2yvkfh2442rrrlbuq1ap&st=234d199e&dl=0",
+            "name": "vlc-record-2024-08-06-16h09m53s-DEF-00029-Bavaro.mp4.mp4"
+          },
+          "created": "2025-11-14T19:16:33.59465Z",
+          "modified": "2025-11-14T19:16:33.59465Z",
+          "scheduledDeletion": null,
+          "size": 13680755,
+          "preview": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/bb1e21a4cba80844f5550165badc8b14/watch",
+          "allowedOrigins": [],
+          "requireSignedURLs": false,
+          "uploaded": "2025-11-14T19:16:33.591049Z",
+          "uploadExpiry": null,
+          "maxSizeBytes": null,
+          "maxDurationSeconds": null,
+          "duration": -1,
+          "input": {
+            "width": -1,
+            "height": -1
+          },
+          "playback": {
+            "hls": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/bb1e21a4cba80844f5550165badc8b14/manifest/video.m3u8",
+            "dash": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/bb1e21a4cba80844f5550165badc8b14/manifest/video.mpd"
+          },
+          "watermark": null,
+          "clippedFrom": null,
+          "publicDetails": null
+        },
+        "originalUrl": "https://dl.dropboxusercontent.com/scl/fi/9i5nvpruzngn7y30637td/vlc-record-2024-08-06-16h09m53s-DEF-00029-Bavaro.mp4.mp4?rlkey=kqtdv2yvkfh2442rrrlbuq1ap&st=234d199e&dl=0"
+      }
+    },
+    "video-8d546eff-982a-43fa-8f0f-79a970ba4f37": {
+      "id": "video-8d546eff-982a-43fa-8f0f-79a970ba4f37",
+      "videoId": "82bb551640196fab80df97242f22bb3e",
+      "fileName": "vlc-record-2024-08-06-16h10m41s-DEF-00028-Camara.mp4.mp4",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/bxy9ksft1vduyaagze85o/vlc-record-2024-08-06-16h10m41s-DEF-00028-Camara.mp4.mp4?rlkey=ualb31c28cbrwcfhf2bbmljja&st=z6dhav4a&dl=0",
+      "description": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Camara",
+      "alt": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Camara",
+      "caption": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Camara",
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:34.672Z",
+      "componentProps": {
+        "videoId": "82bb551640196fab80df97242f22bb3e",
+        "title": "",
+        "poster": ""
+      },
+      "cloudflareData": {
+        "success": true,
+        "videoId": "82bb551640196fab80df97242f22bb3e",
+        "embedUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/82bb551640196fab80df97242f22bb3e/iframe",
+        "streamUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/82bb551640196fab80df97242f22bb3e/manifest/video.m3u8",
+        "thumbnailUrl": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/82bb551640196fab80df97242f22bb3e/thumbnails/thumbnail.jpg",
+        "metadata": {
+          "uid": "82bb551640196fab80df97242f22bb3e",
+          "creator": null,
+          "thumbnail": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/82bb551640196fab80df97242f22bb3e/thumbnails/thumbnail.jpg",
+          "thumbnailTimestampPct": 0,
+          "readyToStream": false,
+          "readyToStreamAt": null,
+          "status": {
+            "state": "downloading",
+            "errorReasonCode": "",
+            "errorReasonText": ""
+          },
+          "meta": {
+            "downloaded-from": "https://dl.dropboxusercontent.com/scl/fi/bxy9ksft1vduyaagze85o/vlc-record-2024-08-06-16h10m41s-DEF-00028-Camara.mp4.mp4?rlkey=ualb31c28cbrwcfhf2bbmljja&st=z6dhav4a&dl=0",
+            "name": "vlc-record-2024-08-06-16h10m41s-DEF-00028-Camara.mp4.mp4"
+          },
+          "created": "2025-11-14T19:16:34.728967Z",
+          "modified": "2025-11-14T19:16:34.728967Z",
+          "scheduledDeletion": null,
+          "size": 14124867,
+          "preview": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/82bb551640196fab80df97242f22bb3e/watch",
+          "allowedOrigins": [],
+          "requireSignedURLs": false,
+          "uploaded": "2025-11-14T19:16:34.727888Z",
+          "uploadExpiry": null,
+          "maxSizeBytes": null,
+          "maxDurationSeconds": null,
+          "duration": -1,
+          "input": {
+            "width": -1,
+            "height": -1
+          },
+          "playback": {
+            "hls": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/82bb551640196fab80df97242f22bb3e/manifest/video.m3u8",
+            "dash": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/82bb551640196fab80df97242f22bb3e/manifest/video.mpd"
+          },
+          "watermark": null,
+          "clippedFrom": null,
+          "publicDetails": null
+        },
+        "originalUrl": "https://dl.dropboxusercontent.com/scl/fi/bxy9ksft1vduyaagze85o/vlc-record-2024-08-06-16h10m41s-DEF-00028-Camara.mp4.mp4?rlkey=ualb31c28cbrwcfhf2bbmljja&st=z6dhav4a&dl=0"
+      }
     }
   },
   "images": {
@@ -87,6 +343,75 @@
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/0411e995-77a3-4000-c55f-a34b1149b900/medium",
         "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/0411e995-77a3-4000-c55f-a34b1149b900/large",
         "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/0411e995-77a3-4000-c55f-a34b1149b900/public"
+      }
+    },
+    "image-f967724a-cc2e-4e1b-8b2a-bc7bb4c07416": {
+      "id": "image-f967724a-cc2e-4e1b-8b2a-bc7bb4c07416",
+      "imageId": "c07c09e5-c331-4cf7-d27f-033607148700",
+      "fileName": "after_surgery.png",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/4k2hbnec02upu6st6i0zd/after_surgery.png?rlkey=d9ieyf8f5v9byumcqe1il3wht&st=w5joq5ld&dl=0",
+      "description": "this is an image of his neck after surgury you can see all the pins place to fix the break",
+      "alt": "this is an image of his neck after surgury you can see all the pins place to fix the break",
+      "caption": "this is an image of his neck after surgury you can see all the pins place to fix the break",
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:35.965Z",
+      "componentProps": {
+        "imageId": "c07c09e5-c331-4cf7-d27f-033607148700",
+        "alt": "this is an image of his neck after surgury you can see all the pins place to fix the break",
+        "variant": "public",
+        "class": ""
+      },
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c07c09e5-c331-4cf7-d27f-033607148700/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c07c09e5-c331-4cf7-d27f-033607148700/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c07c09e5-c331-4cf7-d27f-033607148700/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c07c09e5-c331-4cf7-d27f-033607148700/public"
+      }
+    },
+    "image-8f195801-7217-4611-8182-ec5230abeb79": {
+      "id": "image-8f195801-7217-4611-8182-ec5230abeb79",
+      "imageId": "cf4dfb37-d661-490a-f068-6fbbaa258f00",
+      "fileName": "after incident.jpg",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/2tjscz8t6osh36prlei5c/after-incident.jpg?rlkey=yk58ntl9xu4sulv4yuppd1i5y&st=iityb3bg&dl=0",
+      "description": "in hospital after incident",
+      "alt": "in hospital after incident",
+      "caption": "in hospital after incident",
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:37.370Z",
+      "componentProps": {
+        "imageId": "cf4dfb37-d661-490a-f068-6fbbaa258f00",
+        "alt": "in hospital after incident",
+        "variant": "public",
+        "class": ""
+      },
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/cf4dfb37-d661-490a-f068-6fbbaa258f00/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/cf4dfb37-d661-490a-f068-6fbbaa258f00/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/cf4dfb37-d661-490a-f068-6fbbaa258f00/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/cf4dfb37-d661-490a-f068-6fbbaa258f00/public"
+      }
+    },
+    "image-021cc6cb-5944-4750-9b2e-2bffa5668233": {
+      "id": "image-021cc6cb-5944-4750-9b2e-2bffa5668233",
+      "imageId": "9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00",
+      "fileName": "Anthony before incident.jpg",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/87re1kxteng7plps8sxq2/Anthony-before-incident.jpg?rlkey=qljttav41a4pxsdq2nc223wcp&st=wmp252hl&dl=0",
+      "description": "",
+      "alt": "Anthony before incident.jpg",
+      "caption": "",
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:38.590Z",
+      "componentProps": {
+        "imageId": "9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00",
+        "alt": "Anthony before incident.jpg",
+        "variant": "public",
+        "class": ""
+      },
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00/public"
       }
     }
   },
@@ -118,6 +443,96 @@
         "contentType": "application/pdf",
         "originalFileName": "download-1763088332443.pdf",
         "uniqueFileName": "download-1763088332443-20251114024532.pdf",
+        "needsPublicUrl": false
+      }
+    },
+    "document-8b34b0ec-d3c5-4f95-a301-20dab857e198": {
+      "id": "document-8b34b0ec-d3c5-4f95-a301-20dab857e198",
+      "fileName": "second-amended-complaint.pdf",
+      "r2Key": "second-amended-complaint-20251114191639.pdf",
+      "publicUrl": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/second-amended-complaint-20251114191639.pdf",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/n7owewtqefxctaj9bj93h/15-2024.03.14-Second-Amended-Complaint-SAC.pdf?rlkey=qbkda5gtrahj3q4yq8pkojl30&st=h3hu9k94&dl=0",
+      "description": "Federal civil rights complaint filed against Stanislaus County Sheriff's Department regarding Anthony Silva's case",
+      "linkText": "Second Amended Complaint",
+      "fileType": "PDF",
+      "fileSize": null,
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:39.483Z",
+      "componentProps": {
+        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/second-amended-complaint-20251114191639.pdf",
+        "text": "Second Amended Complaint",
+        "download": false,
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      "metadata": {
+        "success": true,
+        "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/second-amended-complaint-20251114191639.pdf",
+        "key": "second-amended-complaint-20251114191639.pdf",
+        "bucket": "police-misconduct-website",
+        "contentType": "application/pdf",
+        "originalFileName": "second-amended-complaint.pdf",
+        "uniqueFileName": "second-amended-complaint-20251114191639.pdf",
+        "needsPublicUrl": false
+      }
+    },
+    "document-76036c75-8d0d-4899-83cb-19f6cbf112cd": {
+      "id": "document-76036c75-8d0d-4899-83cb-19f6cbf112cd",
+      "fileName": "use-of-force-report.pdf",
+      "r2Key": "use-of-force-report-20251114191640.pdf",
+      "publicUrl": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/use-of-force-report-20251114191640.pdf",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/0uzsa4239niy1ih01nie5/DEF-0083-0084-Use-of-force-form.pdf?rlkey=wu6jmbu4za3ht3hi68htk6kv9&st=mfrzjkd8&dl=0",
+      "description": "Report written by Deputy Camara and approved by Hickman that fails to accurately reflect the seriousness of the force used or injuries sustained",
+      "linkText": "Use of Force Report",
+      "fileType": "PDF",
+      "fileSize": null,
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:40.292Z",
+      "componentProps": {
+        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/use-of-force-report-20251114191640.pdf",
+        "text": "Use of Force Report",
+        "download": false,
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      "metadata": {
+        "success": true,
+        "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/use-of-force-report-20251114191640.pdf",
+        "key": "use-of-force-report-20251114191640.pdf",
+        "bucket": "police-misconduct-website",
+        "contentType": "application/pdf",
+        "originalFileName": "use-of-force-report.pdf",
+        "uniqueFileName": "use-of-force-report-20251114191640.pdf",
+        "needsPublicUrl": false
+      }
+    },
+    "document-95962a1a-1e58-4ee7-9551-1e1853ab7517": {
+      "id": "document-95962a1a-1e58-4ee7-9551-1e1853ab7517",
+      "fileName": "incident-report.pdf",
+      "r2Key": "incident-report-20251114191640.pdf",
+      "publicUrl": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/incident-report-20251114191640.pdf",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/7acem2gh0w2ltran7ez6y/SCSD-Incident-Report.pdf?rlkey=6jeq5bgb7pk3ls2xq0i2tjj5h&st=88b4ul07&dl=0",
+      "description": "Official Stanislaus County Sheriff's Department incident report",
+      "linkText": "Incident Report",
+      "fileType": "PDF",
+      "fileSize": null,
+      "tags": [],
+      "addedAt": "2025-11-14T19:16:41.135Z",
+      "componentProps": {
+        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/incident-report-20251114191640.pdf",
+        "text": "Incident Report",
+        "download": false,
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      "metadata": {
+        "success": true,
+        "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/incident-report-20251114191640.pdf",
+        "key": "incident-report-20251114191640.pdf",
+        "bucket": "police-misconduct-website",
+        "contentType": "application/pdf",
+        "originalFileName": "incident-report.pdf",
+        "uniqueFileName": "incident-report-20251114191640.pdf",
         "needsPublicUrl": false
       }
     }

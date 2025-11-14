@@ -137,25 +137,6 @@ Hickman came after the incident, he was Camara and Xiong's Sergent
 {{document: https://www.dropbox.com/scl/fi/7acem2gh0w2ltran7ez6y/SCSD-Incident-Report.pdf?rlkey=6jeq5bgb7pk3ls2xq0i2tjj5h&st=88b4ul07&dl=0 | title: Incident Report | description: Official Stanislaus County Sheriff's Department incident report}}
 
 
-**Video Format:**
-{{video: URL | caption: Your caption here}}
-
-**Image Format:**
-{{image: URL | caption: Your caption here | featured: true}}
-(Set featured: true for the main/hero image)
-
-**Document Format:**
-{{document: URL | title: Document Title | description: Brief description}}
-
-**Examples:**
-{{video: https://dropbox.com/bodycam.mp4 | caption: Body camera footage from the incident}}
-
-{{image: https://example.com/photo.jpg | caption: Scene of the incident | featured: true}}
-
-{{document: https://example.com/complaint.pdf | title: Civil Rights Complaint | description: Original complaint filed by the victim}}
-
-
-
 ## Legal Details
 2:23-cv-01887-DJC-KJN federal court eastern district, sacramento, Judge Calabretta. Trial scheduleded for January 5, 2026. Case originally brought by Anthony but when he died his mother Dorothey Heimbach substituted in for him.
 
