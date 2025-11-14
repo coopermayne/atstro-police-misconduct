@@ -107,7 +107,6 @@ function updateRegistryFromFile(filePath, contentType = 'case') {
         
         registry.agencies.push({
           canonical_name: agency,
-          aliases: [],
           slug,
           county,
           city
@@ -124,7 +123,6 @@ function updateRegistryFromFile(filePath, contentType = 'case') {
     
     registry.counties.push({
       canonical_name: metadata.county,
-      aliases: [],
       slug
     });
     

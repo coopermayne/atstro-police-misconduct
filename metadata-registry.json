@@ -1,476 +1,73 @@
 {
+  "metadata_version": "2.0",
+  "last_updated": "2025-11-14",
   "agencies": [
-    {
-      "canonical_name": "Los Angeles Police Department",
-      "aliases": ["LAPD", "Los Angeles PD", "LA Police"],
-      "slug": "los-angeles-police-department",
-      "county": "Los Angeles",
-      "city": "Los Angeles"
-    },
-    {
-      "canonical_name": "Los Angeles County Sheriff's Department",
-      "aliases": ["LASD", "LA Sheriff", "LA County Sheriff"],
-      "slug": "los-angeles-county-sheriffs-department",
-      "county": "Los Angeles",
-      "city": "Los Angeles"
-    },
-    {
-      "canonical_name": "San Diego Police Department",
-      "aliases": ["SDPD", "San Diego PD"],
-      "slug": "san-diego-police-department",
-      "county": "San Diego",
-      "city": "San Diego"
-    },
-    {
-      "canonical_name": "San Diego County Sheriff's Department",
-      "aliases": ["San Diego Sheriff", "SD Sheriff"],
-      "slug": "san-diego-county-sheriffs-department",
-      "county": "San Diego",
-      "city": "San Diego"
-    },
-    {
-      "canonical_name": "San Jose Police Department",
-      "aliases": ["SJPD", "San Jose PD"],
-      "slug": "san-jose-police-department",
-      "county": "Santa Clara",
-      "city": "San Jose"
-    },
-    {
-      "canonical_name": "San Francisco Police Department",
-      "aliases": ["SFPD", "San Francisco PD", "SF Police"],
-      "slug": "san-francisco-police-department",
-      "county": "San Francisco",
-      "city": "San Francisco"
-    },
-    {
-      "canonical_name": "Fresno Police Department",
-      "aliases": ["FPD", "Fresno PD"],
-      "slug": "fresno-police-department",
-      "county": "Fresno",
-      "city": "Fresno"
-    },
-    {
-      "canonical_name": "Sacramento Police Department",
-      "aliases": ["SPD", "Sacramento PD", "Sac PD"],
-      "slug": "sacramento-police-department",
-      "county": "Sacramento",
-      "city": "Sacramento"
-    },
-    {
-      "canonical_name": "Sacramento County Sheriff's Department",
-      "aliases": ["Sacramento Sheriff", "Sac Sheriff"],
-      "slug": "sacramento-county-sheriffs-department",
-      "county": "Sacramento",
-      "city": "Sacramento"
-    },
-    {
-      "canonical_name": "Long Beach Police Department",
-      "aliases": ["LBPD", "Long Beach PD"],
-      "slug": "long-beach-police-department",
-      "county": "Los Angeles",
-      "city": "Long Beach"
-    },
-    {
-      "canonical_name": "Oakland Police Department",
-      "aliases": ["OPD", "Oakland PD"],
-      "slug": "oakland-police-department",
-      "county": "Alameda",
-      "city": "Oakland"
-    },
-    {
-      "canonical_name": "Bakersfield Police Department",
-      "aliases": ["BPD", "Bakersfield PD"],
-      "slug": "bakersfield-police-department",
-      "county": "Kern",
-      "city": "Bakersfield"
-    },
-    {
-      "canonical_name": "Kern County Sheriff's Office",
-      "aliases": ["Kern Sheriff", "KCSO"],
-      "slug": "kern-county-sheriffs-office",
-      "county": "Kern",
-      "city": "Bakersfield"
-    },
-    {
-      "canonical_name": "Anaheim Police Department",
-      "aliases": ["Anaheim PD", "APD"],
-      "slug": "anaheim-police-department",
-      "county": "Orange",
-      "city": "Anaheim"
-    },
-    {
-      "canonical_name": "Santa Ana Police Department",
-      "aliases": ["Santa Ana PD", "SAPD"],
-      "slug": "santa-ana-police-department",
-      "county": "Orange",
-      "city": "Santa Ana"
-    },
-    {
-      "canonical_name": "Riverside Police Department",
-      "aliases": ["Riverside PD", "RPD"],
-      "slug": "riverside-police-department",
-      "county": "Riverside",
-      "city": "Riverside"
-    },
-    {
-      "canonical_name": "Riverside County Sheriff's Department",
-      "aliases": ["Riverside Sheriff", "RSO"],
-      "slug": "riverside-county-sheriffs-department",
-      "county": "Riverside",
-      "city": "Riverside"
-    },
-    {
-      "canonical_name": "Stockton Police Department",
-      "aliases": ["Stockton PD"],
-      "slug": "stockton-police-department",
-      "county": "San Joaquin",
-      "city": "Stockton"
-    },
-    {
-      "canonical_name": "Chula Vista Police Department",
-      "aliases": ["Chula Vista PD", "CVPD"],
-      "slug": "chula-vista-police-department",
-      "county": "San Diego",
-      "city": "Chula Vista"
-    },
-    {
-      "canonical_name": "Fremont Police Department",
-      "aliases": ["Fremont PD"],
-      "slug": "fremont-police-department",
-      "county": "Alameda",
-      "city": "Fremont"
-    },
-    {
-      "canonical_name": "Irvine Police Department",
-      "aliases": ["Irvine PD", "IPD"],
-      "slug": "irvine-police-department",
-      "county": "Orange",
-      "city": "Irvine"
-    },
-    {
-      "canonical_name": "San Bernardino Police Department",
-      "aliases": ["San Bernardino PD", "SBPD"],
-      "slug": "san-bernardino-police-department",
-      "county": "San Bernardino",
-      "city": "San Bernardino"
-    },
-    {
-      "canonical_name": "San Bernardino County Sheriff's Department",
-      "aliases": ["San Bernardino Sheriff", "SB Sheriff"],
-      "slug": "san-bernardino-county-sheriffs-department",
-      "county": "San Bernardino",
-      "city": "San Bernardino"
-    },
-    {
-      "canonical_name": "Modesto Police Department",
-      "aliases": ["Modesto PD", "MPD"],
-      "slug": "modesto-police-department",
-      "county": "Stanislaus",
-      "city": "Modesto"
-    },
-    {
-      "canonical_name": "Oxnard Police Department",
-      "aliases": ["Oxnard PD"],
-      "slug": "oxnard-police-department",
-      "county": "Ventura",
-      "city": "Oxnard"
-    },
-    {
-      "canonical_name": "Fontana Police Department",
-      "aliases": ["Fontana PD"],
-      "slug": "fontana-police-department",
-      "county": "San Bernardino",
-      "city": "Fontana"
-    },
-    {
-      "canonical_name": "Moreno Valley Police Department",
-      "aliases": ["Moreno Valley PD", "MVPD"],
-      "slug": "moreno-valley-police-department",
-      "county": "Riverside",
-      "city": "Moreno Valley"
-    },
-    {
-      "canonical_name": "Glendale Police Department",
-      "aliases": ["Glendale PD"],
-      "slug": "glendale-police-department",
-      "county": "Los Angeles",
-      "city": "Glendale"
-    },
-    {
-      "canonical_name": "Huntington Beach Police Department",
-      "aliases": ["Huntington Beach PD", "HBPD"],
-      "slug": "huntington-beach-police-department",
-      "county": "Orange",
-      "city": "Huntington Beach"
-    },
-    {
-      "canonical_name": "Santa Clarita Valley Sheriff's Station",
-      "aliases": ["Santa Clarita Sheriff", "SCV Sheriff"],
-      "slug": "santa-clarita-valley-sheriffs-station",
-      "county": "Los Angeles",
-      "city": "Santa Clarita"
-    },
-    {
-      "canonical_name": "Berkeley Police Department",
-      "aliases": ["Berkeley PD", "BPD"],
-      "slug": "berkeley-police-department",
-      "county": "Alameda",
-      "city": "Berkeley"
-    }
+    "Los Angeles Police Department",
+    "Stanislaus County Sheriff's Department"
   ],
   "counties": [
-    {
-      "canonical_name": "Los Angeles",
-      "aliases": ["LA County", "Los Angeles County"],
-      "slug": "los-angeles"
-    },
-    {
-      "canonical_name": "San Diego",
-      "aliases": ["SD", "San Diego County"],
-      "slug": "san-diego"
-    },
-    {
-      "canonical_name": "Orange",
-      "aliases": ["Orange County", "OC"],
-      "slug": "orange"
-    },
-    {
-      "canonical_name": "Riverside",
-      "aliases": ["Riverside County"],
-      "slug": "riverside"
-    },
-    {
-      "canonical_name": "San Bernardino",
-      "aliases": ["San Bernardino County", "SB County"],
-      "slug": "san-bernardino"
-    },
-    {
-      "canonical_name": "Santa Clara",
-      "aliases": ["Santa Clara County"],
-      "slug": "santa-clara"
-    },
-    {
-      "canonical_name": "Alameda",
-      "aliases": ["Alameda County"],
-      "slug": "alameda"
-    },
-    {
-      "canonical_name": "Sacramento",
-      "aliases": ["Sacramento County", "Sac County"],
-      "slug": "sacramento"
-    },
-    {
-      "canonical_name": "Contra Costa",
-      "aliases": ["Contra Costa County"],
-      "slug": "contra-costa"
-    },
-    {
-      "canonical_name": "Fresno",
-      "aliases": ["Fresno County"],
-      "slug": "fresno"
-    },
-    {
-      "canonical_name": "Kern",
-      "aliases": ["Kern County"],
-      "slug": "kern"
-    },
-    {
-      "canonical_name": "San Francisco",
-      "aliases": ["SF", "San Francisco County"],
-      "slug": "san-francisco"
-    },
-    {
-      "canonical_name": "Ventura",
-      "aliases": ["Ventura County"],
-      "slug": "ventura"
-    },
-    {
-      "canonical_name": "San Mateo",
-      "aliases": ["San Mateo County"],
-      "slug": "san-mateo"
-    },
-    {
-      "canonical_name": "San Joaquin",
-      "aliases": ["San Joaquin County"],
-      "slug": "san-joaquin"
-    },
-    {
-      "canonical_name": "Stanislaus",
-      "aliases": ["Stanislaus County"],
-      "slug": "stanislaus"
-    },
-    {
-      "canonical_name": "Sonoma",
-      "aliases": ["Sonoma County"],
-      "slug": "sonoma"
-    },
-    {
-      "canonical_name": "Tulare",
-      "aliases": ["Tulare County"],
-      "slug": "tulare"
-    },
-    {
-      "canonical_name": "Santa Barbara",
-      "aliases": ["Santa Barbara County", "SB County"],
-      "slug": "santa-barbara"
-    },
-    {
-      "canonical_name": "Monterey",
-      "aliases": ["Monterey County"],
-      "slug": "monterey"
-    }
+    "Los Angeles",
+    "Stanislaus"
   ],
   "force_types": [
-    {
-      "canonical_name": "Firearm",
-      "aliases": ["gun", "gunshot", "gunfire", "shooting", "shot", "pistol", "handgun", "rifle"],
-      "severity": "lethal"
-    },
-    {
-      "canonical_name": "Taser",
-      "aliases": ["tased", "tasing", "stun gun", "electroshock", "conducted energy weapon", "CEW"],
-      "severity": "less-lethal"
-    },
-    {
-      "canonical_name": "Physical Force",
-      "aliases": ["hands", "fists", "punching", "kicking", "striking", "beating", "physical assault"],
-      "severity": "physical"
-    },
-    {
-      "canonical_name": "Restraint",
-      "aliases": ["hold", "chokehold", "choke hold", "neck restraint", "carotid restraint", "headlock"],
-      "severity": "physical"
-    },
-    {
-      "canonical_name": "Baton",
-      "aliases": ["nightstick", "club", "billy club", "baton strike"],
-      "severity": "less-lethal"
-    },
-    {
-      "canonical_name": "Pepper Spray",
-      "aliases": ["OC spray", "mace", "chemical spray", "oleoresin capsicum"],
-      "severity": "less-lethal"
-    },
-    {
-      "canonical_name": "K-9",
-      "aliases": ["police dog", "dog bite", "canine", "K9"],
-      "severity": "less-lethal"
-    },
-    {
-      "canonical_name": "Vehicle",
-      "aliases": ["car", "police car", "vehicle strike", "hit by car", "run over"],
-      "severity": "lethal"
-    }
+    "Shooting",
+    "Taser",
+    "Physical Force",
+    "Beating",
+    "Chokehold",
+    "Restraint",
+    "Vehicle Pursuit",
+    "K-9 Attack",
+    "Chemical Agent",
+    "Baton"
   ],
   "threat_levels": [
-    {
-      "canonical_name": "No Threat",
-      "aliases": ["unarmed", "no weapon", "non-threatening", "compliant", "not resisting"],
-      "description": "Subject posed no apparent threat"
-    },
-    {
-      "canonical_name": "Low Threat",
-      "aliases": ["verbal", "passive resistance", "minor resistance"],
-      "description": "Subject exhibited minimal resistance or threat"
-    },
-    {
-      "canonical_name": "Moderate Threat",
-      "aliases": ["active resistance", "fighting", "struggling", "resisting"],
-      "description": "Subject actively resisted but without deadly force"
-    },
-    {
-      "canonical_name": "High Threat",
-      "aliases": ["armed", "weapon", "knife", "gun", "deadly threat", "life-threatening"],
-      "description": "Subject posed serious threat with weapon or deadly force"
-    }
+    "No Threat",
+    "Low Threat",
+    "Medium Threat",
+    "High Threat",
+    "Active Threat"
   ],
   "investigation_statuses": [
-    {
-      "canonical_name": "Under Investigation",
-      "aliases": ["investigating", "open investigation", "pending investigation", "being investigated"],
-      "slug": "under-investigation"
-    },
-    {
-      "canonical_name": "No Charges Filed",
-      "aliases": ["no charges", "not charged", "declined to prosecute", "no prosecution"],
-      "slug": "no-charges-filed"
-    },
-    {
-      "canonical_name": "Criminal Charges Filed",
-      "aliases": ["charged", "criminal charges", "indicted", "prosecution"],
-      "slug": "criminal-charges-filed"
-    },
-    {
-      "canonical_name": "Acquitted",
-      "aliases": ["not guilty", "acquittal", "found not guilty"],
-      "slug": "acquitted"
-    },
-    {
-      "canonical_name": "Convicted",
-      "aliases": ["guilty", "conviction", "found guilty", "sentenced"],
-      "slug": "convicted"
-    },
-    {
-      "canonical_name": "Civil Settlement",
-      "aliases": ["settled", "settlement reached", "lawsuit settled"],
-      "slug": "civil-settlement"
-    },
-    {
-      "canonical_name": "Civil Trial Pending",
-      "aliases": ["lawsuit filed", "civil case", "pending trial"],
-      "slug": "civil-trial-pending"
-    },
-    {
-      "canonical_name": "Closed - No Action",
-      "aliases": ["closed", "no action taken", "investigation closed", "no discipline"],
-      "slug": "closed-no-action"
-    }
+    "Under Investigation",
+    "No Investigation",
+    "Charges Filed",
+    "No Charges Filed",
+    "Convicted",
+    "Acquitted",
+    "Settled",
+    "Disciplined",
+    "No Discipline"
   ],
   "case_tags": [
-    "Excessive Force",
-    "Wrongful Death",
-    "False Arrest",
-    "Malicious Prosecution",
-    "Racial Profiling",
-    "Search and Seizure",
-    "First Amendment",
-    "Body Camera",
-    "Qualified Immunity",
     "Civil Rights Violation",
-    "Police Brutality",
-    "Deadly Force",
-    "Traffic Stop",
-    "Welfare Check",
-    "Mental Health Crisis",
-    "Domestic Violence Call",
-    "Protest",
-    "In Custody",
-    "Taser Death",
-    "Chokehold",
-    "No-Knock Raid"
+    "Excessive Force",
+    "Taser",
+    "Traffic Stop"
   ],
   "post_tags": [
-    "Legal Strategy",
-    "Evidence",
-    "Discovery",
-    "Qualified Immunity",
-    "Legal Theory",
-    "Police Accountability",
-    "Civil Rights Law",
-    "California Law",
-    "Federal Law",
-    "Supreme Court",
-    "Constitutional Rights",
-    "Fourth Amendment",
-    "First Amendment",
-    "Litigation Tips",
-    "Case Law",
-    "Legal Rights",
-    "Documentation",
-    "Video Evidence",
+    "Appeals",
     "Body Cameras",
-    "Expert Witnesses"
-  ],
-  "metadata_version": "1.0.0",
-  "last_updated": "2025-11-14"
+    "California Law",
+    "Civil Rights",
+    "Deadlines",
+    "Dev Server",
+    "Development",
+    "Discovery",
+    "Documentation",
+    "Evidence",
+    "Government Liability",
+    "Interactive Prompt",
+    "Legal Process",
+    "Legal Rights",
+    "Legal Strategy",
+    "Legal Theory",
+    "Litigation Strategy",
+    "Police Accountability",
+    "Qualified Immunity",
+    "Supreme Court",
+    "Testing",
+    "Tort Claims",
+    "Video Evidence"
+  ]
 }

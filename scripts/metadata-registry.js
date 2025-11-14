@@ -2,10 +2,13 @@
  * Metadata Registry Manager
  * 
  * Provides functions to:
- * - Load canonical metadata registry
+ * - Load canonical metadata registry (simple string arrays)
  * - Match user input to canonical names
  * - Add new entries when needed
  * - Format metadata for AI prompts
+ * 
+ * All metadata is stored as simple strings. Slugs are generated
+ * programmatically when needed, not stored in the registry.
  */
 
 import fs from 'fs';
@@ -41,14 +44,8 @@ export function matchAgency(input, registry = null) {
   const normalized = input.toLowerCase().trim();
   
   for (const agency of registry.agencies) {
-    // Check canonical name
-    if (agency.canonical_name.toLowerCase() === normalized) {
-      return agency.canonical_name;
-    }
-    
-    // Check aliases
-    if (agency.aliases.some(alias => alias.toLowerCase() === normalized)) {
-      return agency.canonical_name;
+    if (agency.toLowerCase() === normalized) {
+      return agency;
     }
   }
   
@@ -64,12 +61,8 @@ export function matchCounty(input, registry = null) {
   const normalized = input.toLowerCase().trim();
   
   for (const county of registry.counties) {
-    if (county.canonical_name.toLowerCase() === normalized) {
-      return county.canonical_name;
-    }
-    
-    if (county.aliases.some(alias => alias.toLowerCase() === normalized)) {
-      return county.canonical_name;
+    if (county.toLowerCase() === normalized) {
+      return county;
     }
   }
   
@@ -89,13 +82,8 @@ export function matchForceTypes(inputs, registry = null) {
     const normalized = input.toLowerCase().trim();
     
     for (const forceType of registry.force_types) {
-      if (forceType.canonical_name.toLowerCase() === normalized) {
-        matches.add(forceType.canonical_name);
-        continue;
-      }
-      
-      if (forceType.aliases.some(alias => normalized.includes(alias.toLowerCase()))) {
-        matches.add(forceType.canonical_name);
+      if (forceType.toLowerCase() === normalized) {
+        matches.add(forceType);
       }
     }
   }
@@ -112,12 +100,8 @@ export function matchThreatLevel(input, registry = null) {
   const normalized = input.toLowerCase().trim();
   
   for (const threat of registry.threat_levels) {
-    if (threat.canonical_name.toLowerCase() === normalized) {
-      return threat.canonical_name;
-    }
-    
-    if (threat.aliases.some(alias => normalized.includes(alias.toLowerCase()))) {
-      return threat.canonical_name;
+    if (threat.toLowerCase() === normalized) {
+      return threat;
     }
   }
   
@@ -133,12 +117,8 @@ export function matchInvestigationStatus(input, registry = null) {
   const normalized = input.toLowerCase().trim();
   
   for (const status of registry.investigation_statuses) {
-    if (status.canonical_name.toLowerCase() === normalized) {
-      return status.canonical_name;
-    }
-    
-    if (status.aliases.some(alias => normalized.includes(alias.toLowerCase()))) {
-      return status.canonical_name;
+    if (status.toLowerCase() === normalized) {
+      return status;
     }
   }
   
@@ -172,7 +152,7 @@ export function matchTags(inputs, contentType = 'case', registry = null) {
 /**
  * Add a new agency to the registry
  */
-export function addAgency(canonicalName, aliases = [], county = '', city = '') {
+export function addAgency(canonicalName) {
   const registry = loadRegistry();
   
   // Check if already exists
@@ -181,15 +161,8 @@ export function addAgency(canonicalName, aliases = [], county = '', city = '') {
     return false;
   }
   
-  const slug = canonicalName.toLowerCase().replace(/\s+/g, '-');
-  
-  registry.agencies.push({
-    canonical_name: canonicalName,
-    aliases: Array.isArray(aliases) ? aliases : [aliases],
-    slug,
-    county,
-    city
-  });
+  registry.agencies.push(canonicalName);
+  registry.agencies.sort();
   
   saveRegistry(registry);
   console.log(`✓ Added agency: ${canonicalName}`);
@@ -234,48 +207,32 @@ export function formatRegistryForAI(contentType = 'case') {
   // Agencies
   formatted += '**Police Agencies:**\n';
   registry.agencies.forEach(agency => {
-    formatted += `- ${agency.canonical_name}`;
-    if (agency.aliases.length > 0) {
-      formatted += ` (also: ${agency.aliases.join(', ')})`;
-    }
-    formatted += `\n`;
+    formatted += `- ${agency}\n`;
   });
   
   // Counties
   formatted += '\n**California Counties:**\n';
   registry.counties.forEach(county => {
-    formatted += `- ${county.canonical_name}`;
-    if (county.aliases.length > 0) {
-      formatted += ` (also: ${county.aliases.join(', ')})`;
-    }
-    formatted += `\n`;
+    formatted += `- ${county}\n`;
   });
   
   if (contentType === 'case') {
     // Force types
     formatted += '\n**Force Types (use these exact names):**\n';
     registry.force_types.forEach(force => {
-      formatted += `- ${force.canonical_name}`;
-      if (force.aliases.length > 0) {
-        formatted += ` (matches: ${force.aliases.join(', ')})`;
-      }
-      formatted += `\n`;
+      formatted += `- ${force}\n`;
     });
     
     // Threat levels
     formatted += '\n**Threat Levels (choose one):**\n';
     registry.threat_levels.forEach(threat => {
-      formatted += `- ${threat.canonical_name}: ${threat.description}\n`;
+      formatted += `- ${threat}\n`;
     });
     
     // Investigation statuses
     formatted += '\n**Investigation Statuses:**\n';
     registry.investigation_statuses.forEach(status => {
-      formatted += `- ${status.canonical_name}`;
-      if (status.aliases.length > 0) {
-        formatted += ` (also: ${status.aliases.join(', ')})`;
-      }
-      formatted += `\n`;
+      formatted += `- ${status}\n`;
     });
     
     // Case tags

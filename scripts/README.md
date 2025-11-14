@@ -20,7 +20,8 @@ This folder contains the automated content generation workflow scripts.
 - **`media-library.js`** - Tracks uploaded media assets to avoid duplicates
 - **`metadata-registry.js`** - Manages canonical metadata values (agencies, counties, tags)
 - **`metadata-registry-cli.js`** - CLI tool for managing metadata registry
-- **`update-registry-from-content.js`** - Scans published content and adds new metadata to registry
+- **`rebuild-registry.js`** - Rebuilds entire registry from published content (used by sync-registry.js)
+- **`sync-registry.js`** - Syncs registry with all published content (runs automatically on build/dev)
 - **`normalize-metadata.js`** - Normalizes existing content metadata against registry
 
 ## Usage
@@ -37,7 +38,7 @@ This command:
 3. Uploads to Cloudflare services
 4. Generates article with AI
 5. Saves to content collection
-6. **Updates metadata registry** with any new agencies, counties, or tags
+6. **Rebuilds metadata registry** from all published content
 7. Commits to Git
 
 ### Test R2 Upload (Standalone)
@@ -68,21 +69,39 @@ This scans the frontmatter and adds any new agencies, counties, or tags to the r
 
 ### Manage Metadata Registry
 
+The metadata registry is **automatically rebuilt** during `npm run dev` and `npm run build` to ensure it reflects all agencies, counties, and tags from published content.
+
 View and manage canonical metadata values:
 
 ```bash
+# Manually rebuild registry from all published content
+node scripts/rebuild-registry.js
+
+# Or use the sync command (which calls rebuild internally)
+node scripts/sync-registry.js
+
 # List all entries of a type
 node scripts/metadata-registry-cli.js list agencies
 node scripts/metadata-registry-cli.js list counties
 node scripts/metadata-registry-cli.js list case-tags
 
-# Add new entries manually
-node scripts/metadata-registry-cli.js add-agency "Berkeley PD" "BPD,Berkeley Police"
+# Add new entries manually (if needed before publishing)
+node scripts/metadata-registry-cli.js add-agency "Berkeley PD"
 node scripts/metadata-registry-cli.js add-tag "Excessive Force" case
 
 # View registry statistics
 node scripts/metadata-registry-cli.js stats
 ```
+
+**How Registry Auto-Sync Works:**
+1. When you run `npm run dev` or `npm run build`, the registry is automatically rebuilt
+2. All published cases and posts are scanned
+3. The registry is regenerated from scratch with current agencies, counties, and tags
+4. Fixed values (force types, threat levels, investigation statuses) are preserved
+5. Future articles will see these values in the AI prompts for consistency
+6. The registry file is updated and should be committed to Git
+
+**Note:** The registry is rebuilt from scratch each time, not incrementally updated. This ensures it's always accurate and contains no stale data.
 
 ### Manual Usage of Utilities
 

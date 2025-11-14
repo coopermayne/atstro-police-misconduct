@@ -15,15 +15,15 @@ function showHelp() {
 Metadata Registry Manager
 
 Commands:
-  list [type]                    List all entries (agencies, counties, force-types, threat-levels, investigation-statuses, tags)
-  add-agency <name> <aliases>   Add new agency (aliases comma-separated)
-  add-tag <tag> <type>          Add new tag (type: case or post)
-  show-ai-format [type]         Show formatted registry for AI (type: case or post)
-  stats                         Show registry statistics
+  list [type]                 List all entries (agencies, counties, force-types, threat-levels, investigation-statuses, tags)
+  add-agency <name>          Add new agency
+  add-tag <tag> <type>       Add new tag (type: case or post)
+  show-ai-format [type]      Show formatted registry for AI (type: case or post)
+  stats                      Show registry statistics
 
 Examples:
   node scripts/metadata-registry-cli.js list agencies
-  node scripts/metadata-registry-cli.js add-agency "Berkeley Police Department" "BPD,Berkeley PD"
+  node scripts/metadata-registry-cli.js add-agency "Berkeley Police Department"
   node scripts/metadata-registry-cli.js add-tag "Wrongful Arrest" case
   node scripts/metadata-registry-cli.js show-ai-format case
 `);
@@ -36,53 +36,41 @@ function listEntries(type) {
     case 'agencies':
       console.log('\n📋 Police Agencies:\n');
       registry.agencies.forEach(agency => {
-        console.log(`  ${agency.canonical_name}`);
-        if (agency.aliases.length > 0) {
-          console.log(`    Aliases: ${agency.aliases.join(', ')}`);
-        }
-        console.log(`    Location: ${agency.city}, ${agency.county} County`);
-        console.log(`    Slug: ${agency.slug}\n`);
+        console.log(`  - ${agency}`);
       });
+      console.log();
       break;
       
     case 'counties':
       console.log('\n🗺️  California Counties:\n');
       registry.counties.forEach(county => {
-        console.log(`  ${county.canonical_name}`);
-        if (county.aliases.length > 0) {
-          console.log(`    Aliases: ${county.aliases.join(', ')}`);
-        }
-        console.log(`    Slug: ${county.slug}\n`);
+        console.log(`  - ${county}`);
       });
+      console.log();
       break;
       
     case 'force-types':
       console.log('\n⚡ Force Types:\n');
       registry.force_types.forEach(force => {
-        console.log(`  ${force.canonical_name} (${force.severity})`);
-        if (force.aliases.length > 0) {
-          console.log(`    Matches: ${force.aliases.join(', ')}\n`);
-        }
+        console.log(`  - ${force}`);
       });
+      console.log();
       break;
       
     case 'threat-levels':
       console.log('\n⚠️  Threat Levels:\n');
       registry.threat_levels.forEach(threat => {
-        console.log(`  ${threat.canonical_name}`);
-        console.log(`    ${threat.description}\n`);
+        console.log(`  - ${threat}`);
       });
+      console.log();
       break;
       
     case 'investigation-statuses':
       console.log('\n🔍 Investigation Statuses:\n');
       registry.investigation_statuses.forEach(status => {
-        console.log(`  ${status.canonical_name}`);
-        if (status.aliases.length > 0) {
-          console.log(`    Aliases: ${status.aliases.join(', ')}`);
-        }
-        console.log(`    Slug: ${status.slug}\n`);
+        console.log(`  - ${status}`);
       });
+      console.log();
       break;
       
     case 'case-tags':
@@ -135,10 +123,9 @@ switch (command) {
     if (!args[1]) {
       console.log('\n❌ Please provide agency name\n');
     } else {
-      const aliases = args[2] ? args[2].split(',').map(a => a.trim()) : [];
-      const county = args[3] || '';
-      const city = args[4] || args[1].replace(' Police Department', '').replace(' PD', '');
-      addAgency(args[1], aliases, county, city);
+      const county = args[2] || '';
+      const city = args[3] || args[1].replace(' Police Department', '').replace(' Sheriff\'s Department', '').replace(' PD', '').replace(' Sheriff', '');
+      addAgency(args[1], county, city);
     }
     break;
     
