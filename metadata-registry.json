@@ -2,11 +2,9 @@
   "metadata_version": "2.0",
   "last_updated": "2025-11-14",
   "agencies": [
-    "Los Angeles Police Department",
     "Stanislaus County Sheriff's Department"
   ],
   "counties": [
-    "Los Angeles",
     "Stanislaus"
   ],
   "force_types": [
@@ -39,30 +37,6 @@
     "Disciplined",
     "No Discipline"
   ],
-  "case_tags": [
-    "Civil Rights Violation",
-    "Excessive Force",
-    "Taser",
-    "Traffic Stop"
-  ],
-  "post_tags": [
-    "Appeals",
-    "Body Cameras",
-    "California Law",
-    "Civil Rights",
-    "Deadlines",
-    "Discovery",
-    "Documentation",
-    "Evidence",
-    "Government Liability",
-    "Legal Process",
-    "Legal Strategy",
-    "Legal Theory",
-    "Litigation Strategy",
-    "Qualified Immunity",
-    "Supreme Court",
-    "Technology",
-    "Tort Claims",
-    "Video Evidence"
-  ]
+  "case_tags": [],
+  "post_tags": []
 }

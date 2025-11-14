@@ -100,7 +100,7 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 
 ---
 
-#### Phase 5: Validation & Polish ✅ (Current)
+#### Phase 5: Validation & Polish ✅
 **Goal:** Ensure quality before publishing
 
 **Completed:**
@@ -109,12 +109,24 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 - ✅ Validation report with detailed feedback
 - ✅ User confirmation checkpoint
 - ✅ Updated documentation with new workflow
+- ✅ Simplified metadata registry to use simple strings instead of objects
+- ✅ Added override option for validation failures in publish script
+- ✅ Fixed content type detection for blog posts vs cases (path-based detection)
+- ✅ Pruned blog post tags to be minimal and on-point
+- ✅ Added encyclopedic tone to AI article generation
+- ✅ Removed Sources section requirement from AI-generated articles
+- ✅ Restricted AI component usage to CloudflareImage and CloudflareVideo only
+- ✅ Integrated registry auto-sync into build/dev processes
+- ✅ Added npm run rebuild-registry command
 
 **Features:**
 - Pre-processing validation (checks completeness)
 - Interactive prompts (select draft by number, confirm publishing)
 - Detailed validation reports (critical vs helpful info)
 - Safety net to prevent wasted processing time
+- Validation override capability for edge cases
+- Automatic metadata registry maintenance
+- Wikipedia-style encyclopedic tone in generated articles
 
 **Documentation:**
 - `PUBLISHING.md` - Updated with validation workflow
@@ -433,7 +445,9 @@ Very affordable for a professional site with this much functionality!
 1. ✅ Complete validation system
 2. ✅ Update all documentation
 3. ✅ Create project roadmap
-4. [ ] Begin researching 10 cases for content sprint
+4. ✅ Simplify metadata registry
+5. ✅ Add validation overrides
+6. [ ] Begin researching 10 cases for content sprint
 
 ### Short-term (This Month)
 1. [ ] Compile case research notes
@@ -456,5 +470,45 @@ Very affordable for a professional site with this much functionality!
 
 ---
 
-*Last updated: November 13, 2025*  
+*Last updated: November 14, 2025*  
 *Maintained by: Cooper Mayne*
+
+---
+
+## 📋 TODO List
+
+### In Progress
+- [ ] 
+
+### Up Next
+- [ ] 
+
+### Backlog
+- [ ] Gracefully handle duplicate slugs for articles and posts
+- [ ] Handle redirects if a page is renamed (e.g., a-silva → anthony-silva when first name is learned)
+- [ ] Improve interactive prompts - create unified CLI tool instead of separate commands (npm run dev, publish, etc.)
+- [ ] Add fallback for broken image links - decide on policy for articles without featured images
+- [ ] Add analytics (Plausible)
+- [ ] Add media gallery to browse and easily reuse media with component code copying
+- [ ] Remove "published: true/false" field (not needed)
+- [ ] Review and finalize metadata schema to avoid future changes
+- [ ] Begin researching 10 cases for content sprint
+- [ ] Compile case research notes
+- [ ] Gather media files for 10 cases
+- [ ] Create and publish 10 cases
+- [ ] Write 2-3 blog posts
+
+### Recently Completed (November 14, 2025)
+- [x] Simplified metadata registry to use simple strings instead of objects
+- [x] Added override option for validation failures in publish script
+- [x] Fixed content type detection for blog posts vs cases
+- [x] Pruned blog post tags to be minimal and on-point
+- [x] Added encyclopedic tone to AI article generation
+- [x] Removed Sources section from AI prompts
+- [x] Restricted AI to CloudflareImage and CloudflareVideo components only
+- [x] Integrated registry auto-sync into build/dev processes
+- [x] Added `npm run rebuild-registry` command
+
+---
+
+**Usage:** Add new tasks under "Backlog", move to "Up Next" when prioritized, move to "In Progress" when working on them, and move to "Recently Completed" when done.
