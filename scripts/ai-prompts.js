@@ -4,6 +4,8 @@
  * Structured prompts for different stages of content generation.
  */
 
+import { formatRegistryForAI } from './metadata-registry.js';
+
 export const SYSTEM_PROMPT = `You are an expert legal writer specializing in civil rights law and police misconduct cases. Your role is to analyze case materials and create clear, accurate, factual documentation for a public-facing website.
 
 Your writing should:
@@ -276,12 +278,17 @@ export function createMetadataExtractionPrompt(draftContent, contentSchema, cont
     }
   }
   
+  // Load canonical metadata registry
+  const registrySection = formatRegistryForAI(contentType);
+  
   return {
     system: SYSTEM_PROMPT,
     user: `Based on this draft content, generate appropriate metadata values.
 
 **Draft Content:**
 ${draftContent}
+
+${registrySection}
 
 **Content Schema (from src/content/config.ts):**
 ${contentSchema}

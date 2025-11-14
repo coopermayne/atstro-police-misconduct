@@ -41,6 +41,7 @@ import {
   createSlugGenerationPrompt,
   createDraftValidationPrompt
 } from './ai-prompts.js';
+import { normalizeMetadata } from './metadata-registry.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -757,9 +758,12 @@ async function generateArticle(draftContent, mediaAnalysis, contentType) {
   // Extract metadata
   const metadataPrompt = createMetadataExtractionPrompt(draftContent, contentSchema, contentType, mediaAnalysis);
   const metadataText = await callClaude(metadataPrompt);
-  const metadata = extractJSON(metadataText);
+  const rawMetadata = extractJSON(metadataText);
   
-  console.log('   ✓ Metadata extracted');
+  // Normalize metadata against canonical registry
+  const metadata = normalizeMetadata(rawMetadata, contentType);
+  
+  console.log('   ✓ Metadata extracted and normalized');
   
   // Generate article
   const articlePrompt = contentType === 'case' 

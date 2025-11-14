@@ -26,9 +26,9 @@ The case settled in March 2024 for $875,000, with no admission of wrongdoing by 
 ## External Media Files
 
 ### Videos
-```
-https://www.dropbox.com/scl/fi/praadneyy8ojgrbqabbui/Ross-Body-Cam-Video-2.51.mp4?rlkey=il6v7gxg4j731onhji8yytill&st=kk9iw5g8&dl=0
-```
+{{video: https://www.dropbox.com/scl/fi/praadneyy8ojgrbqabbui/Ross-Body-Cam-Video-2.51.mp4?rlkey=il6v7gxg4j731onhji8yytill&st=kk9iw5g8&dl=0 | info: this is a video of the use of force incident}}
+
+
 
 **AI Instructions for Videos:**
 - Analyze first bodycam video for escalation points
@@ -38,10 +38,7 @@ https://www.dropbox.com/scl/fi/praadneyy8ojgrbqabbui/Ross-Body-Cam-Video-2.51.mp
 - Note presence of other officers
 
 ### Images
-```
-https://images.pexels.com/photos/3380743/pexels-photo-3380743.jpeg
-```
-image of shoulder after incident (also this is featured image...)
+{{image: https://images.pexels.com/photos/3380743/pexels-photo-3380743.jpeg | info: image of shoulder after incident | featured: true }}
 
 **AI Instructions for Images:**
 - First image shows victim's injuries (graphic)
@@ -49,9 +46,8 @@ image of shoulder after incident (also this is featured image...)
 - Include content warnings for injury photos
 
 ### Documents (PDFs)
-```
-https://www.caed.uscourts.gov/caednew/assets/File/DJC's%20Standing%20Order%20in%20Civil%20Cases%20(rev_%205_28_25).pdf
-```
+{{document: https://www.caed.uscourts.gov/caednew/assets/File/DJC's%20Standing%20Order%20in%20Civil%20Cases%20(rev_%205_28_25).pdf | info: ignore doc url this is actually a police report about the incdient}}
+
 
 **AI Instructions for Documents:**
 - Extract key allegations from complaint

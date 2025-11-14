@@ -1,0 +1,217 @@
+{
+  "agencies": [
+    {
+      "canonical_name": "Los Angeles Police Department",
+      "aliases": ["LAPD", "Los Angeles PD", "LA Police"],
+      "slug": "los-angeles-police-department",
+      "county": "Los Angeles",
+      "city": "Los Angeles"
+    },
+    {
+      "canonical_name": "San Francisco Police Department",
+      "aliases": ["SFPD", "San Francisco PD", "SF Police"],
+      "slug": "san-francisco-police-department",
+      "county": "San Francisco",
+      "city": "San Francisco"
+    },
+    {
+      "canonical_name": "Oakland Police Department",
+      "aliases": ["OPD", "Oakland PD"],
+      "slug": "oakland-police-department",
+      "county": "Alameda",
+      "city": "Oakland"
+    },
+    {
+      "canonical_name": "Sacramento Police Department",
+      "aliases": ["SPD", "Sacramento PD", "Sac PD"],
+      "slug": "sacramento-police-department",
+      "county": "Sacramento",
+      "city": "Sacramento"
+    }
+  ],
+  "counties": [
+    {
+      "canonical_name": "Los Angeles",
+      "aliases": ["LA County", "Los Angeles County"],
+      "slug": "los-angeles"
+    },
+    {
+      "canonical_name": "San Francisco",
+      "aliases": ["SF", "San Francisco County"],
+      "slug": "san-francisco"
+    },
+    {
+      "canonical_name": "Alameda",
+      "aliases": ["Alameda County"],
+      "slug": "alameda"
+    },
+    {
+      "canonical_name": "San Diego",
+      "aliases": ["SD", "San Diego County"],
+      "slug": "san-diego"
+    },
+    {
+      "canonical_name": "Orange",
+      "aliases": ["Orange County", "OC"],
+      "slug": "orange"
+    },
+    {
+      "canonical_name": "Sacramento",
+      "aliases": ["Sacramento County", "Sac County"],
+      "slug": "sacramento"
+    }
+  ],
+  "force_types": [
+    {
+      "canonical_name": "Firearm",
+      "aliases": ["gun", "gunshot", "gunfire", "shooting", "shot", "pistol", "handgun", "rifle"],
+      "severity": "lethal"
+    },
+    {
+      "canonical_name": "Taser",
+      "aliases": ["tased", "tasing", "stun gun", "electroshock", "conducted energy weapon", "CEW"],
+      "severity": "less-lethal"
+    },
+    {
+      "canonical_name": "Physical Force",
+      "aliases": ["hands", "fists", "punching", "kicking", "striking", "beating", "physical assault"],
+      "severity": "physical"
+    },
+    {
+      "canonical_name": "Restraint",
+      "aliases": ["hold", "chokehold", "choke hold", "neck restraint", "carotid restraint", "headlock"],
+      "severity": "physical"
+    },
+    {
+      "canonical_name": "Baton",
+      "aliases": ["nightstick", "club", "billy club", "baton strike"],
+      "severity": "less-lethal"
+    },
+    {
+      "canonical_name": "Pepper Spray",
+      "aliases": ["OC spray", "mace", "chemical spray", "oleoresin capsicum"],
+      "severity": "less-lethal"
+    },
+    {
+      "canonical_name": "K-9",
+      "aliases": ["police dog", "dog bite", "canine", "K9"],
+      "severity": "less-lethal"
+    },
+    {
+      "canonical_name": "Vehicle",
+      "aliases": ["car", "police car", "vehicle strike", "hit by car", "run over"],
+      "severity": "lethal"
+    }
+  ],
+  "threat_levels": [
+    {
+      "canonical_name": "No Threat",
+      "aliases": ["unarmed", "no weapon", "non-threatening", "compliant", "not resisting"],
+      "description": "Subject posed no apparent threat"
+    },
+    {
+      "canonical_name": "Low Threat",
+      "aliases": ["verbal", "passive resistance", "minor resistance"],
+      "description": "Subject exhibited minimal resistance or threat"
+    },
+    {
+      "canonical_name": "Moderate Threat",
+      "aliases": ["active resistance", "fighting", "struggling", "resisting"],
+      "description": "Subject actively resisted but without deadly force"
+    },
+    {
+      "canonical_name": "High Threat",
+      "aliases": ["armed", "weapon", "knife", "gun", "deadly threat", "life-threatening"],
+      "description": "Subject posed serious threat with weapon or deadly force"
+    }
+  ],
+  "investigation_statuses": [
+    {
+      "canonical_name": "Under Investigation",
+      "aliases": ["investigating", "open investigation", "pending investigation", "being investigated"],
+      "slug": "under-investigation"
+    },
+    {
+      "canonical_name": "No Charges Filed",
+      "aliases": ["no charges", "not charged", "declined to prosecute", "no prosecution"],
+      "slug": "no-charges-filed"
+    },
+    {
+      "canonical_name": "Criminal Charges Filed",
+      "aliases": ["charged", "criminal charges", "indicted", "prosecution"],
+      "slug": "criminal-charges-filed"
+    },
+    {
+      "canonical_name": "Acquitted",
+      "aliases": ["not guilty", "acquittal", "found not guilty"],
+      "slug": "acquitted"
+    },
+    {
+      "canonical_name": "Convicted",
+      "aliases": ["guilty", "conviction", "found guilty", "sentenced"],
+      "slug": "convicted"
+    },
+    {
+      "canonical_name": "Civil Settlement",
+      "aliases": ["settled", "settlement reached", "lawsuit settled"],
+      "slug": "civil-settlement"
+    },
+    {
+      "canonical_name": "Civil Trial Pending",
+      "aliases": ["lawsuit filed", "civil case", "pending trial"],
+      "slug": "civil-trial-pending"
+    },
+    {
+      "canonical_name": "Closed - No Action",
+      "aliases": ["closed", "no action taken", "investigation closed", "no discipline"],
+      "slug": "closed-no-action"
+    }
+  ],
+  "case_tags": [
+    "Excessive Force",
+    "Wrongful Death",
+    "False Arrest",
+    "Malicious Prosecution",
+    "Racial Profiling",
+    "Search and Seizure",
+    "First Amendment",
+    "Body Camera",
+    "Qualified Immunity",
+    "Civil Rights Violation",
+    "Police Brutality",
+    "Deadly Force",
+    "Traffic Stop",
+    "Welfare Check",
+    "Mental Health Crisis",
+    "Domestic Violence Call",
+    "Protest",
+    "In Custody",
+    "Taser Death",
+    "Chokehold",
+    "No-Knock Raid"
+  ],
+  "post_tags": [
+    "Legal Strategy",
+    "Evidence",
+    "Discovery",
+    "Qualified Immunity",
+    "Legal Theory",
+    "Police Accountability",
+    "Civil Rights Law",
+    "California Law",
+    "Federal Law",
+    "Supreme Court",
+    "Constitutional Rights",
+    "Fourth Amendment",
+    "First Amendment",
+    "Litigation Tips",
+    "Case Law",
+    "Legal Rights",
+    "Documentation",
+    "Video Evidence",
+    "Body Cameras",
+    "Expert Witnesses"
+  ],
+  "metadata_version": "1.0.0",
+  "last_updated": "2025-11-14"
+}
