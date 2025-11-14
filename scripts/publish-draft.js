@@ -19,6 +19,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 import Anthropic from '@anthropic-ai/sdk';
+import prompts from 'prompts';
 
 import { downloadFile, extractUrlsFromMarkdown, categorizeUrls, parseDocumentAnnotations, parseMediaShortcodes } from './file-downloader.js';
 import { uploadVideo, uploadVideoFromUrl } from './cloudflare-stream.js';
@@ -386,27 +387,25 @@ async function validateDraft(draftContent, contentType) {
   console.log('\nReview the validation report above.');
   console.log('This is your last chance to cancel and make changes.\n');
   
-  // Use readline to get user input
-  const readline = await import('readline');
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
+  const proceedResponse = await prompts({
+    type: 'confirm',
+    name: 'proceed',
+    message: 'Ready to publish this draft?',
+    initial: true
+  }, {
+    onCancel: () => {
+      console.log('\n❌ Cancelled.\n');
+      process.exit(0);
+    }
   });
   
-  return new Promise((resolve, reject) => {
-    rl.question('Do you want to proceed with publishing? (yes/no): ', (answer) => {
-      rl.close();
-      
-      const normalized = answer.trim().toLowerCase();
-      if (normalized === 'yes' || normalized === 'y') {
-        console.log('\n✅ Proceeding with publishing...\n');
-        resolve(validation);
-      } else {
-        console.log('\n❌ Publishing cancelled by user.\n');
-        process.exit(0);
-      }
-    });
-  });
+  if (!proceedResponse.proceed) {
+    console.log('\n❌ Cancelled.\n');
+    process.exit(0);
+  }
+  
+  console.log('\n✅ Publishing article...\n');
+  return validation;
 }
 
 /**
@@ -893,10 +892,8 @@ async function publishDraft(draftFilename) {
   console.log(`Published article: ${outputPath}`);
   console.log(`Archived draft: ${archivePath}`);
   console.log(`\nView at: /${draftMeta.type === 'case' ? 'cases' : 'posts'}/${slug}`);
-  console.log('\n💡 Next steps:');
-  console.log('   1. Run "npm run dev" to preview the published article');
-  console.log('   2. Review the article in your browser');
-  console.log('   3. Stage and push to Git to automatically deploy to Netlify\n');
+  
+  return { outputPath, archivePath, slug, contentType: draftMeta.type };
 }
 
 // CLI interface
@@ -909,7 +906,6 @@ async function main() {
     draftFilename = args[0];
   } else {
     // Interactive mode - show available drafts
-    console.log('\n📝 Available drafts:\n');
     
     // Get all .md files from drafts directory and subdirectories
     const drafts = [];
@@ -918,7 +914,7 @@ async function main() {
     const casesDir = path.join(DRAFTS_DIR, 'cases');
     if (fs.existsSync(casesDir)) {
       const caseFiles = fs.readdirSync(casesDir)
-        .filter(f => f.endsWith('.md'))
+        .filter(f => f.endsWith('.md') && !f.toLowerCase().includes('template'))
         .map(f => ({ name: f, path: `cases/${f}`, type: 'case' }));
       drafts.push(...caseFiles);
     }
@@ -927,54 +923,88 @@ async function main() {
     const postsDir = path.join(DRAFTS_DIR, 'posts');
     if (fs.existsSync(postsDir)) {
       const postFiles = fs.readdirSync(postsDir)
-        .filter(f => f.endsWith('.md'))
+        .filter(f => f.endsWith('.md') && !f.toLowerCase().includes('template'))
         .map(f => ({ name: f, path: `posts/${f}`, type: 'post' }));
       drafts.push(...postFiles);
     }
     
-    // Check root drafts folder
-    const rootFiles = fs.readdirSync(DRAFTS_DIR)
-      .filter(f => f.endsWith('.md') && fs.statSync(path.join(DRAFTS_DIR, f)).isFile())
-      .map(f => ({ name: f, path: f, type: 'unknown' }));
-    drafts.push(...rootFiles);
-    
     if (drafts.length === 0) {
-      console.log('No draft files found in drafts/ directory.\n');
+      console.log('\n📝 No draft files found in drafts/ directory.\n');
       console.log('Create a draft:');
       console.log('  cp drafts/templates/case-draft-template.md drafts/cases/my-case.md\n');
       process.exit(1);
     }
     
-    // Display numbered list
-    drafts.forEach((draft, index) => {
-      const typeLabel = draft.type === 'case' ? '📋' : draft.type === 'post' ? '📰' : '📄';
-      console.log(`  ${index + 1}. ${typeLabel} ${draft.path}`);
+    // Interactive selection with arrow keys
+    const response = await prompts({
+      type: 'select',
+      name: 'draft',
+      message: 'Which draft would you like to publish?',
+      choices: drafts.map((draft, index) => {
+        const typeLabel = draft.type === 'case' ? '📋' : draft.type === 'post' ? '📰' : '📄';
+        return {
+          title: `${typeLabel} ${draft.path}`,
+          value: draft.path,
+          description: draft.type === 'case' ? 'Case article' : draft.type === 'post' ? 'Blog post' : 'Draft file'
+        };
+      }),
+      initial: 0
+    }, {
+      onCancel: () => {
+        console.log('\n❌ Cancelled.\n');
+        process.exit(0);
+      }
     });
     
-    // Prompt user to select
-    const readline = await import('readline');
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
+    if (!response.draft) {
+      console.log('\n❌ No draft selected.\n');
+      process.exit(1);
+    }
     
-    const selectedIndex = await new Promise((resolve) => {
-      rl.question('\nSelect a draft to publish (enter number): ', (answer) => {
-        rl.close();
-        const num = parseInt(answer.trim(), 10);
-        if (isNaN(num) || num < 1 || num > drafts.length) {
-          console.log('\n❌ Invalid selection\n');
-          process.exit(1);
-        }
-        resolve(num - 1);
-      });
-    });
-    
-    draftFilename = drafts[selectedIndex].path;
-    console.log(`\n✅ Selected: ${draftFilename}\n`);
+    draftFilename = response.draft;
+    console.log(`\n✅ Publishing: ${draftFilename}\n`);
   }
   
-  await publishDraft(draftFilename);
+  const result = await publishDraft(draftFilename);
+  
+  // Prompt to start dev server
+  console.log('\n💡 Next steps:');
+  console.log('   • Review the article in your browser');
+  console.log('   • Stage and push to Git to automatically deploy to Netlify\n');
+  
+  const devServerResponse = await prompts({
+    type: 'confirm',
+    name: 'startServer',
+    message: 'Would you like to start the dev server?',
+    initial: true
+  }, {
+    onCancel: () => {
+      console.log('\n✅ Done! Run "npm run dev" when ready to preview.\n');
+      process.exit(0);
+    }
+  });
+  
+  if (devServerResponse.startServer) {
+    console.log('\n🚀 Starting dev server...\n');
+    const { spawn } = await import('child_process');
+    const devProcess = spawn('npm', ['run', 'dev'], {
+      cwd: ROOT_DIR,
+      stdio: 'inherit',
+      shell: true
+    });
+    
+    // Handle graceful shutdown
+    process.on('SIGINT', () => {
+      devProcess.kill('SIGINT');
+      process.exit(0);
+    });
+    
+    devProcess.on('close', (code) => {
+      process.exit(code);
+    });
+  } else {
+    console.log('\n✅ Done! Run "npm run dev" when ready to preview.\n');
+  }
 }
 
 main().catch(error => {

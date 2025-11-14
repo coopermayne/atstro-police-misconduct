@@ -124,6 +124,58 @@ If you cannot extract text from the document, indicate that and provide whatever
 export function createDraftValidationPrompt(draftContent, contentSchema, contentType = 'case') {
   const schemaSection = contentType === 'case' ? 'casesCollection' : 'postsCollection';
   
+  if (contentType === 'post') {
+    return {
+      system: SYSTEM_PROMPT,
+      user: `Review this blog post draft and identify any missing critical information.
+
+**Draft Content:**
+${draftContent}
+
+**Content Schema (from src/content/config.ts):**
+${contentSchema}
+
+**IMPORTANT GUIDELINES FOR BLOG POSTS:**
+- Blog posts are educational/informational articles, NOT case reports
+- Required information is much simpler than case articles
+- Focus on whether the draft has enough content to write a quality blog post
+
+**What CAN be generated/inferred (DO NOT flag these):**
+- title (can be extracted from topic or generated from content)
+- description (can be written from the draft content)
+- published_date (will be set automatically)
+- tags (can be inferred from topic and content)
+- published (will be set to true)
+
+**What to CHECK:**
+1. **Clear Topic**: Is there a clear topic or subject matter?
+2. **Key Points**: Are there enough ideas/points to write a substantial article?
+3. **Featured Image**: Is there a featured image marked? (Recommended but not required)
+
+**Focus Areas:**
+1. Is there a clear topic/subject for the blog post?
+2. Are there enough key points or ideas to write a quality article (at least 2-3 main ideas)?
+3. Is there a featured image? (Not critical but highly recommended)
+
+Return your analysis as JSON:
+\`\`\`json
+{
+  "isComplete": true/false,
+  "canProceed": true/false,
+  "hasFeaturedImage": true/false,
+  "missingCritical": [],
+  "missingHelpful": [],
+  "issues": [],
+  "suggestions": []
+}
+\`\`\`
+
+Be pragmatic - if there's a clear topic with 2-3 key points or ideas, mark canProceed as true.
+`
+    };
+  }
+  
+  // Case validation (existing logic)
   return {
     system: SYSTEM_PROMPT,
     user: `Review this draft and identify ONLY truly missing information that CANNOT be inferred or generated.
