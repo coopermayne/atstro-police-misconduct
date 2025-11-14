@@ -371,17 +371,18 @@ ${contentSchema}
 4. Import only the components you actually use
 5. Use components intelligently based on their props and functionality
 6. Include content warnings at the top if needed
-7. Cite all sources
+7. Cite all sources in a ## Sources section
 8. Use proper heading hierarchy (## for main sections)
 9. Write in clear, accessible language
 10. Be factual and objective
-11. **IMPORTANT: If documents exist in metadata, you MUST:**
-    - Import DocumentsList component
-    - Add <DocumentsList documents={frontmatter.documents} /> in an appropriate section
-    - Typically place it in a "## Related Documents" or "## Legal Documents" section
-    - Place it before the "## Sources" section
-12. Reference documents naturally in the article text (e.g., "According to court filings...", "The police report states...")
-13. **USE CUSTOM MEDIA METADATA INTELLIGENTLY**: Each media item in "Available Media" contains metadata from the draft. Transform this into publication-ready content:
+11. **CRITICAL: DO NOT create sections for documents, external links, or related cases:**
+    - Documents are automatically displayed in a "Related Documents" section via DocumentsList component
+    - External links are automatically displayed in an "External Coverage & Resources" section via ExternalLinkCard components
+    - Related cases are automatically shown at the bottom of the page
+    - DO NOT manually create these sections or list these items in your article
+    - DO NOT include "## Related Documents" or "## External Links" headings
+12. Reference documents and external sources naturally in the article text (e.g., "According to court filings...", "News outlets reported...")
+13. End your article with a ## Sources section listing primary sources only (not the documents or external links)
     - **Captions/Descriptions**: Clean up and make professional. Fix grammar, add proper punctuation, ensure complete sentences
     - **Example**: "this is a video of the use of force incident" → "Body camera footage documenting the use of force incident"
     - **Alt text**: Create descriptive, accessible text from available metadata (alt > title > caption > description)
@@ -428,13 +429,13 @@ charges_filed: ${metadata.charges_filed !== undefined ? metadata.charges_filed :
 civil_lawsuit_filed: ${metadata.civil_lawsuit_filed !== undefined ? metadata.civil_lawsuit_filed : 'null'}
 bodycam_available: ${metadata.bodycam_available !== undefined ? metadata.bodycam_available : 'null'}
 documents: ${metadata.documents ? JSON.stringify(metadata.documents) : 'null'}
+external_links: ${metadata.external_links ? JSON.stringify(metadata.external_links) : 'null'}
 ---
 
 import CloudflareImage from '../../components/CloudflareImage.astro';
 import CloudflareVideo from '../../components/CloudflareVideo.astro';
-${metadata.documents ? "import DocumentsList from '../../components/DocumentsList.astro';" : ''}
 
-${metadata.content_warning ? '**Content Warning:** This article contains descriptions of [violence/death/etc].\n\n' : ''}
+${metadata.content_warning ? '**Content Warning:** This article contains descriptions of [violence/death/etc].\\n\\n' : ''}
 [Your article content here with proper headings, embedded media, citations, etc.]
 
 ## Timeline
@@ -444,11 +445,6 @@ ${metadata.content_warning ? '**Content Warning:** This article contains descrip
 ## Legal Status
 
 [Current legal status and outcomes]
-
-${metadata.documents && metadata.documents.length > 0 ? `## Related Documents
-
-<DocumentsList documents={frontmatter.documents} />
-` : ''}
 
 ## Sources
 
@@ -504,12 +500,16 @@ ${contentSchema}
 6. Embed media using the available MDX components shown above
 7. Import only the components you actually use
 8. Include a clear takeaway/conclusion
-9. If documents exist in frontmatter, include <DocumentsList documents={frontmatter.documents} /> in the appropriate section (usually before Related Resources)
+9. **CRITICAL: DO NOT create sections for documents or external links:**
+    - Documents are automatically displayed in a "Related Documents" section
+    - External links are automatically displayed in an "External Resources" section
+    - Related posts are automatically shown at the bottom
+    - DO NOT manually create these sections or list these items
+10. Reference documents and external resources naturally in the article text when relevant
 
 **Component Usage Examples:**
 - For videos: <CloudflareVideo videoId="abc123" caption="Example of..." />
 - For images: <CloudflareImage imageId="xyz789" alt="Diagram" caption="Visual explanation" />
-- For documents: <DocumentsList documents={frontmatter.documents} /> (REQUIRED if documents array exists in metadata)
 
 **Output Format:**
 Return the complete MDX file content with frontmatter:
@@ -523,23 +523,17 @@ tags: ${JSON.stringify(metadata.tags)}
 published: ${metadata.published}
 featured_image: ${metadata.featured_image || 'null'}
 documents: ${metadata.documents || 'null'}
+external_links: ${metadata.external_links || 'null'}
 ---
 
 import CloudflareImage from '../../components/CloudflareImage.astro';
 import CloudflareVideo from '../../components/CloudflareVideo.astro';
-${metadata.documents ? "import DocumentsList from '../../components/DocumentsList.astro';" : ''}
 
 [Your article content with proper headings, embedded media, examples, etc.]
 
 ## Key Takeaways
 
 [Summary bullets]
-
-${metadata.documents ? '\n<DocumentsList documents={frontmatter.documents} />\n' : ''}
-
-## Related Resources
-
-[Links to related content]
 \`\`\`
 
 Generate the complete article now.`

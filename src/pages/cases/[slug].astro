@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 import DocumentsList from '../../components/DocumentsList.astro';
+import ExternalLinkCard from '../../components/ExternalLinkCard.astro';
 import RelatedCases from '../../components/RelatedCases.astro';
 import { getCollection } from 'astro:content';
 
@@ -118,6 +119,21 @@ const { Content } = await caseItem.render();
         {caseItem.data.documents && caseItem.data.documents.length > 0 && (
           <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
             <DocumentsList documents={caseItem.data.documents} />
+          </div>
+        )}
+        
+        <!-- External Links Section -->
+        {caseItem.data.external_links && caseItem.data.external_links.length > 0 && (
+          <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">External Coverage & Resources</h2>
+            {caseItem.data.external_links.map(link => (
+              <ExternalLinkCard
+                url={link.url}
+                title={link.title}
+                description={link.description}
+                icon={link.icon || 'generic'}
+              />
+            ))}
           </div>
         )}
         

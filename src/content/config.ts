@@ -47,6 +47,14 @@ const casesCollection = defineCollection({
       url: z.string(),
     })).nullable().optional(),
     
+    // External Links
+    external_links: z.array(z.object({
+      title: z.string(),
+      description: z.string().optional(),
+      url: z.string(),
+      icon: z.enum(['news', 'video', 'generic']).optional(),
+    })).nullable().optional(),
+    
     // Relationships
     related_cases: z.array(z.string()).nullable().optional(), // Array of case slugs
     attorney: z.string().nullable().optional(), // Attorney or law firm representing victim
@@ -85,6 +93,14 @@ const postsCollection = defineCollection({
       title: z.string(),
       description: z.string(),
       url: z.string(),
+    })).nullable().optional(),
+    
+    // External Links
+    external_links: z.array(z.object({
+      title: z.string(),
+      description: z.string().optional(),
+      url: z.string(),
+      icon: z.enum(['news', 'video', 'generic']).optional(),
     })).nullable().optional(),
   }),
 });

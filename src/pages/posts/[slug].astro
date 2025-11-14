@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 import DocumentsList from '../../components/DocumentsList.astro';
+import ExternalLinkCard from '../../components/ExternalLinkCard.astro';
 import { getCollection } from 'astro:content';
 
 // Helper function to create slug from text
@@ -74,6 +75,21 @@ const relatedPosts = allPosts
       {post.data.documents && post.data.documents.length > 0 && (
         <div class="mt-8">
           <DocumentsList documents={post.data.documents} />
+        </div>
+      )}
+      
+      <!-- External Links Section -->
+      {post.data.external_links && post.data.external_links.length > 0 && (
+        <div class="mt-8">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">External Resources</h2>
+          {post.data.external_links.map(link => (
+            <ExternalLinkCard
+              url={link.url}
+              title={link.title}
+              description={link.description}
+              icon={link.icon || 'generic'}
+            />
+          ))}
         </div>
       )}
     </div>
