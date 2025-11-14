@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "node scripts/copy-pagefind.js --silent && astro dev",
     "dev:search": "node scripts/copy-pagefind.js && astro dev",
     "build": "astro build && npx pagefind --site dist",
     "build:search": "astro build && npx pagefind --site dist && node scripts/copy-pagefind.js",

@@ -15,6 +15,9 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const SOURCE = path.join(ROOT_DIR, 'dist', 'pagefind');
 const TARGET = path.join(ROOT_DIR, 'public', 'pagefind');
 
+// Check for --silent flag
+const silent = process.argv.includes('--silent');
+
 function copyRecursive(src, dest) {
   const exists = fs.existsSync(src);
   const stats = exists && fs.statSync(src);
@@ -37,8 +40,10 @@ function copyRecursive(src, dest) {
 
 try {
   if (!fs.existsSync(SOURCE)) {
-    console.error('❌ Pagefind directory not found. Run `npm run build` first.');
-    process.exit(1);
+    if (!silent) {
+      console.log('ℹ️  Pagefind not found. Run `npm run build` to enable search.');
+    }
+    process.exit(0); // Exit successfully, just skip the copy
   }
 
   // Remove old pagefind files
@@ -49,8 +54,10 @@ try {
   // Copy new pagefind files
   copyRecursive(SOURCE, TARGET);
   
-  console.log('✅ Pagefind files copied to public/ directory');
-  console.log('   Search will now work in dev mode!');
+  if (!silent) {
+    console.log('✅ Pagefind files copied to public/ directory');
+    console.log('   Search will now work in dev mode!');
+  }
 } catch (error) {
   console.error('❌ Error copying Pagefind files:', error.message);
   process.exit(1);
