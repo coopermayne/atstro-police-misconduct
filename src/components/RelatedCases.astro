@@ -1,0 +1,139 @@
+---
+/**
+ * Related Cases Component
+ * Shows related cases based on relationships
+ */
+import { getCollection } from 'astro:content';
+
+interface Props {
+  currentSlug: string;
+  relatedCaseSlugs?: string[];
+  agency?: string;
+  forceType?: string[];
+  county?: string;
+  maxResults?: number;
+}
+
+const { 
+  currentSlug, 
+  relatedCaseSlugs = [],
+  agency,
+  forceType = [],
+  county,
+  maxResults = 4 
+} = Astro.props;
+
+// Get all published cases
+const allCases = await getCollection('cases', ({ data }) => data.published);
+
+// Start with explicitly related cases
+let relatedCases = relatedCaseSlugs.length > 0
+  ? allCases.filter(c => relatedCaseSlugs.includes(c.slug) && c.slug !== currentSlug)
+  : [];
+
+// If we need more, find cases by similarity
+if (relatedCases.length < maxResults) {
+  const similarCases = allCases
+    .filter(c => {
+      if (c.slug === currentSlug) return false;
+      if (relatedCaseSlugs.includes(c.slug)) return false; // Already included
+      
+      // Score by similarity
+      let score = 0;
+      
+      // Same agency (highest priority)
+      if (agency && c.data.agencies?.includes(agency)) score += 3;
+      
+      // Same force type
+      if (forceType.length > 0 && c.data.force_type) {
+        const overlap = forceType.filter(ft => c.data.force_type?.includes(ft));
+        score += overlap.length * 2;
+      }
+      
+      // Same county
+      if (county && c.data.county === county) score += 1;
+      
+      return score > 0;
+    })
+    .sort((a, b) => {
+      // Sort by score (recalculate)
+      let scoreA = 0, scoreB = 0;
+      
+      if (agency) {
+        if (a.data.agencies?.includes(agency)) scoreA += 3;
+        if (b.data.agencies?.includes(agency)) scoreB += 3;
+      }
+      
+      if (forceType.length > 0) {
+        const overlapA = forceType.filter(ft => a.data.force_type?.includes(ft));
+        const overlapB = forceType.filter(ft => b.data.force_type?.includes(ft));
+        scoreA += overlapA.length * 2;
+        scoreB += overlapB.length * 2;
+      }
+      
+      if (county) {
+        if (a.data.county === county) scoreA += 1;
+        if (b.data.county === county) scoreB += 1;
+      }
+      
+      return scoreB - scoreA;
+    })
+    .slice(0, maxResults - relatedCases.length);
+  
+  relatedCases = [...relatedCases, ...similarCases];
+}
+
+// Limit to maxResults
+relatedCases = relatedCases.slice(0, maxResults);
+
+// Helper function to format date
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+---
+
+{relatedCases.length > 0 && (
+  <section class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Related Cases</h2>
+    
+    <div class="grid gap-6 md:grid-cols-2">
+      {relatedCases.map(relatedCase => (
+        <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 p-6">
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">
+            <a href={`/cases/${relatedCase.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
+              {relatedCase.data.title}
+            </a>
+          </h3>
+          
+          <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+            <span>{formatDate(relatedCase.data.incident_date)}</span>
+            <span class="mx-2">•</span>
+            <span>{relatedCase.data.city}, {relatedCase.data.county}</span>
+          </div>
+          
+          <p class="text-sm text-gray-700 dark:text-gray-300 mb-4 line-clamp-2">
+            {relatedCase.data.description}
+          </p>
+          
+          {relatedCase.data.agencies && relatedCase.data.agencies.length > 0 && (
+            <div class="flex flex-wrap gap-2 mb-3">
+              {relatedCase.data.agencies.slice(0, 2).map(agency => (
+                <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">
+                  {agency}
+                </span>
+              ))}
+            </div>
+          )}
+          
+          <a 
+            href={`/cases/${relatedCase.slug}`}
+            class="text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 text-sm font-medium inline-flex items-center"
+          >
+            Read case →
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+)}

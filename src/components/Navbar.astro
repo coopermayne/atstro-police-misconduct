@@ -44,7 +44,9 @@ import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
             <SunIcon id="light-mode-icon-mobile" className="w-6 h-6 hidden dark:block" />
             <MoonIcon id="dark-mode-icon-mobile" className="w-6 h-6 block dark:hidden" />
           </button>
-          <MagnifyingGlassIcon className="w-6 h-6 text-gray-400 hover:text-gray-300 cursor-pointer" />
+          <button data-search-trigger aria-label="Search" class="text-gray-400 hover:text-gray-300 focus:outline-none">
+            <MagnifyingGlassIcon className="w-6 h-6 cursor-pointer" />
+          </button>
         </div>
     </div>
 
@@ -61,7 +63,9 @@ import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
                   <SunIcon id="light-mode-icon-desktop" className="w-6 h-6 hidden dark:block" />
                   <MoonIcon id="dark-mode-icon-desktop" className="w-6 h-6 block dark:hidden" />
               </button>
-              <MagnifyingGlassIcon className="w-6 h-6 text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 cursor-pointer" />
+              <button data-search-trigger aria-label="Search" class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none">
+                <MagnifyingGlassIcon className="w-6 h-6 cursor-pointer" />
+              </button>
           </div>
       </div>
   </div>

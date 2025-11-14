@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 import DocumentsList from '../../components/DocumentsList.astro';
+import RelatedCases from '../../components/RelatedCases.astro';
 import { getCollection } from 'astro:content';
 
 // Helper function to create slug from text
@@ -21,7 +22,7 @@ const { Content } = await caseItem.render();
 ---
 
 <MainLayout content={{ title: caseItem.data.title }}>
-  <article class="max-w-5xl mx-auto px-6 py-8">
+  <article class="max-w-5xl mx-auto px-6 py-8" data-pagefind-body>
     <!-- Breadcrumb / Back Navigation -->
     <nav class="mb-6">
       <a 
@@ -121,6 +122,15 @@ const { Content } = await caseItem.render();
             <DocumentsList documents={caseItem.data.documents} />
           </div>
         )}
+        
+        <!-- Related Cases Section -->
+        <RelatedCases 
+          currentSlug={caseItem.slug}
+          relatedCaseSlugs={caseItem.data.related_cases || []}
+          agency={caseItem.data.agencies?.[0]}
+          forceType={caseItem.data.force_type || []}
+          county={caseItem.data.county}
+        />
       </div>
     </header>
   </article>

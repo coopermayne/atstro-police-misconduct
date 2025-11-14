@@ -1,0 +1,73 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout content={{ title: 'Search' }}>
+  <div class="max-w-5xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">Search</h1>
+    
+    <div class="mb-8">
+      <div id="search"></div>
+    </div>
+    
+    <div id="results" class="space-y-6"></div>
+  </div>
+</MainLayout>
+
+<style>
+  :root {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: #dc2626;
+    --pagefind-ui-text: #374151;
+    --pagefind-ui-background: #ffffff;
+    --pagefind-ui-border: #e5e7eb;
+    --pagefind-ui-tag: #f3f4f6;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-image-border-radius: 4px;
+    --pagefind-ui-image-box-ratio: 3 / 2;
+    --pagefind-ui-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .dark {
+    --pagefind-ui-primary: #ef4444;
+    --pagefind-ui-text: #e5e7eb;
+    --pagefind-ui-background: #1f2937;
+    --pagefind-ui-border: #374151;
+    --pagefind-ui-tag: #374151;
+  }
+</style>
+
+<script>
+  // Load Pagefind UI dynamically at runtime (not during build)
+  if (typeof window !== 'undefined') {
+    // Load CSS
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/pagefind/pagefind-ui.css';
+    document.head.appendChild(link);
+    
+    // Load and initialize Pagefind UI
+    const script = document.createElement('script');
+    script.src = '/pagefind/pagefind-ui.js';
+    script.type = 'text/javascript';
+    script.onload = () => {
+      // @ts-ignore - PagefindUI is loaded dynamically
+      new window.PagefindUI({ 
+        element: '#search',
+        showSubResults: true,
+        showImages: false,
+        excerptLength: 30,
+        resetStyles: false,
+      });
+    };
+    script.onerror = () => {
+      const searchEl = document.getElementById('search');
+      if (searchEl) {
+        searchEl.innerHTML = 
+          '<p class="text-gray-600 dark:text-gray-400">Search is not available. Please build the site first with <code>npm run build</code></p>';
+      }
+    };
+    document.head.appendChild(script);
+  }
+</script>

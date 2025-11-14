@@ -26,7 +26,7 @@ const casesCollection = defineCollection({
     // Incident Details
     cause_of_death: z.string().nullable().optional(),
     armed_status: z.string().nullable().optional(),
-    threat_level: z.enum(['No threat', 'Low', 'Moderate', 'High', 'Deadly']).nullable().optional(),
+    threat_level: z.enum(['No Threat', 'Low', 'Moderate', 'High', 'Deadly']).nullable().optional(),
     force_type: z.array(z.string()).nullable().optional(), // e.g., ['Shooting', 'Beating', 'Taser', 'Restraint']
     shooting_officers: z.array(z.string()).nullable().optional(), // Officer names involved
     
@@ -46,6 +46,10 @@ const casesCollection = defineCollection({
       description: z.string(),
       url: z.string(),
     })).nullable().optional(),
+    
+    // Relationships
+    related_cases: z.array(z.string()).nullable().optional(), // Array of case slugs
+    attorney: z.string().nullable().optional(), // Attorney or law firm representing victim
   }),
 });
 

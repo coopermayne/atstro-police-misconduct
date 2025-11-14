@@ -102,11 +102,32 @@ function formatFrontmatter(metadata) {
     } else if (typeof value === 'number') {
       yaml += `${key}: ${value}\n`;
     } else if (Array.isArray(value)) {
-      yaml += `${key}: [${value.map(v => `"${v}"`).join(', ')}]\n`;
+      if (value.length === 0) {
+        yaml += `${key}: []\n`;
+      } else if (typeof value[0] === 'string') {
+        yaml += `${key}: [${value.map(v => `"${v}"`).join(', ')}]\n`;
+      } else if (typeof value[0] === 'object') {
+        // Handle array of objects (like documents)
+        yaml += `${key}:\n`;
+        for (const item of value) {
+          yaml += `  - `;
+          const entries = Object.entries(item);
+          for (let i = 0; i < entries.length; i++) {
+            const [k, v] = entries[i];
+            if (i === 0) {
+              yaml += `${k}: "${v}"\n`;
+            } else {
+              yaml += `    ${k}: "${v}"\n`;
+            }
+          }
+        }
+      } else {
+        yaml += `${key}: [${value.join(', ')}]\n`;
+      }
     } else if (typeof value === 'string') {
       yaml += `${key}: "${value}"\n`;
     } else if (typeof value === 'object') {
-      // Handle objects like documents array
+      // Handle single objects - shouldn't normally happen but fallback
       yaml += `${key}: ${JSON.stringify(value)}\n`;
     }
   }

@@ -1,0 +1,74 @@
+---
+// Search Modal Component
+---
+
+<!-- Search Modal -->
+<div id="search-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+  <!-- Backdrop -->
+  <div id="search-backdrop" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"></div>
+  
+  <!-- Modal Content -->
+  <div class="flex min-h-screen items-start justify-center p-4 sm:p-6 pt-20">
+    <div class="relative w-full max-w-3xl bg-white dark:bg-gray-800 rounded-lg shadow-2xl transform transition-all">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Search</h2>
+        <button id="close-search-modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Search Content -->
+      <div class="px-6 py-6">
+        <div id="search-container"></div>
+      </div>
+      
+      <!-- Footer hint -->
+      <div class="px-6 py-3 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-500 dark:text-gray-400">
+        <span class="inline-flex items-center">
+          <kbd class="px-2 py-1 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600">ESC</kbd>
+          <span class="ml-2">to close</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: #dc2626;
+    --pagefind-ui-text: #374151;
+    --pagefind-ui-background: #ffffff;
+    --pagefind-ui-border: #e5e7eb;
+    --pagefind-ui-tag: #f3f4f6;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-image-border-radius: 4px;
+    --pagefind-ui-image-box-ratio: 3 / 2;
+    --pagefind-ui-font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .dark {
+    --pagefind-ui-primary: #ef4444;
+    --pagefind-ui-text: #e5e7eb;
+    --pagefind-ui-background: #1f2937;
+    --pagefind-ui-border: #374151;
+    --pagefind-ui-tag: #374151;
+  }
+
+  #search-modal {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>
