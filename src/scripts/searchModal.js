@@ -34,6 +34,14 @@ async function initializePagefind() {
         resetStyles: false,
       });
       pagefindLoaded = true;
+      
+      // Focus on search input after initialization
+      setTimeout(() => {
+        const searchInput = document.querySelector('#search-container input');
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }, 100);
     }
   } catch (error) {
     console.error('Failed to load Pagefind:', error);
