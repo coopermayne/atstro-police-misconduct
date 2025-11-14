@@ -436,6 +436,29 @@
         "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67007eb4-973a-476a-6764-248457c38200/large",
         "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67007eb4-973a-476a-6764-248457c38200/public"
       }
+    },
+    "image-6a66b8b4-d7c0-47a1-b287-a5fc185dff9f": {
+      "id": "image-6a66b8b4-d7c0-47a1-b287-a5fc185dff9f",
+      "imageId": "92d14430-52d8-4217-a7d7-a49f5fc34f00",
+      "fileName": "download-1763160829056.webp",
+      "sourceUrl": "https://tributecenteronline.s3-accelerate.amazonaws.com/ObituaryMedias/82192643/Image.webp",
+      "description": "Photo of Everett Byram from his online tribute page",
+      "alt": "Everett Byram memorial photo",
+      "caption": "Photo of Everett Byram from his online tribute page",
+      "tags": [],
+      "addedAt": "2025-11-14T22:53:49.796Z",
+      "componentProps": {
+        "imageId": "92d14430-52d8-4217-a7d7-a49f5fc34f00",
+        "alt": "Everett Byram memorial photo",
+        "variant": "public",
+        "class": ""
+      },
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/92d14430-52d8-4217-a7d7-a49f5fc34f00/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/92d14430-52d8-4217-a7d7-a49f5fc34f00/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/92d14430-52d8-4217-a7d7-a49f5fc34f00/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/92d14430-52d8-4217-a7d7-a49f5fc34f00/public"
+      }
     }
   },
   "documents": {
@@ -556,6 +579,66 @@
         "contentType": "application/pdf",
         "originalFileName": "incident-report.pdf",
         "uniqueFileName": "incident-report-20251114191640.pdf",
+        "needsPublicUrl": false
+      }
+    },
+    "document-01701463-928e-41be-bdc4-5f029145efb0": {
+      "id": "document-01701463-928e-41be-bdc4-5f029145efb0",
+      "fileName": "[50] 2024.03.29 - First Amended Complaint.pdf",
+      "r2Key": "50-20240329-first-amended-complaint-20251114225350.pdf",
+      "publicUrl": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/50-20240329-first-amended-complaint-20251114225350.pdf",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/s8brojvo2d58pijank3a2/50-2024.03.29-First-Amended-Complaint.pdf?rlkey=9wkdslk4x4qk6kbf6hzjgxfw3&st=3vw8r9jz&dl=0",
+      "description": "first amended complaint in civil case",
+      "linkText": "[50] 2024.03.29 - First Amended Complaint",
+      "fileType": "PDF",
+      "fileSize": null,
+      "tags": [],
+      "addedAt": "2025-11-14T22:53:51.093Z",
+      "componentProps": {
+        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/50-20240329-first-amended-complaint-20251114225350.pdf",
+        "text": "[50] 2024.03.29 - First Amended Complaint",
+        "download": false,
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      "metadata": {
+        "success": true,
+        "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/50-20240329-first-amended-complaint-20251114225350.pdf",
+        "key": "50-20240329-first-amended-complaint-20251114225350.pdf",
+        "bucket": "police-misconduct-website",
+        "contentType": "application/pdf",
+        "originalFileName": "[50] 2024.03.29 - First Amended Complaint.pdf",
+        "uniqueFileName": "50-20240329-first-amended-complaint-20251114225350.pdf",
+        "needsPublicUrl": false
+      }
+    },
+    "document-68086297-9a4c-46d1-bb77-034ccf140b1d": {
+      "id": "document-68086297-9a4c-46d1-bb77-034ccf140b1d",
+      "fileName": "los-angeles-county-district-attorney-report.pdf",
+      "r2Key": "los-angeles-county-district-attorney-report-20251114225351.pdf",
+      "publicUrl": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/los-angeles-county-district-attorney-report-20251114225351.pdf",
+      "sourceUrl": "https://da.lacounty.gov/sites/default/files/pdf/JSID-OIS-03-29-24-Byram.pdf",
+      "description": "DA report describing incident and why they chose not to press criminal charges",
+      "linkText": "Los Angeles County District Attorney Report",
+      "fileType": "PDF",
+      "fileSize": null,
+      "tags": [],
+      "addedAt": "2025-11-14T22:53:52.205Z",
+      "componentProps": {
+        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/los-angeles-county-district-attorney-report-20251114225351.pdf",
+        "text": "Los Angeles County District Attorney Report",
+        "download": false,
+        "target": "_blank",
+        "rel": "noopener noreferrer"
+      },
+      "metadata": {
+        "success": true,
+        "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/los-angeles-county-district-attorney-report-20251114225351.pdf",
+        "key": "los-angeles-county-district-attorney-report-20251114225351.pdf",
+        "bucket": "police-misconduct-website",
+        "contentType": "application/pdf",
+        "originalFileName": "los-angeles-county-district-attorney-report.pdf",
+        "uniqueFileName": "los-angeles-county-district-attorney-report-20251114225351.pdf",
         "needsPublicUrl": false
       }
     }

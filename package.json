@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "start": "node scripts/cli.js",
     "dev": "node scripts/sync-registry.js --silent && node scripts/copy-pagefind.js --silent && astro dev",
     "dev:search": "node scripts/sync-registry.js && node scripts/copy-pagefind.js && astro dev",
     "build": "node scripts/sync-registry.js --silent && astro build && npx pagefind --site dist",
