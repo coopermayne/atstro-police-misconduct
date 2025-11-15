@@ -27,6 +27,9 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Check for debug flag
+const DEBUG_MODE = process.argv.includes('--debug');
+
 /**
  * Display prompt to user and ask for confirmation before sending to AI
  * @param {string} prompt - The prompt to display
@@ -34,6 +37,11 @@ const __dirname = path.dirname(__filename);
  * @returns {Promise<boolean>} - True if user confirms, false otherwise
  */
 async function displayPromptAndConfirm(prompt, promptName) {
+  if (!DEBUG_MODE) {
+    // In normal mode, just return true without displaying
+    return true;
+  }
+  
   console.log('\n' + '═'.repeat(80));
   console.log(`📋 ${promptName}`);
   console.log('═'.repeat(80) + '\n');
@@ -68,6 +76,11 @@ async function displayPromptAndConfirm(prompt, promptName) {
  * @returns {Promise<boolean>} - True if user confirms, false otherwise
  */
 async function displayResponseAndConfirm(response, responseName) {
+  if (!DEBUG_MODE) {
+    // In normal mode, just return true without displaying
+    return true;
+  }
+  
   console.log('\n' + '═'.repeat(80));
   console.log(`🤖 ${responseName}`);
   console.log('═'.repeat(80) + '\n');
@@ -500,6 +513,9 @@ CRITICAL: Adhere strictly to word limits. Be concise and precise. Base descripti
 
 
   try {
+    if (!DEBUG_MODE) {
+      console.log('   → Extracting media metadata with AI...');
+    }
     await displayPromptAndConfirm(prompt, 'MEDIA METADATA EXTRACTION PROMPT');
     
     const message = await anthropic.messages.create({
@@ -513,6 +529,10 @@ CRITICAL: Adhere strictly to word limits. Be concise and precise. Base descripti
     
     const responseText = message.content[0].text.trim();
     await displayResponseAndConfirm(responseText, 'MEDIA METADATA EXTRACTION RESPONSE');
+    
+    if (!DEBUG_MODE) {
+      console.log('   ✓ Media metadata extracted');
+    }
     
     // Extract JSON from response (might be wrapped in markdown)
     const jsonMatch = responseText.match(/\[[\s\S]*\]/);
@@ -670,6 +690,10 @@ function getDraftFiles() {
 async function main() {
   console.log('📝 Draft Publisher\n');
   
+  if (DEBUG_MODE) {
+    console.log('🔍 Debug mode enabled - you will see all AI prompts and responses\n');
+  }
+  
   const draftFiles = getDraftFiles();
   
   if (draftFiles.length === 0) {
@@ -826,8 +850,7 @@ async function main() {
     throw new Error('Unable to determine article type from draft path');
   }
   
-  console.log(`   Type: ${articleType}`);
-  console.log(`   Extracting metadata...`);
+  console.log(`   Type: ${articleType}\n`);
   
   let generatedContent;
   if (isCase) {
@@ -836,8 +859,7 @@ async function main() {
     generatedContent = await generateBlogPost(draftPath, result);
   }
   
-  console.log(`   ✓ Metadata extracted`);
-  console.log(`   ✓ Article content generated`);
+  console.log(`\n   ✓ Content generation complete`);
   console.log(`   Slug: ${generatedContent.slug}\n`);
   
   console.log('─'.repeat(80) + '\n');
@@ -1372,6 +1394,9 @@ async function generateCaseArticle(draftPath, mediaPackage) {
     mediaPackage
   );
   
+  if (!DEBUG_MODE) {
+    console.log('   → Extracting case metadata...');
+  }
   await displayPromptAndConfirm(metadataPrompt, 'CASE METADATA EXTRACTION PROMPT');
   
   const metadataResponse = await anthropic.messages.create({
@@ -1385,6 +1410,10 @@ async function generateCaseArticle(draftPath, mediaPackage) {
   
   const metadataText = metadataResponse.content[0].text;
   await displayResponseAndConfirm(metadataText, 'CASE METADATA EXTRACTION RESPONSE');
+  
+  if (!DEBUG_MODE) {
+    console.log('   ✓ Case metadata extracted');
+  }
   
   const metadataMatch = metadataText.match(/```json\n([\s\S]+?)\n```/);
   
@@ -1412,6 +1441,9 @@ async function generateCaseArticle(draftPath, mediaPackage) {
     componentReference
   );
   
+  if (!DEBUG_MODE) {
+    console.log('   → Generating article content...');
+  }
   await displayPromptAndConfirm(articlePrompt, 'CASE ARTICLE GENERATION PROMPT');
   
   const articleResponse = await anthropic.messages.create({
@@ -1425,6 +1457,10 @@ async function generateCaseArticle(draftPath, mediaPackage) {
   
   const fullArticle = articleResponse.content[0].text;
   await displayResponseAndConfirm(fullArticle, 'CASE ARTICLE GENERATION RESPONSE');
+  
+  if (!DEBUG_MODE) {
+    console.log('   ✓ Article content generated');
+  }
   
   const mdxMatch = fullArticle.match(/```mdx\n([\s\S]+?)\n```/);
   
@@ -1550,6 +1586,9 @@ async function generateBlogPost(draftPath, mediaPackage) {
     mediaPackage
   );
   
+  if (!DEBUG_MODE) {
+    console.log('   → Extracting blog metadata...');
+  }
   await displayPromptAndConfirm(metadataPrompt, 'BLOG METADATA EXTRACTION PROMPT');
   
   const metadataResponse = await anthropic.messages.create({
@@ -1563,6 +1602,10 @@ async function generateBlogPost(draftPath, mediaPackage) {
   
   const metadataText = metadataResponse.content[0].text;
   await displayResponseAndConfirm(metadataText, 'BLOG METADATA EXTRACTION RESPONSE');
+  
+  if (!DEBUG_MODE) {
+    console.log('   ✓ Blog metadata extracted');
+  }
   
   const metadataMatch = metadataText.match(/```json\n([\s\S]+?)\n```/);
   
@@ -1590,6 +1633,9 @@ async function generateBlogPost(draftPath, mediaPackage) {
     componentReference
   );
   
+  if (!DEBUG_MODE) {
+    console.log('   → Generating article content...');
+  }
   await displayPromptAndConfirm(articlePrompt, 'BLOG ARTICLE GENERATION PROMPT');
   
   const articleResponse = await anthropic.messages.create({
@@ -1603,6 +1649,10 @@ async function generateBlogPost(draftPath, mediaPackage) {
   
   const fullArticle = articleResponse.content[0].text;
   await displayResponseAndConfirm(fullArticle, 'BLOG ARTICLE GENERATION RESPONSE');
+  
+  if (!DEBUG_MODE) {
+    console.log('   ✓ Article content generated');
+  }
   
   const mdxMatch = fullArticle.match(/```mdx\n([\s\S]+?)\n```/);
   
