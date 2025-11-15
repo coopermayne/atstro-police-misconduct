@@ -1,0 +1,463 @@
+/**
+ * AI Prompt Templates
+ * 
+ * Structured prompts for different stages of content generation.
+ */
+
+import { formatRegistryForAI } from './metadata-registry.js';
+
+export const SYSTEM_PROMPT = `You are an expert legal writer specializing in civil rights law and police misconduct cases. Your role is to analyze case materials and create clear, accurate, factual documentation for a public-facing website.
+
+Your writing should:
+- Use an encyclopedic tone similar to Wikipedia - neutral, factual, and objective
+- Avoid emotional language, editorializing, or subjective characterizations (avoid phrases like "tragically," "unfortunately," "shockingly," or other emotive modifiers)
+- Present information in a balanced, dispassionate manner
+- Use clear, accessible language for general audiences while maintaining formality
+- Maintain accuracy
+- State facts directly without dramatic framing or narrative embellishment`;
+
+/**
+ * Prompt for validating draft completeness
+ */
+export function createDraftValidationPrompt(draftContent, contentSchema, contentType = 'case') {
+  const schemaSection = contentType === 'case' ? 'casesCollection' : 'postsCollection';
+  
+  if (contentType === 'post') {
+    return {
+      system: SYSTEM_PROMPT,
+      user: `Review this blog post draft and identify any missing critical information.
+
+**Draft Content:**
+${draftContent}
+
+**Content Schema (from src/content/config.ts):**
+${contentSchema}
+
+**IMPORTANT GUIDELINES FOR BLOG POSTS:**
+- Blog posts are educational/informational articles, NOT case reports
+- Required information is much simpler than case articles
+- Focus on whether the draft has enough content to write a quality blog post
+
+**What CAN be generated/inferred (DO NOT flag these):**
+- title (can be extracted from topic or generated from content)
+- description (can be written from the draft content)
+- published_date (will be set automatically)
+- tags (can be inferred from topic and content)
+- published (will be set to true)
+- documents (extracted from {{document: ...}} shortcodes)
+- external_links (extracted from {{link: ...}} shortcodes)
+
+**What to CHECK:**
+1. **Clear Topic**: Is there a clear topic or subject matter?
+2. **Key Points**: Are there enough ideas/points to write a substantial article?
+3. **Featured Image**: Is there a featured image marked? (Required)
+
+**Focus Areas:**
+1. Is there a clear topic/subject for the blog post?
+2. Are there enough key points or ideas to write a quality article (at least 2-3 main ideas)?
+3. Is there a featured image? (Required)
+
+Return your analysis as JSON:
+\`\`\`json
+{
+  "isComplete": true/false,
+  "canProceed": true/false,
+  "hasFeaturedImage": true/false,
+  "missingCritical": [],
+  "missingHelpful": [],
+  "issues": [],
+  "suggestions": []
+}
+\`\`\`
+
+Be pragmatic - if there's a clear topic with 2-3 key points or ideas, mark canProceed as true.
+`
+    };
+  }
+  
+  // Case validation (existing logic)
+  return {
+    system: SYSTEM_PROMPT,
+    user: `Review this draft and identify ONLY truly missing information that CANNOT be inferred or generated.
+
+**Draft Content:**
+${draftContent}
+
+**Content Schema (from src/content/config.ts):**
+${contentSchema}
+
+**IMPORTANT GUIDELINES:**
+- DO NOT flag fields that can be extracted, inferred, or generated from the draft
+- DO NOT flag auto-generated fields (like case_id, slugs, etc.)
+- ONLY flag information that is completely absent and cannot be reasonably inferred
+- MAKE REASONABLE INFERENCES from context - don't speculate, but use clear evidence:
+  * "tased" → force_type includes "Taser"
+  * "lawsuit filed" → civil_lawsuit_filed = true
+  * "he/his/him" pronouns → gender = "Male"
+  * "she/her" pronouns → gender = "Female"
+  * Gendered names (John, Mary) → gender can be inferred
+
+**What CAN be generated/inferred (DO NOT flag these):**
+- title (victim's name if mentioned anywhere)
+- description (can be written from any case summary/notes)
+- case_id (auto-generated from agency + date)
+- tags (can be inferred from incident type)
+- investigation_status (can be inferred from legal status mentions)
+- force_type (can be inferred from incident description)
+- threat_level (can be inferred from incident description)
+- civil_lawsuit_filed (can be inferred if lawsuit is mentioned)
+- bodycam_available (can be inferred if bodycam footage URL is provided or mentioned)
+- gender (CAN AND SHOULD be inferred from pronouns like "he/his/him" or "she/her" or gendered names)
+- age (can be inferred if context provides clues like "35-year-old" or job/role suggests age range)
+- documents (extracted from {{document: ...}} shortcodes)
+- external_links (extracted from {{link: ...}} shortcodes)
+
+**What CANNOT be inferred (flag these if missing):**
+- Victim's name (if not mentioned at all)
+- Victim's age (if not mentioned at all)
+- Date of incident (if no date provided)
+- Location (if location not specified)
+- Agency name (if no police department mentioned)
+- Race/ethnicity (NEVER assume - must be explicitly stated)
+
+**Be conservative but reasonable:**
+- if no featured image is explicitly marked, try to see if there is an obvious candidate image in the draft content that could serve as the featured image. If none can be reasonably identified, then flag as missing.
+- if there isn't, flag as missing.
+
+**Be conservative but reasonable:**
+- Gender: Use pronouns (he/she) or clearly gendered names to infer. Only flag if no evidence.
+- Age: Use explicit age mentions ("35-year-old") or reasonable inference from context. Flag if no clues.
+- Armed status: Infer from incident description ("unarmed", "holding a knife", etc.)
+
+**Focus Areas:**
+1. Is there enough basic information to write a case (name, date, location, what happened)?
+2. Is there a featured image URL? (CRITICAL - this cannot be generated)
+3. Are there demographic details that would improve the article but are missing?
+
+Return your analysis as JSON:
+\`\`\`json
+{
+  "isComplete": true/false,
+  "canProceed": true/false,
+  "hasFeaturedImage": true/false,
+  "missingCritical": [],
+  "missingHelpful": [],
+  "issues": [],
+  "suggestions": []
+}
+\`\`\`
+
+Be pragmatic - if there's enough info to write a quality article, mark canProceed as true even if some optional fields are missing.
+`
+  };
+}
+
+/**
+ * Prompt for generating case metadata
+ */
+export function createMetadataExtractionPrompt(draftContent, contentSchema, contentType = 'case', mediaAnalysis = null) {
+  const schemaSection = contentType === 'case' ? 'casesCollection' : 'postsCollection';
+  
+  // Extract processed documents for frontmatter
+  let documentsSection = '';
+  if (mediaAnalysis && mediaAnalysis.documents && mediaAnalysis.documents.length > 0) {
+    const processedDocs = mediaAnalysis.documents
+      .filter(d => d.document)
+      .map(d => d.document);
+    
+    if (processedDocs.length > 0) {
+      documentsSection = `\n**Processed Documents (include these in metadata):**\n${JSON.stringify(processedDocs, null, 2)}\n`;
+    }
+  }
+  
+  // Extract external links for frontmatter
+  let externalLinksSection = '';
+  if (mediaAnalysis && mediaAnalysis.links && mediaAnalysis.links.length > 0) {
+    externalLinksSection = `\n**External Links (include these in metadata):**\n${JSON.stringify(mediaAnalysis.links, null, 2)}\n`;
+  }
+  
+  // Extract featured image if marked
+  let featuredImageSection = '';
+  if (mediaAnalysis && mediaAnalysis.images && mediaAnalysis.images.length > 0) {
+    const featuredImage = mediaAnalysis.images.find(img => img.featured === true);
+    if (featuredImage) {
+      featuredImageSection = `\n**Featured Image (use this imageId for featured_image field):**\n${featuredImage.imageId}\n`;
+    }
+  }
+  
+  // Load canonical metadata registry
+  const registrySection = formatRegistryForAI(contentType);
+  
+  return {
+    system: SYSTEM_PROMPT,
+    user: `Based on this draft content, generate appropriate metadata values.
+
+**Draft Content:**
+${draftContent}
+
+**Canonical Metadata Registry:**
+The following is our canonical registry of standardized metadata values. Use these exact values when they match the case details (e.g., for agencies, counties, statuses, force types). This ensures consistency across all cases.
+
+${registrySection}
+
+**Content Schema (from src/content/config.ts):**
+${contentSchema}
+${documentsSection}${externalLinksSection}${featuredImageSection}
+**CRITICAL INSTRUCTION FOR DOCUMENTS FIELD:**
+${documentsSection ? '- You MUST use the "Processed Documents" array above EXACTLY as provided for the documents field\n- DO NOT extract document URLs from the draft content\n- DO NOT use original external URLs\n- The documents have already been uploaded to our R2 storage and the URLs are ready to use\n' : '- Set documents field to null if no processed documents are provided\n'}
+**CRITICAL INSTRUCTION FOR EXTERNAL_LINKS FIELD:**
+${externalLinksSection ? '- You MUST use the "External Links" array above EXACTLY as provided for the external_links field\n- DO NOT extract or modify external link URLs from the draft content\n- Use the link data exactly as parsed from {{link: ...}} shortcodes\n' : '- Set external_links field to null if no external links are provided\n'}
+**CRITICAL INSTRUCTION FOR FEATURED_IMAGE FIELD:**
+${featuredImageSection ? '- You MUST use the imageId provided in "Featured Image" section above\n- This is a Cloudflare Images ID, not a URL\n' : '- Set featured_image to null if no featured image is provided\n'}
+**Instructions:**
+1. Extract the schema for "${schemaSection}" from the provided TypeScript code
+2. Generate metadata that includes ALL fields defined in the schema (both required and optional)
+3. Make REASONABLE INFERENCES from the draft content - don't speculate wildly, but use clear evidence:
+   - Pronouns (he/his/him → "Male", she/her → "Female") for gender
+   - Gendered names (John → "Male", Mary → "Female") for gender
+   - Explicit age mentions ("35-year-old" → 35) for age
+   - Incident descriptions ("tased" → ["Taser"], "beaten" → ["Beating"]) for force_type
+   - Legal mentions ("lawsuit filed" → true, "settlement" → true) for civil_lawsuit_filed
+   - Evidence mentions ("body camera footage" → true) for bodycam_available
+4. **CRITICAL**: For the documents field, use ONLY the "Processed Documents" array provided above (if any). DO NOT extract or use URLs from the draft content.
+5. **CRITICAL**: For the external_links field, use ONLY the "External Links" array provided above (if any). DO NOT extract or modify URLs from the draft content.
+6. **CRITICAL**: For the featured_image field, use ONLY the imageId provided in "Featured Image" section above (if any).
+7. For fields where information is NOT available AND cannot be reasonably inferred, use null
+8. Return ONLY the metadata as a JSON object
+9. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
+10. For dates, use "YYYY-MM-DD" format as a STRING
+11. For case_id, use format: ca-[agency-slug]-[year]-[number]
+12. For tags, choose 3-5 relevant tags based on what you think is best fit... first check the registry for existing tags but if you think it's important to use a new one, you can.
+13. Be flexible - extract information from unstructured notes, lists, and links
+14. ALWAYS include every field from the schema - use null if you don't have enough information to infer after attempts.
+
+Return ONLY valid JSON matching the schema:
+\`\`\`json
+{
+  // Your extracted metadata here
+}
+\`\`\`
+`
+  };
+}
+/**
+ * Prompt for generating complete case article
+ */
+export function createCaseArticlePrompt(draftContent, mediaAnalysis, metadata, components = {}, contentSchema = '') {
+
+  return {
+    system: SYSTEM_PROMPT,
+    user: `Generate a complete, publication-ready article for this police misconduct case.
+
+**Draft Content:**
+${draftContent}
+
+**Available Media:**
+${JSON.stringify(mediaAnalysis, null, 2)}
+
+**Instructions:**
+1. Write in an ENCYCLOPEDIC TONE similar to Wikipedia:
+   - Neutral, dispassionate, and objective throughout
+   - Avoid emotional language, dramatic framing, or subjective characterizations
+   - No phrases like "tragically," "unfortunately," "shockingly," "forever altered," etc.
+   - Present facts directly without editorial commentary or value judgments
+   - State outcomes matter-of-factly (e.g., "died from injuries" not "tragically lost their life")
+2. Write a comprehensive case summary (3-5 paragraphs minimum)
+3. Include a clear timeline of events
+4. Embed media using the available MDX components shown above
+5. Import ONLY the components you actually use (only CloudflareImage and CloudflareVideo are available)
+6. Use components intelligently based on their props and functionality
+7. Include content warnings at the top if needed
+8. Use proper heading hierarchy (## for main sections)
+9. Write in clear, accessible language while maintaining encyclopedic formality
+10. Be strictly factual and objective
+11. **CRITICAL - ARTICLE STRUCTURE AND FLOW:**
+    - DO NOT follow the order or layout of content in the draft markdown file
+    - The draft is raw notes - your job is to craft a compelling, well-structured article
+    - Reorganize information to create the most logical and engaging narrative flow
+    - Integrate images and videos naturally throughout the article where they enhance understanding
+    - Place media strategically: after introducing relevant context, before detailed analysis, etc.
+    - Only reference documents or external links inline if they're critical to understanding a specific point
+    - Think like a journalist: lead with the most important information, build context, provide analysis
+12. **CRITICAL: DO NOT create sections for documents, external links, or related cases:**
+    - Documents are automatically displayed in a "Related Documents" section via DocumentsList component
+    - External links are automatically displayed in an "External Coverage & Resources" section via ExternalLinkCard components
+    - Related cases are automatically shown at the bottom of the page
+    - DO NOT manually create these sections or list these items in your article
+    - DO NOT include "## Related Documents" or "## External Links" headings
+11. Reference documents and external sources naturally in the article text (e.g., "According to court filings...", "News outlets reported...")
+14. **CRITICAL: DO NOT include a ## Sources section**
+    - Documents and external links are already in frontmatter and displayed automatically
+    - Do not create any bibliography, references, or sources section
+    - All source citations are handled through frontmatter metadata
+    - **Captions/Descriptions**: Clean up and make professional. Fix grammar, add proper punctuation, ensure complete sentences
+    - **Example**: "this is a video of the use of force incident" → "Body camera footage documenting the use of force incident"
+    - **Alt text**: Create descriptive, accessible text from available metadata (alt > title > caption > description)
+    - **Context**: Use info/details fields to inform narrative placement and surrounding text
+    - **Titles**: Clean up for professional presentation while preserving meaning
+    - Make all text publication-ready: proper capitalization, grammar, complete sentences
+    - Keep the core meaning and facts from the user's metadata but improve readability
+
+**Component Usage Examples:**
+- For videos: <CloudflareVideo videoId="abc123" caption="Body camera footage shows..." />
+  - Use the caption property from the shortcode if provided, or craft based on description or info
+- For images: <CloudflareImage imageId="xyz789" alt="Scene photo" caption="Photo taken at scene" />
+  - Use alt or title from shortcode for alt text, caption or description for caption prop
+  - Pull from available metadata intelligently: alt > title > caption > description
+- For documents: <DocumentCard title="Federal Civil Rights Complaint" description="Legal complaint filed against the police department alleging excessive force and civil rights violations" url="https://pub-example.r2.dev/complaint-20231114.pdf" />
+  - Document titles and descriptions from shortcodes are already in frontmatter - reference them naturally in article text
+  - You don't need to use all of them - just the most relevant ones (all will be listed automatically in a documents section after the article, so only reference key ones inline if you want to highlight them)
+- For external links: <ExternalLinkCard title="News Article on Incident" url="https://news.example.com/article" />
+    - Use titles and URLs from shortcodes - reference them naturally in article text
+    - You don't need to use all of them - just the most relevant ones (all will be listed automatically in an index after the article, so only reference key ones inline if you want to highlight them)
+**Output Format:**
+Return the complete MDX file content with frontmatter. Use this exact structure:
+
+\`\`\`mdx
+---
+case_id: "${metadata.case_id}"
+title: "${metadata.title}"
+description: "${metadata.description}"
+incident_date: "${metadata.incident_date}"
+city: "${metadata.city}"
+county: "${metadata.county}"
+agencies: ${JSON.stringify(metadata.agencies)}
+published: ${metadata.published}
+tags: ${JSON.stringify(metadata.tags || [])}
+featured_image: ${metadata.featured_image || 'null'}
+age: ${metadata.age || 'null'}
+race: ${metadata.race ? '"' + metadata.race + '"' : 'null'}
+gender: ${metadata.gender ? '"' + metadata.gender + '"' : 'null'}
+cause_of_death: ${metadata.cause_of_death ? '"' + metadata.cause_of_death + '"' : 'null'}
+armed_status: ${metadata.armed_status ? '"' + metadata.armed_status + '"' : 'null'}
+threat_level: ${metadata.threat_level ? '"' + metadata.threat_level + '"' : 'null'}
+force_type: ${metadata.force_type ? JSON.stringify(metadata.force_type) : 'null'}
+shooting_officers: ${metadata.shooting_officers ? JSON.stringify(metadata.shooting_officers) : 'null'}
+investigation_status: ${metadata.investigation_status ? '"' + metadata.investigation_status + '"' : 'null'}
+charges_filed: ${metadata.charges_filed !== undefined ? metadata.charges_filed : 'null'}
+civil_lawsuit_filed: ${metadata.civil_lawsuit_filed !== undefined ? metadata.civil_lawsuit_filed : 'null'}
+bodycam_available: ${metadata.bodycam_available !== undefined ? metadata.bodycam_available : 'null'}
+documents: ${metadata.documents ? JSON.stringify(metadata.documents) : 'null'}
+external_links: ${metadata.external_links ? JSON.stringify(metadata.external_links) : 'null'}
+---
+
+import CloudflareImage from '../../components/CloudflareImage.astro';
+import CloudflareVideo from '../../components/CloudflareVideo.astro';
+import DocumentCard from '../../components/DocumentCard.astro';
+import ExternalLinkCard from '../../components/ExternalLinkCard.astro';
+
+[Your article content with proper headings, embedded media, timeline, etc.]
+\`\`\`
+
+**REMEMBER:** Write in an encyclopedic, Wikipedia-style tone. Be neutral, factual, and objective throughout. Avoid emotional language and dramatic framing.
+
+Generate the complete article now.`
+  };
+}
+
+/**
+ * Prompt for generating blog post
+ */
+export function createBlogPostPrompt(draftContent, mediaAnalysis, metadata, components = {}, contentSchema = '') {
+
+  return {
+    system: SYSTEM_PROMPT,
+    user: `Generate a complete, publication-ready blog post.
+
+**Draft Content:**
+${draftContent}
+
+**Available Media:**
+${JSON.stringify(mediaAnalysis, null, 2)}
+
+**Instructions:**
+1. Write in an ENCYCLOPEDIC TONE similar to Wikipedia:
+   - Neutral, educational, and objective
+   - Avoid emotional language or dramatic framing
+   - Present information in a balanced, dispassionate manner
+   - Focus on facts, analysis, and educational value
+   - Maintain formal but accessible language
+2. Write an informative, educational article
+3. Target reading time: ${metadata.targetReadingTime || '8-10 minutes'}
+4. Use clear section headings
+5. Include examples and explanations
+6. Link to related cases when relevant
+7. Embed media using the available MDX components shown above
+8. Import ONLY the components you actually use (only CloudflareImage and CloudflareVideo are available)
+9. Include a clear takeaway/conclusion
+10. **CRITICAL - ARTICLE STRUCTURE AND CREATIVE FREEDOM:**
+    - DO NOT follow the order or layout of content in the draft markdown file
+    - The draft is raw ideas and notes - transform it into a polished, well-structured article
+    - Reorganize content to create the most effective narrative and educational flow
+    - Integrate images and videos naturally where they best support the content
+    - Use media to break up text, illustrate concepts, and maintain reader engagement
+    - Only mention documents or external links inline if they directly enhance a specific point
+    - Structure the article for maximum clarity and impact, not based on draft order
+12. Reference documents and external resources naturally in the article text when relevant
+
+**Component Usage Examples:**
+- For videos: <CloudflareVideo videoId="abc123" caption="Body camera footage shows..." />
+  - Use the caption property from the shortcode if provided, or craft based on description or info
+- For images: <CloudflareImage imageId="xyz789" alt="Scene photo" caption="Photo taken at scene" />
+  - Use alt or title from shortcode for alt text, caption or description for caption prop
+  - Pull from available metadata intelligently: alt > title > caption > description
+- For documents: <DocumentCard title="Federal Civil Rights Complaint" description="Legal complaint filed against the police department alleging excessive force and civil rights violations" url="https://pub-example.r2.dev/complaint-20231114.pdf" />
+  - Document titles and descriptions from shortcodes are already in frontmatter - reference them naturally in article text
+  - You don't need to use all of them - just the most relevant ones (all will be listed automatically in a documents section after the article, so only reference key ones inline if you want to highlight them)
+- For external links: <ExternalLinkCard title="News Article on Incident" url="https://news.example.com/article" />
+    - Use titles and URLs from shortcodes - reference them naturally in article text
+    - You don't need to use all of them - just the most relevant ones (all will be listed automatically in an index after the article, so only reference key ones inline if you want to highlight them)
+
+    **Output Format:**
+Return the complete MDX file content with frontmatter:
+
+\`\`\`mdx
+---
+title: "${metadata.title}"
+description: "${metadata.description}"
+published_date: "${metadata.published_date}"
+tags: ${JSON.stringify(metadata.tags)}
+published: ${metadata.published}
+featured_image: ${metadata.featured_image ? JSON.stringify(metadata.featured_image) : 'null'}
+documents: ${metadata.documents ? JSON.stringify(metadata.documents) : 'null'}
+external_links: ${metadata.external_links ? JSON.stringify(metadata.external_links) : 'null'}
+---
+
+import CloudflareImage from '../../components/CloudflareImage.astro';
+import CloudflareVideo from '../../components/CloudflareVideo.astro';
+import DocumentCard from '../../components/DocumentCard.astro';
+import ExternalLinkCard from '../../components/ExternalLinkCard.astro';
+
+[Your article content with proper headings, embedded media, etc.]
+
+## Key Takeaways
+
+[Summary bullets]
+\`\`\`
+
+Generate the complete article now.`
+  };
+}
+
+/**
+ * Prompt for suggesting filename/slug
+ */
+export function createSlugGenerationPrompt(title, type = 'case') {
+  return {
+    system: 'You are a helpful assistant that generates URL-friendly slugs.',
+    user: `Generate a URL-friendly slug for this ${type}:
+
+Title: "${title}"
+
+Requirements:
+- Lowercase only
+- Use hyphens for spaces
+- Remove special characters
+- Max 60 characters
+- Be descriptive but concise
+
+Return only the slug, nothing else.
+
+Example: "John Doe v. LAPD Excessive Force" → "john-doe-lapd-excessive-force"`
+  };
+}
