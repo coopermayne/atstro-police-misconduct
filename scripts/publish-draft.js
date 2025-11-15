@@ -821,12 +821,29 @@ async function main() {
   await fs.writeFile(filePath, generatedContent.content, 'utf-8');
   
   console.log(`   ✓ File saved\n`);
+  
+  // Phase 6: Rename draft file to mark as published
+  console.log('📌 Phase 6: Marking draft as published');
+  
+  const originalDraftPath = response.selectedDraft;
+  const draftDir = path.dirname(originalDraftPath);
+  const draftFileName = path.basename(originalDraftPath);
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5); // YYYY-MM-DDTHH-MM-SS
+  const newDraftName = `pub_${timestamp}_${draftFileName}`;
+  const newDraftPath = path.join(draftDir, newDraftName);
+  
+  await fs.rename(originalDraftPath, newDraftPath);
+  
+  console.log(`   → Renamed: ${path.relative(DRAFTS_DIR, newDraftPath)}`);
+  console.log(`   ✓ Draft marked as published\n`);
+  
   console.log('─'.repeat(80));
   console.log('\n✅ Publishing complete!\n');
-  console.log(`📄 File: src/content/${isCase ? 'cases' : 'posts'}/${generatedContent.slug}.mdx`);
+  console.log(`📄 Article: src/content/${isCase ? 'cases' : 'posts'}/${generatedContent.slug}.mdx`);
+  console.log(`📝 Draft: ${path.relative(DRAFTS_DIR, newDraftPath)}`);
   console.log('='.repeat(80) + '\n');
   
-  return { result, generatedContent, filePath };
+  return { result, generatedContent, filePath, renamedDraft: newDraftPath };
 }
 
 /**
@@ -879,13 +896,13 @@ ${registry.threat_levels.map(t => `- ${t}`).join('\n')}
 ${registry.investigation_statuses.map(s => `- ${s}`).join('\n')}
 `;
 
-  // Build documents array from media
+  // Build documents array from media - use R2 public URL
   const documents = mediaPackage.media
     .filter(item => item.type === 'document')
     .map(item => ({
       title: item.componentParams.title,
       description: item.componentParams.description,
-      url: item.sourceUrl // Will be replaced with R2 URL
+      url: item.publicUrl // Use the R2 public URL from upload
     }));
   
   // Build external_links array
