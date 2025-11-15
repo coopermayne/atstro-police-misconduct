@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "publish": "node scripts/publish-draft.js",
+    "publish:debug": "node scripts/publish-draft.js --debug",
     "media:browse": "node scripts/media-browser.js",
     "rebuild-registry": "node scripts/rebuild-registry.js",
     "validate:config": "node scripts/validate-config.js",

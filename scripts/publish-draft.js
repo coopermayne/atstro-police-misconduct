@@ -234,7 +234,7 @@ async function uploadAndRegisterMedia(mediaItem) {
         });
         
         // Cleanup
-        fs.unlinkSync(downloadResult.filePath);
+        await fs.unlink(downloadResult.filePath);
         
         console.log(`  ✓ Document uploaded successfully (${libraryEntry.id})`);
         return libraryEntry;

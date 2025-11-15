@@ -21,8 +21,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DRAFTS_DIR = path.join(ROOT_DIR, 'drafts');
-const CASES_TEMPLATE = path.join(DRAFTS_DIR, 'cases', 'TEMPLATE.md');
-const POSTS_TEMPLATE = path.join(DRAFTS_DIR, 'posts', 'TEMPLATE.md');
+const CASES_TEMPLATE = path.join(DRAFTS_DIR, 'cases', 'TEMPLATE.md_template');
+const POSTS_TEMPLATE = path.join(DRAFTS_DIR, 'posts', 'TEMPLATE.md_template');
 const CASES_DIR = path.join(DRAFTS_DIR, 'cases');
 const POSTS_DIR = path.join(DRAFTS_DIR, 'posts');
 const MEDIA_LIBRARY_PATH = path.join(ROOT_DIR, 'media-library.json');
@@ -110,11 +110,11 @@ async function createDraft(type) {
 async function publishDraft() {
   // List available drafts
   const caseDrafts = fs.readdirSync(CASES_DIR)
-    .filter(f => f.endsWith('.md') && f !== 'TEMPLATE.md')
+    .filter(f => f.endsWith('.md') && !f.endsWith('_template'))
     .map(f => ({ title: `[Case] ${f}`, value: path.join(CASES_DIR, f) }));
 
   const postDrafts = fs.readdirSync(POSTS_DIR)
-    .filter(f => f.endsWith('.md') && f !== 'TEMPLATE.md')
+    .filter(f => f.endsWith('.md') && !f.endsWith('_template'))
     .map(f => ({ title: `[Blog] ${f}`, value: path.join(POSTS_DIR, f) }));
 
   const allDrafts = [...caseDrafts, ...postDrafts];
