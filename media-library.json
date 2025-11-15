@@ -1,3 +1,5 @@
+
+
 {
   "videos": {
     "video-b6b3da2b-759d-41d0-8186-76ebb31b5ae4": {
@@ -10,11 +12,6 @@
       "caption": "",
       "tags": [],
       "addedAt": "2025-11-14T02:45:30.638Z",
-      "componentProps": {
-        "videoId": "f24f6c0d9886f79723581fe8329d5db3",
-        "title": "",
-        "poster": ""
-      },
       "cloudflareData": {
         "success": true,
         "videoId": "f24f6c0d9886f79723581fe8329d5db3",
@@ -74,11 +71,6 @@
       "caption": "",
       "tags": [],
       "addedAt": "2025-11-14T19:16:30.860Z",
-      "componentProps": {
-        "videoId": "c9754eeefea33aab0b20a9647d654947",
-        "title": "",
-        "poster": ""
-      },
       "cloudflareData": {
         "success": true,
         "videoId": "c9754eeefea33aab0b20a9647d654947",
@@ -138,11 +130,6 @@
       "caption": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Xiong",
       "tags": [],
       "addedAt": "2025-11-14T19:16:32.175Z",
-      "componentProps": {
-        "videoId": "51c38f48c1c1e83cbd9ec3b1d6183da3",
-        "title": "",
-        "poster": ""
-      },
       "cloudflareData": {
         "success": true,
         "videoId": "51c38f48c1c1e83cbd9ec3b1d6183da3",
@@ -202,11 +189,6 @@
       "caption": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Bavaro",
       "tags": [],
       "addedAt": "2025-11-14T19:16:33.541Z",
-      "componentProps": {
-        "videoId": "bb1e21a4cba80844f5550165badc8b14",
-        "title": "",
-        "poster": ""
-      },
       "cloudflareData": {
         "success": true,
         "videoId": "bb1e21a4cba80844f5550165badc8b14",
@@ -266,11 +248,6 @@
       "caption": "Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Camara",
       "tags": [],
       "addedAt": "2025-11-14T19:16:34.672Z",
-      "componentProps": {
-        "videoId": "82bb551640196fab80df97242f22bb3e",
-        "title": "",
-        "poster": ""
-      },
       "cloudflareData": {
         "success": true,
         "videoId": "82bb551640196fab80df97242f22bb3e",
@@ -332,12 +309,6 @@
       "caption": "",
       "tags": [],
       "addedAt": "2025-11-14T02:45:32.329Z",
-      "componentProps": {
-        "imageId": "0411e995-77a3-4000-c55f-a34b1149b900",
-        "alt": "download-1763088330813.jpeg",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/0411e995-77a3-4000-c55f-a34b1149b900/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/0411e995-77a3-4000-c55f-a34b1149b900/medium",
@@ -355,12 +326,6 @@
       "caption": "this is an image of his neck after surgury you can see all the pins place to fix the break",
       "tags": [],
       "addedAt": "2025-11-14T19:16:35.965Z",
-      "componentProps": {
-        "imageId": "c07c09e5-c331-4cf7-d27f-033607148700",
-        "alt": "this is an image of his neck after surgury you can see all the pins place to fix the break",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c07c09e5-c331-4cf7-d27f-033607148700/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c07c09e5-c331-4cf7-d27f-033607148700/medium",
@@ -378,12 +343,6 @@
       "caption": "in hospital after incident",
       "tags": [],
       "addedAt": "2025-11-14T19:16:37.370Z",
-      "componentProps": {
-        "imageId": "cf4dfb37-d661-490a-f068-6fbbaa258f00",
-        "alt": "in hospital after incident",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/cf4dfb37-d661-490a-f068-6fbbaa258f00/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/cf4dfb37-d661-490a-f068-6fbbaa258f00/medium",
@@ -401,12 +360,6 @@
       "caption": "",
       "tags": [],
       "addedAt": "2025-11-14T19:16:38.590Z",
-      "componentProps": {
-        "imageId": "9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00",
-        "alt": "Anthony before incident.jpg",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00/medium",
@@ -424,12 +377,6 @@
       "caption": "X-Men and civil rights themes",
       "tags": [],
       "addedAt": "2025-11-14T21:33:08.073Z",
-      "componentProps": {
-        "imageId": "67007eb4-973a-476a-6764-248457c38200",
-        "alt": "X-Men and civil rights themes",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67007eb4-973a-476a-6764-248457c38200/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67007eb4-973a-476a-6764-248457c38200/medium",
@@ -447,12 +394,6 @@
       "caption": "Photo of Everett Byram from his online tribute page",
       "tags": [],
       "addedAt": "2025-11-14T22:53:49.796Z",
-      "componentProps": {
-        "imageId": "92d14430-52d8-4217-a7d7-a49f5fc34f00",
-        "alt": "Everett Byram memorial photo",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/92d14430-52d8-4217-a7d7-a49f5fc34f00/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/92d14430-52d8-4217-a7d7-a49f5fc34f00/medium",
@@ -470,12 +411,6 @@
       "caption": "",
       "tags": [],
       "addedAt": "2025-11-14T23:24:48.407Z",
-      "componentProps": {
-        "imageId": "67406ec0-8ff4-46b9-d7f7-2acdd4328100",
-        "alt": "download-1763162687718.webp",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67406ec0-8ff4-46b9-d7f7-2acdd4328100/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/67406ec0-8ff4-46b9-d7f7-2acdd4328100/medium",
@@ -493,12 +428,6 @@
       "caption": "",
       "tags": [],
       "addedAt": "2025-11-14T23:24:50.255Z",
-      "componentProps": {
-        "imageId": "f9b86b22-0642-426f-3d7a-48dbf0a96d00",
-        "alt": "download-1763162688971.jpg",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/f9b86b22-0642-426f-3d7a-48dbf0a96d00/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/f9b86b22-0642-426f-3d7a-48dbf0a96d00/medium",
@@ -516,12 +445,6 @@
       "caption": "",
       "tags": [],
       "addedAt": "2025-11-14T23:43:15.398Z",
-      "componentProps": {
-        "imageId": "fcf1686f-2354-4b78-f131-b1363abab100",
-        "alt": "download-1763163794266.png",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/fcf1686f-2354-4b78-f131-b1363abab100/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/fcf1686f-2354-4b78-f131-b1363abab100/medium",
@@ -539,12 +462,6 @@
       "caption": "",
       "tags": [],
       "addedAt": "2025-11-15T00:15:38.987Z",
-      "componentProps": {
-        "imageId": "de806254-9f7e-4709-b695-3280fd353b00",
-        "alt": "download-1763165738099.jpg",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/de806254-9f7e-4709-b695-3280fd353b00/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/de806254-9f7e-4709-b695-3280fd353b00/medium",
@@ -562,12 +479,6 @@
       "caption": "",
       "tags": [],
       "addedAt": "2025-11-15T00:18:06.220Z",
-      "componentProps": {
-        "imageId": "202e771d-16fe-4cb2-4fd7-3881c8efef00",
-        "alt": "download-1763165885584.jpg",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/202e771d-16fe-4cb2-4fd7-3881c8efef00/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/202e771d-16fe-4cb2-4fd7-3881c8efef00/medium",
@@ -589,13 +500,6 @@
       "fileSize": null,
       "tags": [],
       "addedAt": "2025-11-14T02:45:32.811Z",
-      "componentProps": {
-        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1763088332443-20251114024532.pdf",
-        "text": "download-1763088332443",
-        "download": false,
-        "target": "_blank",
-        "rel": "noopener noreferrer"
-      },
       "metadata": {
         "success": true,
         "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1763088332443-20251114024532.pdf",
@@ -619,13 +523,6 @@
       "fileSize": null,
       "tags": [],
       "addedAt": "2025-11-14T19:16:39.483Z",
-      "componentProps": {
-        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/second-amended-complaint-20251114191639.pdf",
-        "text": "Second Amended Complaint",
-        "download": false,
-        "target": "_blank",
-        "rel": "noopener noreferrer"
-      },
       "metadata": {
         "success": true,
         "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/second-amended-complaint-20251114191639.pdf",
@@ -649,13 +546,6 @@
       "fileSize": null,
       "tags": [],
       "addedAt": "2025-11-14T19:16:40.292Z",
-      "componentProps": {
-        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/use-of-force-report-20251114191640.pdf",
-        "text": "Use of Force Report",
-        "download": false,
-        "target": "_blank",
-        "rel": "noopener noreferrer"
-      },
       "metadata": {
         "success": true,
         "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/use-of-force-report-20251114191640.pdf",
@@ -679,13 +569,6 @@
       "fileSize": null,
       "tags": [],
       "addedAt": "2025-11-14T19:16:41.135Z",
-      "componentProps": {
-        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/incident-report-20251114191640.pdf",
-        "text": "Incident Report",
-        "download": false,
-        "target": "_blank",
-        "rel": "noopener noreferrer"
-      },
       "metadata": {
         "success": true,
         "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/incident-report-20251114191640.pdf",
@@ -709,13 +592,6 @@
       "fileSize": null,
       "tags": [],
       "addedAt": "2025-11-14T22:53:51.093Z",
-      "componentProps": {
-        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/50-20240329-first-amended-complaint-20251114225350.pdf",
-        "text": "[50] 2024.03.29 - First Amended Complaint",
-        "download": false,
-        "target": "_blank",
-        "rel": "noopener noreferrer"
-      },
       "metadata": {
         "success": true,
         "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/50-20240329-first-amended-complaint-20251114225350.pdf",
@@ -739,13 +615,6 @@
       "fileSize": null,
       "tags": [],
       "addedAt": "2025-11-14T22:53:52.205Z",
-      "componentProps": {
-        "href": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/los-angeles-county-district-attorney-report-20251114225351.pdf",
-        "text": "Los Angeles County District Attorney Report",
-        "download": false,
-        "target": "_blank",
-        "rel": "noopener noreferrer"
-      },
       "metadata": {
         "success": true,
         "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/los-angeles-county-district-attorney-report-20251114225351.pdf",

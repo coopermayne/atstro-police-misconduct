@@ -115,26 +115,37 @@ Hickman came after the incident, he was Camara and Xiong's Sergent
 
 ## Media Files
 
-{{video: https://www.dropbox.com/scl/fi/uxjyvxzlya4j6lj2h3gmb/All-Videos-Combined.mov?rlkey=tad46yig21tx4hhm66zxcrz7j&st=9t5jahgd&dl=0 | description: this is a slowed down version of the three body cam videos combined that is the best way to see what happened to his neck during the takedown}}
-
-{{image: https://www.dropbox.com/scl/fi/4k2hbnec02upu6st6i0zd/after_surgery.png?rlkey=d9ieyf8f5v9byumcqe1il3wht&st=w5joq5ld&dl=0 | description: this is an image of his neck after surgury you can see all the pins place to fix the break}}
-
-{{image: https://www.dropbox.com/scl/fi/2tjscz8t6osh36prlei5c/after-incident.jpg?rlkey=yk58ntl9xu4sulv4yuppd1i5y&st=iityb3bg&dl=0 | description: in hospital after incident}}
-
-{{image: https://www.dropbox.com/scl/fi/87re1kxteng7plps8sxq2/Anthony-before-incident.jpg?rlkey=qljttav41a4pxsdq2nc223wcp&st=wmp252hl&dl=0 | info: anthony healthy before the incident | featured: true}}
-
-{{video: https://www.dropbox.com/scl/fi/dr5bwjiy5raysjt42coso/vlc-record-2024-08-06-16h11m32s-DEF-00027-Xiong.mp4.mp4?rlkey=49js6piqr0r51enj56usdic4a&st=3jlqjc71&dl=0 | caption: Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Xiong}}
-
-{{video: https://www.dropbox.com/scl/fi/9i5nvpruzngn7y30637td/vlc-record-2024-08-06-16h09m53s-DEF-00029-Bavaro.mp4.mp4?rlkey=kqtdv2yvkfh2442rrrlbuq1ap&st=234d199e&dl=0 | caption: Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Bavaro}}
-
-{{video: https://www.dropbox.com/scl/fi/bxy9ksft1vduyaagze85o/vlc-record-2024-08-06-16h10m41s-DEF-00028-Camara.mp4.mp4?rlkey=ualb31c28cbrwcfhf2bbmljja&st=z6dhav4a&dl=0 | caption: Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Camara}}
-
-{{document: https://www.dropbox.com/scl/fi/n7owewtqefxctaj9bj93h/15-2024.03.14-Second-Amended-Complaint-SAC.pdf?rlkey=qbkda5gtrahj3q4yq8pkojl30&st=h3hu9k94&dl=0 | title: Second Amended Complaint | description: Federal civil rights complaint filed against Stanislaus County Sheriff's Department regarding Anthony Silva's case}}
+https://www.dropbox.com/scl/fi/uxjyvxzlya4j6lj2h3gmb/All-Videos-Combined.mov?rlkey=tad46yig21tx4hhm66zxcrz7j&st=9t5jahgd&dl=0
+this is a slowed down version of the three body cam videos combined that is the best way to see what happened to his neck during the takedown
 
 
-{{document: https://www.dropbox.com/scl/fi/0uzsa4239niy1ih01nie5/DEF-0083-0084-Use-of-force-form.pdf?rlkey=wu6jmbu4za3ht3hi68htk6kv9&st=mfrzjkd8&dl=0 | title: Use of Force Report | description: Report written by Deputy Camara and approved by Hickman that fails to accurately reflect the seriousness of the force used or injuries sustained}}
+https://www.dropbox.com/scl/fi/4k2hbnec02upu6st6i0zd/after_surgery.png?rlkey=d9ieyf8f5v9byumcqe1il3wht&st=w5joq5ld&dl=0
+this is an image of his neck after surgury you can see all the pins place to fix the break}}
 
-{{document: https://www.dropbox.com/scl/fi/7acem2gh0w2ltran7ez6y/SCSD-Incident-Report.pdf?rlkey=6jeq5bgb7pk3ls2xq0i2tjj5h&st=88b4ul07&dl=0 | title: Incident Report | description: Official Stanislaus County Sheriff's Department incident report}}
+https://www.dropbox.com/scl/fi/2tjscz8t6osh36prlei5c/after-incident.jpg?rlkey=yk58ntl9xu4sulv4yuppd1i5y&st=iityb3bg&dl=0
+in hospital after incident
+
+https://www.dropbox.com/scl/fi/87re1kxteng7plps8sxq2/Anthony-before-incident.jpg?rlkey=qljttav41a4pxsdq2nc223wcp&st=wmp252hl&dl=0
+this should be the featured image
+
+https://www.dropbox.com/scl/fi/dr5bwjiy5raysjt42coso/vlc-record-2024-08-06-16h11m32s-DEF-00027-Xiong.mp4.mp4?rlkey=49js6piqr0r51enj56usdic4a&st=3jlqjc71&dl=0
+Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Xiong
+
+https://www.dropbox.com/scl/fi/9i5nvpruzngn7y30637td/vlc-record-2024-08-06-16h09m53s-DEF-00029-Bavaro.mp4.mp4?rlkey=kqtdv2yvkfh2442rrrlbuq1ap&st=234d199e&dl=0
+Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Bavaro
+
+https://www.dropbox.com/scl/fi/bxy9ksft1vduyaagze85o/vlc-record-2024-08-06-16h10m41s-DEF-00028-Camara.mp4.mp4?rlkey=ualb31c28cbrwcfhf2bbmljja&st=z6dhav4a&dl=0 
+Body-cam clip of the takedown that broke Anthony Silva's neck — Officer Camara
+
+https://www.dropbox.com/scl/fi/n7owewtqefxctaj9bj93h/15-2024.03.14-Second-Amended-Complaint-SAC.pdf?rlkey=qbkda5gtrahj3q4yq8pkojl30&st=h3hu9k94&dl=0 
+Second Amended Complaint, Federal civil rights complaint filed against Stanislaus County Sheriff's Department regarding Anthony Silva's case
+
+
+https://www.dropbox.com/scl/fi/0uzsa4239niy1ih01nie5/DEF-0083-0084-Use-of-force-form.pdf?rlkey=wu6jmbu4za3ht3hi68htk6kv9&st=mfrzjkd8&dl=0 
+Use of Force Report written by Deputy Camara and approved by Hickman that fails to accurately reflect the seriousness of the force used or injuries sustained
+
+https://www.dropbox.com/scl/fi/7acem2gh0w2ltran7ez6y/SCSD-Incident-Report.pdf?rlkey=6jeq5bgb7pk3ls2xq0i2tjj5h&st=88b4ul07&dl=0
+Incident Report - Official Stanislaus County Sheriff's Department incident report
 
 
 ## Legal Details
@@ -142,12 +153,8 @@ Hickman came after the incident, he was Camara and Xiong's Sergent
 
 ## News articles about the incident
 
-{{link: https://www.kcra.com/article/stanislaus-county-lawsuit-wrongful-death-son/46369300 | title: KCRA: Stanislaus County Lawsuit | description: Mother sues over wrongful death of son after deputy takedown | icon: news}}
-
-{{link: https://www.aol.com/news/stanislaus-county-sued-wrongful-death-150000617.html | title: AOL: County Sued Over Death | description: Legal action follows fatal deputy encounter | icon: news}}
-
-{{link: https://www.modbee.com/news/local/crime/article284659795.html | title: Modesto Bee: Local Crime Report | description: Coverage of incident and subsequent lawsuit | icon: news}}
-
-{{link: https://youtu.be/6r3ORU6Lx-k?si=3KBCmnkvz9Xf0bWL | title: Video Analysis of Incident | description: Detailed breakdown of the takedown | icon: video}}
-
-{{link: https://youtu.be/KLk7aKXx2Dc | title: Follow-up Video | description: Updates on case developments | icon: video}}
+https://www.kcra.com/article/stanislaus-county-lawsuit-wrongful-death-son/46369300
+https://www.aol.com/news/stanislaus-county-sued-wrongful-death-150000617.html
+https://www.modbee.com/news/local/crime/article284659795.html
+https://youtu.be/6r3ORU6Lx-k?si=3KBCmnkvz9Xf0bWL
+https://youtu.be/KLk7aKXx2Dc
