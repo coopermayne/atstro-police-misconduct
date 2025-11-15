@@ -399,7 +399,6 @@ If the AI doesn't generate correct metadata, you can specify it in your draft:
 ```markdown
 ## Metadata Suggestions
 
-**Potential case_id:** ca-lapd-2023-042
 **Severity:** critical
 **Outcome:** Settled for $2.5M
 **Featured:** true

@@ -66,7 +66,6 @@ function applyFilters() {
         data.county,
         ...(data.agencies || []),
         ...(data.shooting_officers || []),
-        data.case_id,
         data.armed_status,
         data.cause_of_death
       ].filter(Boolean).join(' ').toLowerCase();

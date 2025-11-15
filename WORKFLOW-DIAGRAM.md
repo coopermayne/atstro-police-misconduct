@@ -61,7 +61,7 @@
 │      │    • Identify important quotes                                    │
 │      │    • Summarize content                                            │
 │      └─► Generate metadata (30s)                                         │
-│           • case_id, tags, severity                                      │
+│           • tags, severity                                      │
 │           • investigation_status                                         │
 │           • outcome description                                          │
 │                                                                          │

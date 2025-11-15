@@ -4,7 +4,6 @@ const casesCollection = defineCollection({
   type: 'content',
   schema: z.object({
     // Basic Info
-    case_id: z.string(),
     title: z.string(), // Victim's name
     description: z.string(),
     incident_date: z.string(),

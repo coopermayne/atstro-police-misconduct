@@ -80,7 +80,6 @@ From this casual draft:
 AI generated:
 ```yaml
 ---
-case_id: "ca-sdpd-2024-001"
 title: "Michael Rodriguez"
 description: "28-year-old construction worker tased twice..."
 incident_date: "2024-06-20"

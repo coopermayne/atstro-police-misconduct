@@ -88,7 +88,7 @@ ${contentSchema}
 
 **IMPORTANT GUIDELINES:**
 - DO NOT flag fields that can be extracted, inferred, or generated from the draft
-- DO NOT flag auto-generated fields (like case_id, slugs, etc.)
+- DO NOT flag auto-generated fields (like slugs, etc.)
 - ONLY flag information that is completely absent and cannot be reasonably inferred
 - MAKE REASONABLE INFERENCES from context - don't speculate, but use clear evidence:
   * "tased" → force_type includes "Taser"
@@ -100,7 +100,6 @@ ${contentSchema}
 **What CAN be generated/inferred (DO NOT flag these):**
 - title (victim's name if mentioned anywhere)
 - description (can be written from any case summary/notes)
-- case_id (auto-generated from agency + date)
 - tags (can be inferred from incident type)
 - investigation_status (can be inferred from legal status mentions)
 - force_type (can be inferred from incident description)
@@ -226,7 +225,6 @@ ${featuredImageSection ? '- You MUST use the imageId provided in "Featured Image
 8. Return ONLY the metadata as a JSON object
 9. Use proper data types (strings as strings, arrays as arrays, booleans as booleans, numbers as numbers)
 10. For dates, use "YYYY-MM-DD" format as a STRING
-11. For case_id, use format: ca-[agency-slug]-[year]-[number]
 12. For tags, choose 3-5 relevant tags based on what you think is best fit... first check the registry for existing tags but if you think it's important to use a new one, you can.
 13. Be flexible - extract information from unstructured notes, lists, and links
 14. ALWAYS include every field from the schema - use null if you don't have enough information to infer after attempts.
@@ -315,7 +313,6 @@ Return the complete MDX file content with frontmatter. Use this exact structure:
 
 \`\`\`mdx
 ---
-case_id: "${metadata.case_id}"
 title: "${metadata.title}"
 description: "${metadata.description}"
 incident_date: "${metadata.incident_date}"

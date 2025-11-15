@@ -61,6 +61,40 @@ async function displayPromptAndConfirm(prompt, promptName) {
   return true;
 }
 
+/**
+ * Display AI response to user and ask for confirmation before continuing
+ * @param {string} response - The AI response text to display
+ * @param {string} responseName - Name/description of the response
+ * @returns {Promise<boolean>} - True if user confirms, false otherwise
+ */
+async function displayResponseAndConfirm(response, responseName) {
+  console.log('\n' + '═'.repeat(80));
+  console.log(`🤖 ${responseName}`);
+  console.log('═'.repeat(80) + '\n');
+  
+  // Display response
+  console.log(response);
+  
+  console.log('\n' + '═'.repeat(80));
+  console.log(`Total characters: ${response.length}`);
+  console.log('═'.repeat(80) + '\n');
+  
+  const confirmResponse = await prompts({
+    type: 'confirm',
+    name: 'proceed',
+    message: 'Continue with this response?',
+    initial: true
+  });
+  
+  if (!confirmResponse.proceed) {
+    console.log('\n❌ Cancelled by user\n');
+    process.exit(0);
+  }
+  
+  console.log('\n✓ Continuing...\n');
+  return true;
+}
+
 const DRAFTS_DIR = path.join(__dirname, '..', 'drafts');
 const TEMP_DIR = path.join(__dirname, '..', '.temp-uploads');
 
@@ -439,24 +473,24 @@ Return a JSON array matching this schema:
 
 [
   {
-    "sourceUrl": "exact URL from list above",
-    "type": "video|image|document|link",
+    "sourceUrl": "exact URL from list above", /required
+    "type": "video|image|document|link", /required
     "componentParams": {
       // FOR VIDEO:
-      "caption": "string (optional) - Brief description of video content. WORD LIMIT: 15-25 words. Only include if context provides info."
+      "caption": "string - Brief description of video content. WORD LIMIT: 15-25 words. Only include if context provides info."
       
       // FOR IMAGE:
       "alt": "string (required) - Accessible description. WORD LIMIT: 10-15 words. Focus on what's visible.",
-      "caption": "string (optional) - Additional context beyond alt. WORD LIMIT: 15-25 words. Only if context provides info."
+      "caption": "string - Additional context beyond alt. WORD LIMIT: 15-25 words. Only if context provides info."
       
       // FOR DOCUMENT:
       "title": "string (required) - Short title. WORD LIMIT: 3-8 words. Extract from context or make generic.",
       "description": "string (required) - What document contains. WORD LIMIT: 15-30 words. Summarize key content."
       
       // FOR LINK:
-      "title": "string (optional) - Short title. WORD LIMIT: 3-8 words. Falls back to hostname if omitted.",
+      "title": "string Short title. WORD LIMIT: 3-8 words. Falls back to hostname if omitted.",
       "description": "string (optional) - Additional context. WORD LIMIT: 15-30 words.",
-      "icon": "string (optional) - 'video' (YouTube/Vimeo), 'news' (news outlets), or 'generic' (default)"
+      "icon": "string - 'video' (YouTube/Vimeo), 'news' (news outlets), or 'generic' (default)"
     },
     "confidence": 0.85  // number 0-1, lower if guessing
   }
@@ -477,14 +511,8 @@ CRITICAL: Adhere strictly to word limits. Be concise and precise. Base descripti
       }]
     });
     
-    console.log('  → Received response from Claude\n');
-    
     const responseText = message.content[0].text.trim();
-    console.log('Raw AI Response:');
-    console.log('─'.repeat(80));
-    console.log(responseText);
-    console.log('─'.repeat(80));
-    console.log();
+    await displayResponseAndConfirm(responseText, 'MEDIA METADATA EXTRACTION RESPONSE');
     
     // Extract JSON from response (might be wrapped in markdown)
     const jsonMatch = responseText.match(/\[[\s\S]*\]/);
@@ -767,9 +795,8 @@ async function main() {
         media: processedMedia,
         links: processedLinks
       };
-    }
-    
-    if (links.length > 0) {
+    } else if (links.length > 0) {
+      // Only links, no media to upload
       const processedLinks = links.map(item => ({
         sourceUrl: item.sourceUrl,
         type: item.type,
@@ -1005,137 +1032,6 @@ function buildComponentReference(mediaPackage) {
 function buildCaseMetadataPrompt(draftContent, schemaContent, registry, mediaPackage) {
   // Define which fields from FIELD_REGISTRY_MAP apply to cases
   const caseRegistryFields = ['agencies', 'county', 'force_type', 'threat_level', 'investigation_status'];
-  
-  // Build registry sections dynamically
-  let registrySections = '**Canonical Metadata Registry:**\n';
-  registrySections += 'Use these exact values when they match the case details:\n\n';
-  
-  for (const fieldName of caseRegistryFields) {
-    const config = FIELD_REGISTRY_MAP[fieldName];
-    if (config) {
-      registrySections += buildRegistrySection(fieldName, config, registry);
-    }
-  }
-  
-  // Build inference rules
-  const inferenceRules = buildInferenceRules(caseRegistryFields);
-
-  // Build documents array from media - use R2 public URL
-  const documents = mediaPackage.media
-    .filter(item => item.type === 'document')
-    .map(item => ({
-      title: item.componentParams.title,
-      description: item.componentParams.description,
-      url: item.publicUrl // Use the R2 public URL from upload
-    }));
-  
-  // Build external_links array
-  const external_links = mediaPackage.links.map(item => ({
-    title: item.componentParams.title || '',
-    description: item.componentParams.description || '',
-    url: item.sourceUrl,
-    icon: item.componentParams.icon || 'generic'
-  }));
-  
-  // Find featured image - build full object with component params
-  let featuredImageData = null;
-  const imageMedia = mediaPackage.media.filter(item => item.type === 'image');
-  if (imageMedia.length > 0) {
-    // Use first image as featured (AI will be instructed to select best one)
-    const featuredImage = imageMedia[0];
-    featuredImageData = {
-      imageId: featuredImage.imageId,
-      alt: featuredImage.componentParams.alt,
-      caption: featuredImage.componentParams.caption
-    };
-  }
-
-  return `You are an expert legal writer generating metadata for a police misconduct case article.
-
-**Draft Content:**
-${draftContent}
-
-${registrySections}
-
-${inferenceRules}
-
-**Schema (from src/content/config.ts):**
-${schemaContent.match(/const casesCollection[\s\S]+?\}\);/)[0]}
-
-**Available Images for Featured Image:**
-${imageMedia.length > 0 ? imageMedia.map((img, i) => `${i + 1}. imageId: ${img.imageId}
-   alt: ${img.componentParams.alt}
-   caption: ${img.componentParams.caption || 'none'}
-   source: ${img.sourceUrl}`).join('\n') : 'No images available'}
-
-**Processed Media:**
-Documents: ${JSON.stringify(documents, null, 2)}
-External Links: ${JSON.stringify(external_links, null, 2)}
-
-**CRITICAL INSTRUCTIONS:**
-
-1. **FEATURED IMAGE (REQUIRED):**
-   - You MUST select a featured_image from the "Available Images" list above
-   - Choose the most appropriate image that represents the case (usually a photo of the victim before the incident)
-   - Return it as an object with: {imageId: "...", alt: "...", caption: "..."}
-   - **IMPORTANT**: Use the EXACT imageId from the list above - do not modify or transform it
-   - The imageId is a UUID - copy it exactly as shown
-   - If multiple images available, choose the best one for featured display
-   - If caption is not needed for featured display, you can omit it or set to empty string
-   - **DO NOT use null** - always select from available images
-
-2. **Required Fields:**
-   - case_id: Format "ca-[agency-slug]-[year]-[sequential-number]" (e.g., "ca-lapd-2023-001")
-   - title: Victim's full name
-   - description: 1-2 sentence summary of the case
-   - incident_date: "YYYY-MM-DD" format as STRING
-   - city: City name
-   - county: County name (from registry)
-   - agencies: Array of agency names (from registry)
-
-3. **Media Fields:**
-   - documents: Use the "Processed Media" documents array exactly as provided
-   - external_links: Use the "Processed Media" external_links array exactly as provided
-   - featured_image: REQUIRED - Select best image from "Available Images" list and return as object with {imageId, alt, caption}
-
-4. **Data Types:**
-   - Strings: Use quotes
-   - Numbers: No quotes (age: 35, not "35")
-   - Booleans: true/false (not "true"/"false")
-   - Arrays: Use brackets []
-   - Objects: Use curly braces {}
-   - Null: Use null (not "null")
-
-5. **All Fields:** Include EVERY field from the schema. Use null for missing/unknown values.
-
-Return ONLY valid JSON:
-\`\`\`json
-{
-  "case_id": "ca-agency-year-001",
-  "title": "Victim Name",
-  "featured_image": {"imageId": "...", "alt": "...", "caption": "..."},
-  ...all other fields...
-}
-\`\`\``;
-}
-
-/**
- * Build metadata extraction prompt for blog posts
- */
-function buildBlogMetadataPrompt(draftContent, schemaContent, registry, mediaPackage) {
-  // Define which fields from FIELD_REGISTRY_MAP apply to posts
-  const postRegistryFields = ['tags'];
-  
-  // Build registry sections dynamically
-  let registrySections = '**Canonical Metadata Registry:**\n';
-  registrySections += 'Use these values as starting points:\n\n';
-  
-  for (const fieldName of postRegistryFields) {
-    const config = FIELD_REGISTRY_MAP[fieldName];
-    if (config) {
-      registrySections += buildRegistrySection(fieldName, config, registry);
-    }
-  }
 
   // Build documents array from media - use R2 public URL
   const documents = mediaPackage.media
@@ -1156,74 +1052,206 @@ function buildBlogMetadataPrompt(draftContent, schemaContent, registry, mediaPac
   
   // Find featured image
   const imageMedia = mediaPackage.media.filter(item => item.type === 'image');
+  
+  // Get registry values as JSON arrays
+  const agencies = JSON.stringify(registry.agencies || []);
+  const counties = JSON.stringify(registry.counties || []);
+  const forceTypes = JSON.stringify(registry.force_types || []);
+  const threatLevels = JSON.stringify(registry.threat_levels || []);
+  const investigationStatuses = JSON.stringify(registry.investigation_statuses || []);
+  
+  // Build featured image section with clear instructions
+  let featuredImageInstructions = '';
+  if (imageMedia.length > 0) {
+    featuredImageInstructions = `"featured_image": {  // **REQUIRED** - You MUST select one image from the list below
+    "imageId": "string",  // MUST be one of these exact IDs: ${imageMedia.map(img => `"${img.imageId}"`).join(', ')}
+    "alt": "string",  // Copy the exact alt text from the selected image below
+    "caption": "string"  // Copy the exact caption from the selected image below (omit this line if caption is empty)
+  },
+  // Available images to choose from:
+${imageMedia.map((img, i) => `  // ${i + 1}. imageId: "${img.imageId}"
+  //    alt: "${img.componentParams.alt}"
+  //    caption: ${img.componentParams.caption ? `"${img.componentParams.caption}"` : '(none - omit caption field)'}`).join('\n')}`;
+  } else {
+    featuredImageInstructions = '"featured_image": null,  // No images available';
+  }
+
+  return `You are an expert legal writer generating metadata for a police misconduct case article.
+
+**Draft Content:**
+${draftContent}
+
+**Instructions:**
+
+The registry maintains canonical values to prevent duplicates and enable filtering. When you see something that matches a registry value (even if worded differently), use the exact registry value. If something isn't in the registry, create an appropriate new value - it will be added for future cases.
+
+Example: Draft says "Stanislaus Sheriff" → Use "Stanislaus County Sheriff's Department" (from registry)
+
+What you CAN infer:
+- Gender from pronouns (he/him → "Male", she/her → "Female")
+- Age from phrases ("39-year-old" → 39)
+- Force types from actions ("slammed to ground" → "Physical Force")
+- Armed status from descriptions ("unarmed", "had no weapons")
+- Threat level from behavior described
+- Civil lawsuit from mentions of legal filings
+- Bodycam if footage is mentioned
+
+What you CANNOT infer (must be explicitly stated or set to null):
+- Race/ethnicity (NEVER assume from names or location)
+- Exact dates ("October 2022" without day → null)
+- Officer names (unless specifically named)
+- Legal outcomes (unless explicitly stated)
+
+${imageMedia.length > 0 ? `**AVAILABLE IMAGES:**
+You have ${imageMedia.length} image(s) to choose from for the featured_image field:
+
+${imageMedia.map((img, i) => `${i + 1}. imageId: "${img.imageId}"
+   alt: "${img.componentParams.alt}"
+   caption: ${img.componentParams.caption ? `"${img.componentParams.caption}"` : '(none)'}`).join('\n\n')}
+
+` : ''}**CRITICAL - ERROR HANDLING:**
+If you CANNOT determine the victim's name (title) ${imageMedia.length > 0 ? 'or select a featured_image' : ''}, return this error format instead:
+
+\`\`\`json
+{
+  "error": true,
+  "message": "Cannot determine victim's name from draft content. Please provide the victim's full name in the draft."
+}
+\`\`\`
+
+Only return an error if the REQUIRED fields cannot be determined. Use null for optional fields.
+
+**Return this EXACT JSON structure:**
+
+\`\`\`json
+{
+  "title": "string",  // Victim's full name
+  "description": "string",  // Concise summary, max 100 words
+  "incident_date": "YYYY-MM-DD",  // Or null if not stated with day precision
+  "published": true,
+  
+  "city": "string",  // City name
+  "county": "string",  // REGISTRY: ${counties} | ${FIELD_REGISTRY_MAP.county.instruction}
+  
+  "age": 39,  // number or null (can infer from "39-year-old")
+  "race": "string or null",  // NEVER assume - must be explicitly stated
+  "gender": "Male",  // "Male"|"Female"|"Non-binary" or null (can infer from pronouns)
+  
+  "agencies": ["Full Agency Name"],  // REGISTRY: ${agencies} | ${FIELD_REGISTRY_MAP.agencies.instruction}
+  
+  "cause_of_death": "string or null",
+  "armed_status": "Armed",  // "Armed"|"Unarmed"|"Unknown" or null
+  "threat_level": "No Threat",  // REGISTRY: ${threatLevels} | ${FIELD_REGISTRY_MAP.threat_level.instruction}
+  "force_type": ["Physical Force"],  // REGISTRY: ${forceTypes} | ${FIELD_REGISTRY_MAP.force_type.instruction}
+  "shooting_officers": ["Officer Name"] or null,
+  
+  "investigation_status": "string",  // REGISTRY: ${investigationStatuses} | ${FIELD_REGISTRY_MAP.investigation_status.instruction}
+  "charges_filed": true,  // true|false|null
+  "civil_lawsuit_filed": true,  // true|false|null
+  "bodycam_available": true,  // true|false|null
+  
+  ${featuredImageInstructions}
+  "documents": ${JSON.stringify(documents)},  // Use exactly as provided
+  "external_links": ${JSON.stringify(external_links)}  // Use exactly as provided
+}
+\`\`\`
+
+Return ONLY the JSON above with all fields filled in based on the draft content.`;
+}
+
+/**
+ * Build metadata extraction prompt for blog posts
+ */
+function buildBlogMetadataPrompt(draftContent, schemaContent, registry, mediaPackage) {
+  // Build documents array from media - use R2 public URL
+  const documents = mediaPackage.media
+    .filter(item => item.type === 'document')
+    .map(item => ({
+      title: item.componentParams.title,
+      description: item.componentParams.description,
+      url: item.publicUrl
+    }));
+  
+  // Build external_links array
+  const external_links = mediaPackage.links.map(item => ({
+    title: item.componentParams.title || '',
+    description: item.componentParams.description || '',
+    url: item.sourceUrl,
+    icon: item.componentParams.icon || 'generic'
+  }));
+  
+  // Find featured image
+  const imageMedia = mediaPackage.media.filter(item => item.type === 'image');
+  
+  // Get registry values as JSON array
+  const tags = JSON.stringify(registry.post_tags || []);
+  
+  // Build featured image section with clear instructions
+  let featuredImageInstructions = '';
+  if (imageMedia.length > 0) {
+    featuredImageInstructions = `"featured_image": {  // **OPTIONAL** but strongly recommended - Select the most relevant image or set to null
+    "imageId": "string",  // Choose one of these exact IDs: ${imageMedia.map(img => `"${img.imageId}"`).join(', ')}
+    "alt": "string",  // Copy the exact alt text from the selected image below
+    "caption": "string"  // Copy the exact caption from the selected image below (omit this line if caption is empty)
+  },
+  // Available images to choose from (or set featured_image to null if none are suitable):
+${imageMedia.map((img, i) => `  // ${i + 1}. imageId: "${img.imageId}"
+  //    alt: "${img.componentParams.alt}"
+  //    caption: ${img.componentParams.caption ? `"${img.componentParams.caption}"` : '(none - omit caption field)'}`).join('\n')}`;
+  } else {
+    featuredImageInstructions = '"featured_image": null,  // No images available';
+  }
+
+  // Get today's date in YYYY-MM-DD format
+  const today = new Date().toISOString().split('T')[0];
 
   return `You are an expert writer generating metadata for a blog post about police misconduct and legal issues.
 
 **Draft Content:**
 ${draftContent}
 
-${registrySections}
+**Instructions:**
 
-**Schema (from src/content/config.ts):**
-${schemaContent.match(/const postsCollection[\s\S]+?\}\);/)[0]}
+The registry maintains canonical tag values for reusable topics across posts. When a topic matches a registry tag, use it exactly. For new topics, create appropriate new tags (1-3 words, Title Case) - they'll be added to the registry.
 
-**Available Images for Featured Image:**
-${imageMedia.length > 0 ? imageMedia.map((img, i) => `${i + 1}. imageId: ${img.imageId}
-   alt: ${img.componentParams.alt}
-   caption: ${img.componentParams.caption || 'none'}
-   source: ${img.sourceUrl}`).join('\n') : 'No images available'}
+Example: Topic about SB 2 → Use "California Legislation" (from registry)
+Example: New topic about use of force → Create "Use of Force" (will be added)
 
-**Processed Media:**
-Documents: ${JSON.stringify(documents, null, 2)}
-External Links: ${JSON.stringify(external_links, null, 2)}
+${imageMedia.length > 0 ? `**AVAILABLE IMAGES:**
+You have ${imageMedia.length} image(s) available for the optional featured_image field:
 
-**CRITICAL INSTRUCTIONS:**
+${imageMedia.map((img, i) => `${i + 1}. imageId: "${img.imageId}"
+   alt: "${img.componentParams.alt}"
+   caption: ${img.componentParams.caption ? `"${img.componentParams.caption}"` : '(none)'}`).join('\n\n')}
 
-1. **REQUIRED FIELDS:**
-   - title: Clear, engaging title (5-10 words)
-   - description: Concise summary for SEO/previews (15-25 words)
-   - published_date: Today's date "2025-11-15" (use YYYY-MM-DD format as STRING)
-   - published: Set to true
-   - tags: Array of 2-5 relevant topic tags
+` : ''}**CRITICAL - ERROR HANDLING:**
+If you CANNOT determine an appropriate title for this blog post, return this error format instead:
 
-2. **TAGS:**
-   - Select from registry when topics match
-   - Create NEW tags if article covers topics not in registry
-   - Tags should be 1-3 words, Title Case
-   - Examples: "Police Accountability", "California Legislation", "Civil Rights"
-   - Be specific but reusable across posts
-
-3. **FEATURED IMAGE:**
-   - Optional but recommended
-   - If available, select most relevant image from "Available Images" list
-   - Return as object: {imageId: "...", alt: "...", caption: "..."}
-   - Use EXACT imageId - do not modify
-   - Set to null if no suitable image available
-
-4. **MEDIA FIELDS:**
-   - documents: Use "Processed Media" documents array exactly as provided (or null if empty)
-   - external_links: Use "Processed Media" external_links array exactly as provided (or null if empty)
-
-5. **DATA TYPES:**
-   - Strings: Use quotes
-   - Arrays: Use brackets []
-   - Objects: Use curly braces {}
-   - Booleans: true/false (not "true"/"false")
-   - Null: Use null (not "null") for optional fields with no value
-
-Return ONLY valid JSON:
 \`\`\`json
 {
-  "title": "Your Post Title",
-  "description": "Your post description",
-  "published_date": "2025-11-15",
-  "published": true,
-  "tags": ["Tag One", "Tag Two"],
-  "featured_image": {"imageId": "...", "alt": "...", "caption": "..."} or null,
-  "documents": [...] or null,
-  "external_links": [...] or null
+  "error": true,
+  "message": "Cannot determine appropriate title from draft content. Please provide a clear topic or title in the draft."
 }
-\`\`\``;
+\`\`\`
+
+Only return an error if the title cannot be determined. All other fields can use reasonable defaults.
+
+**Return this EXACT JSON structure:**
+
+\`\`\`json
+{
+  "title": "string",  // Clear, engaging title (5-10 words)
+  "description": "string",  // Concise summary for SEO/previews (15-25 words)
+  "published_date": "${today}",  // Today's date
+  "published": true,
+  "tags": ["Tag One", "Tag Two"],  // REGISTRY: ${tags} | ${FIELD_REGISTRY_MAP.tags.instruction}
+  ${featuredImageInstructions}
+  "documents": ${JSON.stringify(documents)},  // Use exactly as provided
+  "external_links": ${JSON.stringify(external_links)}  // Use exactly as provided
+}
+\`\`\`
+
+Return ONLY the JSON above with all fields filled in based on the draft content.`;
 }
 
 /**
@@ -1287,7 +1315,6 @@ Return complete MDX file with frontmatter:
 
 \`\`\`mdx
 ---
-case_id: "${metadata.case_id}"
 title: "${metadata.title}"
 description: "${metadata.description}"
 incident_date: "${metadata.incident_date}"
@@ -1357,6 +1384,8 @@ async function generateCaseArticle(draftPath, mediaPackage) {
   });
   
   const metadataText = metadataResponse.content[0].text;
+  await displayResponseAndConfirm(metadataText, 'CASE METADATA EXTRACTION RESPONSE');
+  
   const metadataMatch = metadataText.match(/```json\n([\s\S]+?)\n```/);
   
   if (!metadataMatch) {
@@ -1364,6 +1393,17 @@ async function generateCaseArticle(draftPath, mediaPackage) {
   }
   
   const metadata = JSON.parse(metadataMatch[1]);
+  
+  // Check for error response from AI
+  if (metadata.error) {
+    console.error('\n' + '═'.repeat(80));
+    console.error('❌ METADATA EXTRACTION ERROR');
+    console.error('═'.repeat(80));
+    console.error(`\n${metadata.message}\n`);
+    console.error('The AI could not extract required metadata from the draft.');
+    console.error('Please update your draft file and try again.\n');
+    process.exit(1);
+  }
   
   // Step 2: Generate article content
   const articlePrompt = buildCaseArticlePrompt(
@@ -1384,6 +1424,8 @@ async function generateCaseArticle(draftPath, mediaPackage) {
   });
   
   const fullArticle = articleResponse.content[0].text;
+  await displayResponseAndConfirm(fullArticle, 'CASE ARTICLE GENERATION RESPONSE');
+  
   const mdxMatch = fullArticle.match(/```mdx\n([\s\S]+?)\n```/);
   
   if (!mdxMatch) {
@@ -1520,6 +1562,8 @@ async function generateBlogPost(draftPath, mediaPackage) {
   });
   
   const metadataText = metadataResponse.content[0].text;
+  await displayResponseAndConfirm(metadataText, 'BLOG METADATA EXTRACTION RESPONSE');
+  
   const metadataMatch = metadataText.match(/```json\n([\s\S]+?)\n```/);
   
   if (!metadataMatch) {
@@ -1527,6 +1571,17 @@ async function generateBlogPost(draftPath, mediaPackage) {
   }
   
   const metadata = JSON.parse(metadataMatch[1]);
+  
+  // Check for error response from AI
+  if (metadata.error) {
+    console.error('\n' + '═'.repeat(80));
+    console.error('❌ METADATA EXTRACTION ERROR');
+    console.error('═'.repeat(80));
+    console.error(`\n${metadata.message}\n`);
+    console.error('The AI could not extract required metadata from the draft.');
+    console.error('Please update your draft file and try again.\n');
+    process.exit(1);
+  }
   
   // Step 2: Generate article content
   const articlePrompt = buildBlogArticlePrompt(
@@ -1547,6 +1602,8 @@ async function generateBlogPost(draftPath, mediaPackage) {
   });
   
   const fullArticle = articleResponse.content[0].text;
+  await displayResponseAndConfirm(fullArticle, 'BLOG ARTICLE GENERATION RESPONSE');
+  
   const mdxMatch = fullArticle.match(/```mdx\n([\s\S]+?)\n```/);
   
   if (!mdxMatch) {

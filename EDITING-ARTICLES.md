@@ -214,7 +214,6 @@ The frontmatter (YAML section at the top) contains metadata. You can edit these 
 
 ```yaml
 ---
-case_id: "ca-lapd-2023-001"
 title: "John Smith"
 description: "Brief description of the case"
 incident_date: "2023-06-15"

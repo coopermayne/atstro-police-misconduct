@@ -7,7 +7,7 @@ This is an Astro-based static site documenting police misconduct cases in Califo
 
 ### Content Collections (`src/content/`)
 The site is built around Astro's content collections defined in `src/content/config.ts`:
-- **cases**: MDX files with structured frontmatter (case_id, victim_name, incident_date, agencies, etc.)
+- **cases**: MDX files with structured frontmatter (victim_name, incident_date, agencies, etc.)
 - **posts**: Blog articles with title, description, published_date, tags, and optional featured_image
 - **agencies**: Optional metadata pages for police departments
 - **counties**: Optional metadata pages for California counties
