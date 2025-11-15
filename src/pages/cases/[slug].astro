@@ -149,14 +149,6 @@ const { Content } = await caseItem.render();
           </div>
         )}
         
-        <!-- Related Cases Section -->
-        <RelatedCases 
-          currentSlug={caseItem.slug}
-          relatedCaseSlugs={caseItem.data.related_cases || []}
-          agency={caseItem.data.agencies?.[0]}
-          forceType={caseItem.data.force_type || []}
-          county={caseItem.data.county}
-        />
     </div>
   </article>
 </MainLayout>

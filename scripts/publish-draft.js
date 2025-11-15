@@ -27,6 +27,40 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Display prompt to user and ask for confirmation before sending to AI
+ * @param {string} prompt - The prompt to display
+ * @param {string} promptName - Name/description of the prompt
+ * @returns {Promise<boolean>} - True if user confirms, false otherwise
+ */
+async function displayPromptAndConfirm(prompt, promptName) {
+  console.log('\n' + '═'.repeat(80));
+  console.log(`📋 ${promptName}`);
+  console.log('═'.repeat(80) + '\n');
+  
+  // Display prompt with word wrapping
+  console.log(prompt);
+  
+  console.log('\n' + '═'.repeat(80));
+  console.log(`Total characters: ${prompt.length}`);
+  console.log('═'.repeat(80) + '\n');
+  
+  const response = await prompts({
+    type: 'confirm',
+    name: 'proceed',
+    message: 'Send this prompt to Claude AI?',
+    initial: true
+  });
+  
+  if (!response.proceed) {
+    console.log('\n❌ Cancelled by user\n');
+    process.exit(0);
+  }
+  
+  console.log('\n✓ Sending to Claude...\n');
+  return true;
+}
+
 const DRAFTS_DIR = path.join(__dirname, '..', 'drafts');
 const TEMP_DIR = path.join(__dirname, '..', '.temp-uploads');
 
@@ -269,20 +303,32 @@ function validateMediaMetadataItem(item) {
 }
 
 /**
- * Extract context around a URL in the markdown content
+ * Extract minimal context after a URL in the markdown content
  * @param {string} content - Full markdown content
  * @param {string} url - URL to find context for
- * @param {number} contextChars - Characters before/after to include (default: 500)
- * @returns {string} Context snippet around the URL
+ * @returns {string} Context snippet (up to ~20 words after the URL)
  */
-function extractUrlContext(content, url, contextChars = 500) {
+function extractUrlContext(content, url) {
   const index = content.indexOf(url);
   if (index === -1) return '';
   
-  const start = Math.max(0, index - contextChars);
-  const end = Math.min(content.length, index + url.length + contextChars);
+  // Start after the URL
+  const afterUrl = content.substring(index + url.length);
   
-  return content.substring(start, end);
+  // Take up to 150 characters (roughly 20-25 words)
+  let contextEnd = Math.min(150, afterUrl.length);
+  let context = afterUrl.substring(0, contextEnd);
+  
+  // Stop if we hit another URL (http:// or https://)
+  const nextUrlMatch = context.match(/https?:\/\//);
+  if (nextUrlMatch) {
+    context = context.substring(0, nextUrlMatch.index);
+  }
+  
+  // Trim whitespace
+  context = context.trim();
+  
+  return context || '(no context available)';
 }
 
 /**
@@ -389,62 +435,39 @@ CONTEXT: ${context}
 MEDIA ITEMS TO ANALYZE (with surrounding context):
 ${mediaWithContext.join('\n---\n')}
 
-For each media item, provide:
+Return a JSON array matching this schema:
 
-FOR VIDEOS:
-- caption: Brief description of what the video shows (optional, only if context provides info)
-  * WORD LIMIT: 15-25 words maximum
-  * Be concise and factual
-
-FOR IMAGES:
-- alt: Accessible description of the image content (required - use context clues or generic description)
-  * WORD LIMIT: 10-15 words maximum
-  * Focus on what's visible in the image
-- caption: Brief description for display (optional, only if context provides info)
-  * WORD LIMIT: 15-25 words maximum
-  * Can provide additional context beyond alt text
-
-FOR DOCUMENTS:
-- title: Short descriptive title (required - extract from context or make generic)
-  * WORD LIMIT: 3-8 words maximum
-  * Clear and specific
-- description: What the document contains (required - extract from context or make generic)
-  * WORD LIMIT: 15-30 words maximum
-  * Summarize key content
-
-FOR LINKS:
-- title: Short title for the link (optional - falls back to hostname if omitted)
-  * WORD LIMIT: 3-8 words maximum
-  * Extract from context or link text
-- description: Additional context (optional)
-  * WORD LIMIT: 15-30 words maximum
-  * What the link provides or covers
-- icon: Icon variant (optional - choose based on link type)
-  * "video" for YouTube/Vimeo/video platforms
-  * "news" for news articles/outlets
-  * "generic" for everything else (default)
-
-For all items:
-- confidence: 0-1 rating of how confident you are (lower if guessing)
-
-CRITICAL: Adhere strictly to word limits. Be concise and precise.
-
-Respond with ONLY a JSON array in this exact format:
 [
   {
     "sourceUrl": "exact URL from list above",
-    "type": "video|image|document",
+    "type": "video|image|document|link",
     "componentParams": {
-      // type-specific parameters
+      // FOR VIDEO:
+      "caption": "string (optional) - Brief description of video content. WORD LIMIT: 15-25 words. Only include if context provides info."
+      
+      // FOR IMAGE:
+      "alt": "string (required) - Accessible description. WORD LIMIT: 10-15 words. Focus on what's visible.",
+      "caption": "string (optional) - Additional context beyond alt. WORD LIMIT: 15-25 words. Only if context provides info."
+      
+      // FOR DOCUMENT:
+      "title": "string (required) - Short title. WORD LIMIT: 3-8 words. Extract from context or make generic.",
+      "description": "string (required) - What document contains. WORD LIMIT: 15-30 words. Summarize key content."
+      
+      // FOR LINK:
+      "title": "string (optional) - Short title. WORD LIMIT: 3-8 words. Falls back to hostname if omitted.",
+      "description": "string (optional) - Additional context. WORD LIMIT: 15-30 words.",
+      "icon": "string (optional) - 'video' (YouTube/Vimeo), 'news' (news outlets), or 'generic' (default)"
     },
-    "confidence": 0.85
+    "confidence": 0.85  // number 0-1, lower if guessing
   }
 ]
 
-Base your descriptions on the context provided. If there's minimal context, provide generic but accurate descriptions and lower the confidence score.`;
+CRITICAL: Adhere strictly to word limits. Be concise and precise. Base descriptions on context provided. If minimal context, use generic descriptions and lower confidence.`;
+
 
   try {
-    console.log('  → Sending request to Claude...');
+    await displayPromptAndConfirm(prompt, 'MEDIA METADATA EXTRACTION PROMPT');
+    
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 4000,
@@ -1289,8 +1312,6 @@ featured_image: ${metadata.featured_image ? `
   alt: "${metadata.featured_image.alt}"${metadata.featured_image.caption ? `\n  caption: "${metadata.featured_image.caption}"` : ''}` : 'null'}
 documents: ${metadata.documents ? JSON.stringify(metadata.documents) : 'null'}
 external_links: ${metadata.external_links ? JSON.stringify(metadata.external_links) : 'null'}
-related_cases: ${metadata.related_cases ? JSON.stringify(metadata.related_cases) : 'null'}
-attorney: ${metadata.attorney ? `"${metadata.attorney}"` : 'null'}
 ---
 
 import CloudflareImage from '../../components/CloudflareImage.astro';
@@ -1324,6 +1345,8 @@ async function generateCaseArticle(draftPath, mediaPackage) {
     mediaPackage
   );
   
+  await displayPromptAndConfirm(metadataPrompt, 'CASE METADATA EXTRACTION PROMPT');
+  
   const metadataResponse = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4000,
@@ -1348,6 +1371,8 @@ async function generateCaseArticle(draftPath, mediaPackage) {
     metadata,
     componentReference
   );
+  
+  await displayPromptAndConfirm(articlePrompt, 'CASE ARTICLE GENERATION PROMPT');
   
   const articleResponse = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
@@ -1483,6 +1508,8 @@ async function generateBlogPost(draftPath, mediaPackage) {
     mediaPackage
   );
   
+  await displayPromptAndConfirm(metadataPrompt, 'BLOG METADATA EXTRACTION PROMPT');
+  
   const metadataResponse = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
     max_tokens: 4000,
@@ -1507,6 +1534,8 @@ async function generateBlogPost(draftPath, mediaPackage) {
     metadata,
     componentReference
   );
+  
+  await displayPromptAndConfirm(articlePrompt, 'BLOG ARTICLE GENERATION PROMPT');
   
   const articleResponse = await anthropic.messages.create({
     model: 'claude-sonnet-4-20250514',
