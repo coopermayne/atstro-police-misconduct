@@ -28,8 +28,8 @@ function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
 
 <MainLayout content={{ title: 'Blog' }}>
   <!-- Hero Section -->
-  <header class="bg-white dark:bg-gray-900 mb-8">
-    <div class="container px-6 py-10 mx-auto border-b-4 border-red-600">
+  <header class="bg-white dark:bg-gray-900 mb-6">
+    <div class="container px-6 py-8 mx-auto border-b-4 border-red-600">
       <h1 class="text-3xl font-semibold text-gray-800 dark:text-white lg:text-4xl">
         Police Misconduct <span class="text-red-600">Law Blog</span>
       </h1>
@@ -41,8 +41,8 @@ function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
 
   <!-- Recent Blog Posts Section -->
   <section class="bg-white dark:bg-gray-900">
-    <div class="container px-6 py-10 mx-auto">
-      <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white mb-8">
+    <div class="container px-6 py-8 mx-auto">
+      <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white mb-6">
         Recent Blog Posts
       </h2>
       
@@ -50,24 +50,28 @@ function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
         <!-- Most Recent Post (Featured) -->
         {featuredPost && (
           <div class="lg:w-3/4 lg:px-6">
-            {featuredPost.data.featured_image ? (
-              <img 
-                class="object-cover object-center w-full h-80 xl:h-[28rem] rounded-xl" 
-                src={getFeaturedImageUrl(featuredPost.data.featured_image)} 
-                alt={featuredPost.data.title}
-              />
-            ) : (
-              <div class="bg-gray-200 dark:bg-gray-700 w-full h-80 xl:h-[28rem] rounded-xl flex items-center justify-center">
-                <span class="text-gray-400 dark:text-gray-500 text-lg">No image</span>
-              </div>
-            )}
+            <a href={`/posts/${featuredPost.slug}`}>
+              {featuredPost.data.featured_image ? (
+                <img 
+                  class="object-cover object-center w-full h-80 xl:h-[28rem] rounded-xl" 
+                  src={getFeaturedImageUrl(featuredPost.data.featured_image)} 
+                  alt={featuredPost.data.title}
+                />
+              ) : (
+                <div class="bg-gray-200 dark:bg-gray-700 w-full h-80 xl:h-[28rem] rounded-xl flex items-center justify-center">
+                  <span class="text-gray-400 dark:text-gray-500 text-lg">No image</span>
+                </div>
+              )}
+            </a>
             
             <div>
-              <p class="mt-6 text-sm text-red-600 uppercase">Latest Post</p>
-              <h1 class="max-w-lg mt-4 text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
-                {featuredPost.data.title}
+              <p class="mt-4 text-sm text-red-600 uppercase">Latest Post</p>
+              <h1 class="max-w-lg mt-2 text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
+                <a href={`/posts/${featuredPost.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
+                  {featuredPost.data.title}
+                </a>
               </h1>
-              <p class="mt-3 text-gray-600 dark:text-gray-400">
+              <p class="mt-2 text-gray-600 dark:text-gray-400">
                 {featuredPost.data.description}
               </p>
               <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
@@ -75,7 +79,7 @@ function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
               </p>
               
               <!-- Tags -->
-              <div class="flex flex-wrap gap-2 mt-4">
+              <div class="flex flex-wrap gap-2 mt-3">
                 {featuredPost.data.tags.slice(0, 3).map(tag => (
                   <a 
                     href={`/posts/tags/${tag.toLowerCase().replace(/\s+/g, '-')}`}
@@ -88,7 +92,7 @@ function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
               
               <a 
                 href={`/posts/${featuredPost.slug}`} 
-                class="inline-block mt-4 text-red-600 hover:underline"
+                class="inline-block mt-3 text-red-600 hover:underline">
               >
                 Read More →
               </a>
@@ -114,7 +118,7 @@ function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
                 Published: {new Date(post.data.published_date).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })}
               </p>
               {index < recentPosts.length - 1 && (
-                <hr class="my-6 border-gray-200 dark:border-gray-700" />
+                <hr class="my-4 border-gray-200 dark:border-gray-700" />
               )}
             </div>
           ))}
@@ -125,15 +129,15 @@ function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
 
   <!-- All Posts Grid -->
   {sortedPosts.length > 1 && (
-    <section class="px-6 pb-10 mt-10">
-      <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">All Articles</h2>
+    <section class="px-6 pb-8 mt-8">
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">All Articles</h2>
       <ArticleGrid items={sortedPosts} type="post" />
     </section>
   )}
 
   <!-- Browse by Topic -->
-  <section class="px-6 pb-10 mt-10">
-    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Browse by Topic</h2>
+  <section class="px-6 pb-8 mt-8">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Browse by Topic</h2>
     <div class="flex flex-wrap gap-3">
       {allTags.sort().map(tag => (
         <a 
