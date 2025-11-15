@@ -950,10 +950,10 @@ External Links: ${JSON.stringify(external_links, null, 2)}
 
 1. **FEATURED IMAGE (REQUIRED):**
    - You MUST select a featured_image from the "Available Images" list above
-   - Choose the most appropriate image that represents the case (usually a photo of the victim)
+   - Choose the most appropriate image that represents the case (usually a photo of the victim before the incident)
    - Return it as an object with: {imageId: "...", alt: "...", caption: "..."}
    - **IMPORTANT**: Use the EXACT imageId from the list above - do not modify or transform it
-   - The imageId is a UUID like "9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00" - copy it exactly as shown
+   - The imageId is a UUID - copy it exactly as shown
    - If multiple images available, choose the best one for featured display
    - If caption is not needed for featured display, you can omit it or set to empty string
    - **DO NOT use null** - always select from available images
