@@ -418,9 +418,9 @@ description: "${metadata.description}"
 published_date: "${metadata.published_date}"
 tags: ${JSON.stringify(metadata.tags)}
 published: ${metadata.published}
-featured_image: ${metadata.featured_image || 'null'}
-documents: ${metadata.documents || 'null'}
-external_links: ${metadata.external_links || 'null'}
+featured_image: ${metadata.featured_image ? JSON.stringify(metadata.featured_image) : 'null'}
+documents: ${metadata.documents ? JSON.stringify(metadata.documents) : 'null'}
+external_links: ${metadata.external_links ? JSON.stringify(metadata.external_links) : 'null'}
 ---
 
 import CloudflareImage from '../../components/CloudflareImage.astro';
