@@ -285,6 +285,80 @@ function extractUrlContext(content, url, contextChars = 500) {
 }
 
 /**
+ * Generate component HTML/MDX string for media
+ * @param {string} type - Media type (video, image, document)
+ * @param {object} libraryEntry - Media library entry with Cloudflare IDs
+ * @param {object} componentParams - AI-generated component parameters
+ * @returns {string} - MDX component string
+ */
+function generateComponentHTML(type, libraryEntry, componentParams) {
+  switch (type) {
+    case 'video': {
+      const props = [];
+      props.push(`videoId="${libraryEntry.videoId}"`);
+      if (componentParams.caption) {
+        props.push(`caption="${escapeQuotes(componentParams.caption)}"`);
+      }
+      return `<CloudflareVideo ${props.join(' ')} />`;
+    }
+    
+    case 'image': {
+      const props = [];
+      props.push(`imageId="${libraryEntry.imageId}"`);
+      props.push(`alt="${escapeQuotes(componentParams.alt)}"`);
+      if (componentParams.caption) {
+        props.push(`caption="${escapeQuotes(componentParams.caption)}"`);
+      }
+      return `<CloudflareImage ${props.join(' ')} />`;
+    }
+    
+    case 'document': {
+      const props = [];
+      props.push(`title="${escapeQuotes(componentParams.title)}"`);
+      props.push(`description="${escapeQuotes(componentParams.description)}"`);
+      props.push(`url="${libraryEntry.publicUrl}"`);
+      return `<DocumentCard ${props.join(' ')} />`;
+    }
+    
+    default:
+      return `<!-- Unknown media type: ${type} -->`;
+  }
+}
+
+/**
+ * Generate component HTML/MDX string for external links
+ * @param {string} sourceUrl - The link URL
+ * @param {object} componentParams - AI-generated link parameters
+ * @returns {string} - MDX component string
+ */
+function generateLinkComponentHTML(sourceUrl, componentParams) {
+  const props = [];
+  props.push(`url="${sourceUrl}"`);
+  
+  if (componentParams.title) {
+    props.push(`title="${escapeQuotes(componentParams.title)}"`);
+  }
+  if (componentParams.description) {
+    props.push(`description="${escapeQuotes(componentParams.description)}"`);
+  }
+  if (componentParams.icon) {
+    props.push(`icon="${componentParams.icon}"`);
+  }
+  
+  return `<ExternalLinkCard ${props.join(' ')} />`;
+}
+
+/**
+ * Escape quotes in component prop values
+ * @param {string} str - String to escape
+ * @returns {string} - Escaped string
+ */
+function escapeQuotes(str) {
+  if (!str) return '';
+  return str.replace(/"/g, '&quot;');
+}
+
+/**
  * Use AI to extract metadata for all media items from the article
  * @param {string} filePath - Path to markdown file
  * @param {Array<{sourceUrl: string, type: string}>} mediaItems - Categorized media items
@@ -636,44 +710,54 @@ async function main() {
       console.log(`  • New uploads: ${newUploads}`);
       console.log(`  • Total processed: ${uploadedMedia.length}\n`);
       
-      // Print summary
-      console.log('📋 Upload Summary:\n');
-      uploadedMedia.forEach(item => {
-        console.log(`${item.type.toUpperCase()}: ${item.libraryEntry.id}`);
-        if (item.type === 'video') {
-          console.log(`  Video ID: ${item.libraryEntry.videoId}`);
-        } else if (item.type === 'image') {
-          console.log(`  Image ID: ${item.libraryEntry.imageId}`);
-        } else if (item.type === 'document') {
-          console.log(`  R2 Key: ${item.libraryEntry.r2Key}`);
-          console.log(`  Public URL: ${item.libraryEntry.publicUrl}`);
-        }
-        console.log();
-      });
-      
       // Cleanup temp directory
       cleanupTempDir();
       
-      // Return processed media with library references
+      // Return processed media with library references and component HTML
       const processedMedia = uploadedMedia.map(item => ({
         sourceUrl: item.sourceUrl,
         type: item.type,
         componentParams: item.componentParams,
         confidence: item.confidence,
-        libraryId: item.libraryEntry.id
+        libraryId: item.libraryEntry.id,
+        componentHTML: generateComponentHTML(item.type, item.libraryEntry, item.componentParams)
       }));
       
       const processedLinks = links.map(item => ({
         sourceUrl: item.sourceUrl,
         type: item.type,
         componentParams: item.componentParams,
-        confidence: item.confidence
+        confidence: item.confidence,
+        componentHTML: generateLinkComponentHTML(item.sourceUrl, item.componentParams)
       }));
       
-      console.log('\n📦 Final Media & Links Package:\n');
-      console.log('Media items:', processedMedia.length);
-      console.log('Links:', processedLinks.length);
-      console.log();
+      // Print final result with readable component HTML
+      console.log('\n' + '='.repeat(80));
+      console.log('📦 FINAL PACKAGE - MEDIA & LINKS');
+      console.log('='.repeat(80) + '\n');
+      
+      if (processedMedia.length > 0) {
+        console.log(`📹 MEDIA (${processedMedia.length} items):\n`);
+        processedMedia.forEach((item, index) => {
+          console.log(`${index + 1}. ${item.type.toUpperCase()}`);
+          console.log(`   Library ID: ${item.libraryId}`);
+          console.log(`   Source: ${item.sourceUrl}`);
+          console.log(`   Component: ${item.componentHTML}`);
+          console.log();
+        });
+      }
+      
+      if (processedLinks.length > 0) {
+        console.log(`🔗 LINKS (${processedLinks.length} items):\n`);
+        processedLinks.forEach((item, index) => {
+          console.log(`${index + 1}. LINK`);
+          console.log(`   URL: ${item.sourceUrl}`);
+          console.log(`   Component: ${item.componentHTML}`);
+          console.log();
+        });
+      }
+      
+      console.log('='.repeat(80) + '\n');
       
       return {
         media: processedMedia,
@@ -684,14 +768,31 @@ async function main() {
     if (links.length > 0) {
       console.log(`\n🔗 ${links.length} external link(s) identified (no upload needed)\n`);
       
+      const processedLinks = links.map(item => ({
+        sourceUrl: item.sourceUrl,
+        type: item.type,
+        componentParams: item.componentParams,
+        confidence: item.confidence,
+        componentHTML: generateLinkComponentHTML(item.sourceUrl, item.componentParams)
+      }));
+      
+      // Print links
+      console.log('\n' + '='.repeat(80));
+      console.log('📦 FINAL PACKAGE - LINKS ONLY');
+      console.log('='.repeat(80) + '\n');
+      
+      processedLinks.forEach((item, index) => {
+        console.log(`${index + 1}. LINK`);
+        console.log(`   URL: ${item.sourceUrl}`);
+        console.log(`   Component: ${item.componentHTML}`);
+        console.log();
+      });
+      
+      console.log('='.repeat(80) + '\n');
+      
       return {
         media: [],
-        links: links.map(item => ({
-          sourceUrl: item.sourceUrl,
-          type: item.type,
-          componentParams: item.componentParams,
-          confidence: item.confidence
-        }))
+        links: processedLinks
       };
     }
   }
@@ -709,11 +810,77 @@ async function main() {
   });
   console.log('\n' + '='.repeat(80) + '\n');
   
-  // TODO: Next phases
-  console.log('Next: Generate article content with AI...');
+  // Phase 4: Generate article content based on type
+  console.log('📝 PHASE 4: Generate Article Content\n');
+  
+  const draftPath = selectedDraft.path;
+  const isCase = draftPath.includes('/cases/');
+  const isPost = draftPath.includes('/posts/');
+  
+  let generatedContent;
+  if (isCase) {
+    console.log('Article type: Case\n');
+    generatedContent = await generateCaseArticle(draftPath, result);
+  } else if (isPost) {
+    console.log('Article type: Blog Post\n');
+    generatedContent = await generateBlogPost(draftPath, result);
+  } else {
+    throw new Error('Unable to determine article type from draft path');
+  }
+  
+  console.log('✓ Article content generated\n');
   
   return result;
 }
+
+/**
+ * Generate a case article from draft and media
+ * @param {string} draftPath - Path to draft file
+ * @param {object} mediaPackage - Processed media and links from Phase 3
+ * @returns {Promise<object>} - Generated article with frontmatter and content
+ */
+async function generateCaseArticle(draftPath, mediaPackage) {
+  console.log('→ Reading draft content...');
+  const draftContent = await fs.readFile(draftPath, 'utf-8');
+  
+  // TODO: Parse existing frontmatter if present
+  // TODO: Build AI prompt with draft content, media, and case-specific requirements
+  // TODO: Call Claude API to generate complete case article
+  // TODO: Validate required case frontmatter fields (case_id, victim_name, incident_date, etc.)
+  // TODO: Return { frontmatter, content }
+  
+  console.log('→ TODO: Implement case article generation');
+  return {
+    frontmatter: {},
+    content: draftContent,
+    slug: 'placeholder-slug'
+  };
+}
+
+/**
+ * Generate a blog post from draft and media
+ * @param {string} draftPath - Path to draft file
+ * @param {object} mediaPackage - Processed media and links from Phase 3
+ * @returns {Promise<object>} - Generated article with frontmatter and content
+ */
+async function generateBlogPost(draftPath, mediaPackage) {
+  console.log('→ Reading draft content...');
+  const draftContent = await fs.readFile(draftPath, 'utf-8');
+  
+  // TODO: Parse existing frontmatter if present
+  // TODO: Build AI prompt with draft content, media, and blog-specific requirements
+  // TODO: Call Claude API to generate complete blog post
+  // TODO: Validate required post frontmatter fields (title, description, published_date, tags, etc.)
+  // TODO: Return { frontmatter, content }
+  
+  console.log('→ TODO: Implement blog post generation');
+  return {
+    frontmatter: {},
+    content: draftContent,
+    slug: 'placeholder-slug'
+  };
+}
+
 
 main().catch(error => {
   console.error('Error:', error);
