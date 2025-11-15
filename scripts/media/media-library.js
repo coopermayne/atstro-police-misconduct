@@ -5,21 +5,21 @@
  * Allows reuse across multiple articles/cases and easy MDX code generation.
  * 
  * Usage:
- *   node scripts/media-library.js add-video <url> [--description "..."] [--tags "tag1,tag2"]
- *   node scripts/media-library.js add-image <url> [--description "..."] [--tags "tag1,tag2"]
- *   node scripts/media-library.js add-document <url> [--description "..."] [--tags "tag1,tag2"]
- *   node scripts/media-library.js search <query>
- *   node scripts/media-library.js get-code <asset-id>
- *   node scripts/media-library.js list [--type videos|images|documents]
+ *   node scripts/media/media-library.js add-video <url> [--description "..."] [--tags "tag1,tag2"]
+ *   node scripts/media/media-library.js add-image <url> [--description "..."] [--tags "tag1,tag2"]
+ *   node scripts/media/media-library.js add-document <url> [--description "..."] [--tags "tag1,tag2"]
+ *   node scripts/media/media-library.js search <query>
+ *   node scripts/media/media-library.js get-code <asset-id>
+ *   node scripts/media/media-library.js list [--type videos|images|documents]
  */
 
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { downloadFile } from './file-downloader.js';
-import { uploadVideo, getVideoDetails } from './cloudflare-stream.js';
-import { uploadImage, getImageDetails } from './cloudflare-images.js';
-import { uploadPDF } from './cloudflare-r2.js';
+import { uploadVideo, getVideoDetails } from '../cloudflare/cloudflare-stream.js';
+import { uploadImage, getImageDetails } from '../cloudflare/cloudflare-images.js';
+import { uploadPDF } from '../cloudflare/cloudflare-r2.js';
 
 const LIBRARY_PATH = path.join(process.cwd(), 'media-library.json');
 
@@ -601,7 +601,7 @@ const command = args[0];
       case 'add-video': {
         const urlOrPath = args[1];
         if (!urlOrPath) {
-          console.error('Usage: node scripts/media-library.js add-video <url-or-file> [--description "..."] [--tags "tag1,tag2"] [--title "..."] [--caption "..."]');
+          console.error('Usage: node scripts/media/media-library.js add-video <url-or-file> [--description "..."] [--tags "tag1,tag2"] [--title "..."] [--caption "..."]');
           process.exit(1);
         }
         const descIndex = args.indexOf('--description');
@@ -623,7 +623,7 @@ const command = args[0];
       case 'add-image': {
         const urlOrPath = args[1];
         if (!urlOrPath) {
-          console.error('Usage: node scripts/media-library.js add-image <url-or-file> [--description "..."] [--tags "tag1,tag2"] [--alt "..."] [--caption "..."] [--variant "..."]');
+          console.error('Usage: node scripts/media/media-library.js add-image <url-or-file> [--description "..."] [--tags "tag1,tag2"] [--alt "..."] [--caption "..."] [--variant "..."]');
           process.exit(1);
         }
         const descIndex = args.indexOf('--description');
@@ -647,7 +647,7 @@ const command = args[0];
       case 'add-document': {
         const url = args[1];
         if (!url) {
-          console.error('Usage: node scripts/media-library.js add-document <url> [--description "..."] [--tags "tag1,tag2"] [--link-text "..."]');
+          console.error('Usage: node scripts/media/media-library.js add-document <url> [--description "..."] [--tags "tag1,tag2"] [--link-text "..."]');
           process.exit(1);
         }
         const descIndex = args.indexOf('--description');
@@ -667,7 +667,7 @@ const command = args[0];
       case 'search': {
         const query = args[1];
         if (!query) {
-          console.error('Usage: node scripts/media-library.js search <query>');
+          console.error('Usage: node scripts/media/media-library.js search <query>');
           process.exit(1);
         }
         const results = searchLibrary(query);
@@ -678,7 +678,7 @@ const command = args[0];
       case 'get-code': {
         const assetId = args[1];
         if (!assetId) {
-          console.error('Usage: node scripts/media-library.js get-code <asset-id>');
+          console.error('Usage: node scripts/media/media-library.js get-code <asset-id>');
           process.exit(1);
         }
         console.log(getMdxCode(assetId));

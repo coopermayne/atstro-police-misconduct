@@ -6,23 +6,29 @@ This folder contains the automated content generation workflow scripts.
 
 ### Main Script
 - **`publish-draft.js`** - Main orchestration script that runs the entire publishing workflow
+- **`cli.js`** - Interactive command-line interface for the publishing workflow
 
-### Test Scripts
-- **`test-r2-upload.js`** - Standalone script to test R2 uploads and verify URLs
-
-### Utility Modules
-- **`file-downloader.js`** - Downloads files from external URLs (Dropbox, Google Drive, etc.)
+### Cloudflare Uploaders (`cloudflare/`)
 - **`cloudflare-stream.js`** - Uploads videos to Cloudflare Stream
 - **`cloudflare-r2.js`** - Uploads images and PDFs to Cloudflare R2 storage
 - **`cloudflare-images.js`** - Uploads images to Cloudflare Images
-- **`ai-prompts.js`** - AI prompt templates for content analysis and generation
-- **`validate-config.js`** - Validates environment configuration
+
+### Media Management (`media/`)
+- **`file-downloader.js`** - Downloads files from external URLs (Dropbox, Google Drive, etc.)
 - **`media-library.js`** - Tracks uploaded media assets to avoid duplicates
-- **`metadata-registry.js`** - Manages canonical metadata values (agencies, counties, tags)
+- **`media-browser.js`** - Interactive browser for viewing uploaded media
+
+### Metadata Registry (`registry/`)
+- **`metadata-registry.js`** - Core module for managing canonical metadata values (agencies, counties, tags)
 - **`metadata-registry-cli.js`** - CLI tool for managing metadata registry
-- **`rebuild-registry.js`** - Rebuilds entire registry from published content (used by sync-registry.js)
+- **`rebuild-registry.js`** - Rebuilds entire registry from published content
 - **`sync-registry.js`** - Syncs registry with all published content (runs automatically on build/dev)
+- **`update-registry-from-content.js`** - Updates registry from a single published file
 - **`normalize-metadata.js`** - Normalizes existing content metadata against registry
+
+### Build Utilities (`build/`)
+- **`validate-config.js`** - Validates environment configuration
+- **`copy-pagefind.js`** - Copies Pagefind search assets
 
 ## Usage
 
@@ -62,7 +68,7 @@ This verifies that the R2 upload function properly uploads files and generates w
 If you need to manually scan a published file and update the registry:
 
 ```bash
-node scripts/update-registry-from-content.js src/content/cases/anthony-silva.mdx case
+node scripts/registry/update-registry-from-content.js src/content/cases/anthony-silva.mdx case
 ```
 
 This scans the frontmatter and adds any new agencies, counties, or tags to the registry. This happens automatically after publishing, but can be run manually if needed.
@@ -75,22 +81,22 @@ View and manage canonical metadata values:
 
 ```bash
 # Manually rebuild registry from all published content
-node scripts/rebuild-registry.js
+node scripts/registry/rebuild-registry.js
 
 # Or use the sync command (which calls rebuild internally)
-node scripts/sync-registry.js
+node scripts/registry/sync-registry.js
 
 # List all entries of a type
-node scripts/metadata-registry-cli.js list agencies
-node scripts/metadata-registry-cli.js list counties
-node scripts/metadata-registry-cli.js list case-tags
+node scripts/registry/metadata-registry-cli.js list agencies
+node scripts/registry/metadata-registry-cli.js list counties
+node scripts/registry/metadata-registry-cli.js list case-tags
 
 # Add new entries manually (if needed before publishing)
-node scripts/metadata-registry-cli.js add-agency "Berkeley PD"
-node scripts/metadata-registry-cli.js add-tag "Excessive Force" case
+node scripts/registry/metadata-registry-cli.js add-agency "Berkeley PD"
+node scripts/registry/metadata-registry-cli.js add-tag "Excessive Force" case
 
 # View registry statistics
-node scripts/metadata-registry-cli.js stats
+node scripts/registry/metadata-registry-cli.js stats
 ```
 
 **How Registry Auto-Sync Works:**
@@ -109,7 +115,7 @@ You can also use the utilities independently:
 
 #### Download Files
 ```javascript
-import { downloadFile } from './file-downloader.js';
+import { downloadFile } from './media/file-downloader.js';
 
 const result = await downloadFile(
   'https://dropbox.com/s/abc/file.mp4',
@@ -119,7 +125,7 @@ const result = await downloadFile(
 
 #### Upload to R2 (PDFs/Documents)
 ```javascript
-import { uploadPDF } from './cloudflare-r2.js';
+import { uploadPDF } from './cloudflare/cloudflare-r2.js';
 
 const result = await uploadPDF('./document.pdf', {
   source: 'court-filing',
@@ -131,7 +137,7 @@ console.log(result.url); // Public URL to use in frontmatter
 
 #### Upload Video
 ```javascript
-import { uploadVideo } from './cloudflare-stream.js';
+import { uploadVideo } from './cloudflare/cloudflare-stream.js';
 
 const result = await uploadVideo('./video.mp4', {
   name: 'Body Camera Footage'
@@ -142,7 +148,7 @@ console.log(result.videoId); // Use this in CloudflareVideo component
 
 #### Upload Image
 ```javascript
-import { uploadImage } from './cloudflare-r2.js';
+import { uploadImage } from './cloudflare/cloudflare-r2.js';
 
 const result = await uploadImage('./photo.jpg', {
   description: 'Incident location'
@@ -172,14 +178,18 @@ CLOUDFLARE_R2_PUBLIC_URL=https://files.yoursite.com
 
 ```
 publish-draft.js (Main Orchestrator)
-  ├── file-downloader.js
-  │   └── Downloads from external URLs
-  ├── cloudflare-stream.js
-  │   └── Uploads videos
-  ├── cloudflare-r2.js
-  │   └── Uploads images/PDFs
-  └── ai-prompts.js
-      └── Generates content with AI
+  ├── media/
+  │   ├── file-downloader.js (Downloads from external URLs)
+  │   └── media-library.js (Tracks uploaded media)
+  ├── cloudflare/
+  │   ├── cloudflare-stream.js (Uploads videos)
+  │   ├── cloudflare-r2.js (Uploads images/PDFs)
+  │   └── cloudflare-images.js (Uploads images)
+  ├── registry/
+  │   ├── metadata-registry.js (Core registry functions)
+  │   └── sync-registry.js (Auto-syncs on build)
+  └── build/
+      └── validate-config.js (Validates environment)
 ```
 
 ## Error Handling
@@ -194,7 +204,7 @@ All scripts include:
 
 ### Add New Media Source
 
-Edit `file-downloader.js` and add a converter function:
+Edit `media/file-downloader.js` and add a converter function:
 
 ```javascript
 function convertCustomServiceUrl(url) {
@@ -229,10 +239,10 @@ Test individual components:
 
 ```bash
 # Test file download
-node -e "import('./file-downloader.js').then(m => m.downloadFile('URL', './test'))"
+node -e "import('./media/file-downloader.js').then(m => m.downloadFile('URL', './test'))"
 
 # Test video upload (requires downloaded file)
-node -e "import('./cloudflare-stream.js').then(m => m.uploadVideo('./test.mp4'))"
+node -e "import('./cloudflare/cloudflare-stream.js').then(m => m.uploadVideo('./test.mp4'))"
 ```
 
 ## Performance

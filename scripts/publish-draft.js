@@ -13,16 +13,16 @@ import prompts from 'prompts';
 import Anthropic from '@anthropic-ai/sdk';
 import 'dotenv/config';
 
-import { downloadFile } from './file-downloader.js';
-import { uploadVideo, uploadVideoFromUrl } from './cloudflare-stream.js';
-import { uploadImage, uploadImageFromUrl } from './cloudflare-images.js';
-import { uploadPDF } from './cloudflare-r2.js';
+import { downloadFile } from './media/file-downloader.js';
+import { uploadVideo, uploadVideoFromUrl } from './cloudflare/cloudflare-stream.js';
+import { uploadImage, uploadImageFromUrl } from './cloudflare/cloudflare-images.js';
+import { uploadPDF } from './cloudflare/cloudflare-r2.js';
 import {
   findAssetBySourceUrl,
   addVideoToLibrary,
   addImageToLibrary,
   addDocumentToLibrary
-} from './media-library.js';
+} from './media/media-library.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

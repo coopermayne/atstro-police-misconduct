@@ -4,17 +4,17 @@
   "version": "0.0.1",
   "scripts": {
     "start": "node scripts/cli.js",
-    "dev": "node scripts/sync-registry.js --silent && node scripts/copy-pagefind.js --silent && astro dev",
-    "dev:search": "node scripts/sync-registry.js && node scripts/copy-pagefind.js && astro dev",
-    "build": "node scripts/sync-registry.js --silent && astro build && npx pagefind --site dist",
-    "build:search": "astro build && npx pagefind --site dist && node scripts/copy-pagefind.js",
+    "dev": "node scripts/registry/sync-registry.js --silent && node scripts/build/copy-pagefind.js --silent && astro dev",
+    "dev:search": "node scripts/registry/sync-registry.js && node scripts/build/copy-pagefind.js && astro dev",
+    "build": "node scripts/registry/sync-registry.js --silent && astro build && npx pagefind --site dist",
+    "build:search": "astro build && npx pagefind --site dist && node scripts/build/copy-pagefind.js",
     "preview": "astro preview",
     "astro": "astro",
     "publish": "node scripts/publish-draft.js",
     "publish:debug": "node scripts/publish-draft.js --debug",
-    "media:browse": "node scripts/media-browser.js",
-    "rebuild-registry": "node scripts/rebuild-registry.js",
-    "validate:config": "node scripts/validate-config.js"
+    "media:browse": "node scripts/media/media-browser.js",
+    "rebuild-registry": "node scripts/registry/rebuild-registry.js",
+    "validate:config": "node scripts/build/validate-config.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

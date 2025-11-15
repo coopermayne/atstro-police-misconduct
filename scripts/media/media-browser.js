@@ -7,7 +7,7 @@
  * 
  * Usage:
  *   npm run media:browse
- *   node scripts/media-browser.js
+ *   node scripts/media/media-browser.js
  */
 
 import express from 'express';

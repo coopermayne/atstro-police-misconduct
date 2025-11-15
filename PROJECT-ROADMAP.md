@@ -67,10 +67,10 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 
 **Scripts:**
 - `scripts/publish-draft.js` - Main orchestrator
-- `scripts/file-downloader.js` - External media downloads
-- `scripts/cloudflare-stream.js` - Video uploads
-- `scripts/cloudflare-images.js` - Image uploads
-- `scripts/cloudflare-r2.js` - Document uploads
+- `scripts/media/file-downloader.js` - External media downloads
+- `scripts/cloudflare/cloudflare-stream.js` - Video uploads
+- `scripts/cloudflare/cloudflare-images.js` - Image uploads
+- `scripts/cloudflare/cloudflare-r2.js` - Document uploads
 - `scripts/ai-prompts.js` - Structured AI prompts
 
 **Documentation:**

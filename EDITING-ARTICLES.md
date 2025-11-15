@@ -29,7 +29,7 @@ Use the media library CLI to upload your media file. This ensures the file is pr
 #### Upload an Image
 
 ```bash
-node scripts/media-library.js add-image "https://example.com/photo.jpg" \
+node scripts/media/media-library.js add-image "https://example.com/photo.jpg" \
   --description "Photo of incident scene" \
   --alt "Police officers at incident location" \
   --tags "evidence,photos"

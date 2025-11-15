@@ -494,7 +494,7 @@ Guide PDF analysis:
 ### File Downloader (`file-downloader.js`)
 
 ```javascript
-import { downloadFile, downloadFiles, extractUrlsFromMarkdown } from './scripts/file-downloader.js';
+import { downloadFile, downloadFiles, extractUrlsFromMarkdown } from './scripts/media/file-downloader.js';
 
 // Download single file
 await downloadFile(url, outputDir, optionalFilename);
@@ -509,7 +509,7 @@ const urls = extractUrlsFromMarkdown(markdownContent);
 ### Cloudflare Stream (`cloudflare-stream.js`)
 
 ```javascript
-import { uploadVideo, uploadVideoFromUrl } from './scripts/cloudflare-stream.js';
+import { uploadVideo, uploadVideoFromUrl } from './scripts/cloudflare/cloudflare-stream.js';
 
 // Upload local video file
 const result = await uploadVideo(filePath, { name: 'Video title' });
@@ -522,7 +522,7 @@ const result = await uploadVideoFromUrl(url, { name: 'Video title' });
 ### Cloudflare R2 (`cloudflare-r2.js`)
 
 ```javascript
-import { uploadImage, uploadPDF, uploadToR2 } from './scripts/cloudflare-r2.js';
+import { uploadImage, uploadPDF, uploadToR2 } from './scripts/cloudflare/cloudflare-r2.js';
 
 // Upload image
 const result = await uploadImage(filePath, { description: 'Photo description' });
