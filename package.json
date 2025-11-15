@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "publish": "node scripts/publish-draft.js",
+    "media:browse": "node scripts/media-browser.js",
     "rebuild-registry": "node scripts/rebuild-registry.js",
     "validate:config": "node scripts/validate-config.js",
     "test:r2": "node scripts/test-r2-upload.js"
@@ -29,8 +30,10 @@
     "astro-portabletext": "^0.11.1",
     "canvas-confetti": "^1.9.3",
     "dotenv": "^16.4.7",
+    "express": "^5.1.0",
     "form-data": "^4.0.1",
     "node-fetch": "^3.3.2",
+    "open": "^10.2.0",
     "prompts": "^2.4.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
