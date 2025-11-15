@@ -87,19 +87,25 @@ export async function uploadImage(filePath, metadata = {}) {
  * @returns {Promise<object>} - Upload result
  */
 export async function uploadImageFromUrl(imageUrl, metadata = {}) {
+  // Cloudflare requires multipart/form-data for URL uploads
+  const formData = new FormData();
+  formData.append('url', imageUrl);
+  
+  if (metadata.description) {
+    formData.append('metadata', JSON.stringify({ description: metadata.description }));
+  }
+  
+  formData.append('requireSignedURLs', String(metadata.requireSignedURLs || false));
+
   const response = await fetch(
     `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/images/v1`,
     {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${CLOUDFLARE_API_TOKEN}`,
-        'Content-Type': 'application/json'
+        'Authorization': `Bearer ${CLOUDFLARE_API_TOKEN}`
+        // Note: Don't set Content-Type header - fetch will set it automatically with boundary
       },
-      body: JSON.stringify({
-        url: imageUrl,
-        metadata: metadata.description ? { description: metadata.description } : undefined,
-        requireSignedURLs: metadata.requireSignedURLs || false
-      })
+      body: formData
     }
   );
 

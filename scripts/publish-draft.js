@@ -167,6 +167,7 @@ async function uploadAndRegisterMedia(mediaItem) {
   }
 }
 
+
 /**
  * Validate media metadata item against schema
  * @param {object} item - Media metadata item to validate
@@ -601,12 +602,23 @@ async function main() {
     
     if (mediaToUpload.length > 0) {
       console.log(`\n📤 Phase 3: Uploading ${mediaToUpload.length} media item(s) to Cloudflare...\n`);
+      console.log('🔍 Checking media library for existing entries...\n');
       
       const uploadedMedia = [];
+      let foundInLibrary = 0;
+      let newUploads = 0;
       
       for (const item of mediaToUpload) {
         try {
           const libraryEntry = await uploadAndRegisterMedia(item);
+          
+          // Track if it was found or newly created (check if it has existing ID format)
+          if (findAssetBySourceUrl(item.sourceUrl)) {
+            foundInLibrary++;
+          } else {
+            newUploads++;
+          }
+          
           uploadedMedia.push({
             ...item,
             libraryEntry
@@ -618,7 +630,11 @@ async function main() {
         }
       }
       
-      console.log(`\n✅ All media uploaded successfully!\n`);
+      console.log(`\n✅ Phase 3 Complete!\n`);
+      console.log(`📊 Media Library Stats:`);
+      console.log(`  • Found in library: ${foundInLibrary}`);
+      console.log(`  • New uploads: ${newUploads}`);
+      console.log(`  • Total processed: ${uploadedMedia.length}\n`);
       
       // Print summary
       console.log('📋 Upload Summary:\n');

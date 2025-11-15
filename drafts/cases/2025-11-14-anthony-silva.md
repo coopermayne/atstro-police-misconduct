@@ -148,6 +148,9 @@ https://www.dropbox.com/scl/fi/7acem2gh0w2ltran7ez6y/SCSD-Incident-Report.pdf?rl
 Incident Report - Official Stanislaus County Sheriff's Department incident report
 
 
+https://as1.ftcdn.net/v2/jpg/01/68/88/70/1000_F_168887075_ZM3mPBzD4Xqs9rkHCLmJNfKdcczWfdc4.jpg
+this is just an image of a puppy used as a test
+
 ## Legal Details
 2:23-cv-01887-DJC-KJN federal court eastern district, sacramento, Judge Calabretta. Trial scheduleded for January 5, 2026. Case originally brought by Anthony but when he died his mother Dorothey Heimbach substituted in for him.
 
