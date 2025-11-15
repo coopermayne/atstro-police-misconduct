@@ -5,7 +5,8 @@
  * Allows user to select a draft file and publish it to the site.
  */
 
-import fs from 'fs';
+import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import prompts from 'prompts';
@@ -33,8 +34,8 @@ const TEMP_DIR = path.join(__dirname, '..', '.temp-uploads');
  * Ensure temp directory exists
  */
 function ensureTempDir() {
-  if (!fs.existsSync(TEMP_DIR)) {
-    fs.mkdirSync(TEMP_DIR, { recursive: true });
+  if (!fsSync.existsSync(TEMP_DIR)) {
+    fsSync.mkdirSync(TEMP_DIR, { recursive: true });
   }
 }
 
@@ -42,12 +43,12 @@ function ensureTempDir() {
  * Clean up temp directory
  */
 function cleanupTempDir() {
-  if (fs.existsSync(TEMP_DIR)) {
-    const files = fs.readdirSync(TEMP_DIR);
+  if (fsSync.existsSync(TEMP_DIR)) {
+    const files = fsSync.readdirSync(TEMP_DIR);
     files.forEach(file => {
-      fs.unlinkSync(path.join(TEMP_DIR, file));
+      fsSync.unlinkSync(path.join(TEMP_DIR, file));
     });
-    fs.rmdirSync(TEMP_DIR);
+    fsSync.rmdirSync(TEMP_DIR);
   }
 }
 
@@ -365,7 +366,7 @@ function escapeQuotes(str) {
  * @returns {Promise<Array<{sourceUrl: string, type: string, componentParams: object, confidence: number}>>}
  */
 async function extractMediaMetadata(filePath, mediaItems) {
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = fsSync.readFileSync(filePath, 'utf-8');
   
   if (mediaItems.length === 0) {
     return [];
@@ -572,7 +573,7 @@ function determineTypeByUrl(url) {
  * @returns {Array<{sourceUrl: string, type: string}>} Array of {sourceUrl, type} objects
  */
 function scanMediaAndLinks(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
+  const content = fsSync.readFileSync(filePath, 'utf-8');
   const urls = extractUrls(content);
   
   const categorized = [];
@@ -596,11 +597,11 @@ function getDraftFiles() {
   for (const folder of folders) {
     const folderPath = path.join(DRAFTS_DIR, folder);
     
-    if (!fs.existsSync(folderPath)) {
+    if (!fsSync.existsSync(folderPath)) {
       continue;
     }
     
-    const entries = fs.readdirSync(folderPath, { withFileTypes: true });
+    const entries = fsSync.readdirSync(folderPath, { withFileTypes: true });
     
     for (const entry of entries) {
       if (entry.isFile() && entry.name.endsWith('.md')) {
@@ -648,35 +649,41 @@ async function main() {
   }
   
   console.log(`\n✓ Selected: ${path.relative(DRAFTS_DIR, response.selectedDraft)}\n`);
+  console.log('─'.repeat(80));
   
   // Phase 1: Scan for media and links
   const mediaItems = scanMediaAndLinks(response.selectedDraft);
   
-  console.log(`🔍 Found ${mediaItems.length} URLs in draft\n`);
+  console.log(`\n📋 Phase 1: Scanning draft`);
+  console.log(`   Found ${mediaItems.length} URL(s)\n`);
   
   // Phase 2: Extract metadata for all items using AI
   let result = { media: [], links: [] };
   
   if (mediaItems.length > 0) {
-    console.log('🤖 Analyzing all URLs with AI...\n');
+    console.log('🤖 Phase 2: Analyzing media with AI...');
     const enrichedMedia = await extractMediaMetadata(response.selectedDraft, mediaItems);
     
-    // Print results
-    console.log('📊 URLs with Metadata:\n');
-    for (const item of enrichedMedia) {
-      console.log(`${item.type.toUpperCase()}: ${item.sourceUrl}`);
-      console.log(`  Confidence: ${(item.confidence * 100).toFixed(0)}%`);
-      console.log(`  Params:`, JSON.stringify(item.componentParams, null, 2));
-      console.log();
-    }
+    const videos = enrichedMedia.filter(i => i.type === 'video').length;
+    const images = enrichedMedia.filter(i => i.type === 'image').length;
+    const docs = enrichedMedia.filter(i => i.type === 'document').length;
+    const linkCount = enrichedMedia.filter(i => i.type === 'link').length;
+    
+    const summary = [];
+    if (videos) summary.push(`${videos} video(s)`);
+    if (images) summary.push(`${images} image(s)`);
+    if (docs) summary.push(`${docs} document(s)`);
+    if (linkCount) summary.push(`${linkCount} link(s)`);
+    
+    console.log(`   ✓ Extracted metadata for ${summary.join(', ')}\n`);
     
     // Phase 3: Upload media to Cloudflare and register in library
     const mediaToUpload = enrichedMedia.filter(item => ['image', 'video', 'document'].includes(item.type));
     const links = enrichedMedia.filter(item => item.type === 'link');
     
     if (mediaToUpload.length > 0) {
-      console.log(`\n📤 Phase 3: Uploading ${mediaToUpload.length} media item(s) to Cloudflare...\n`);
-      console.log('🔍 Checking media library for existing entries...\n');
+      console.log(`📤 Phase 3: Uploading to Cloudflare`);
+      console.log(`   Processing ${mediaToUpload.length} media item(s)...\n`);
       
       const uploadedMedia = [];
       let foundInLibrary = 0;
@@ -686,7 +693,7 @@ async function main() {
         try {
           const libraryEntry = await uploadAndRegisterMedia(item);
           
-          // Track if it was found or newly created (check if it has existing ID format)
+          // Track if it was found or newly created
           if (findAssetBySourceUrl(item.sourceUrl)) {
             foundInLibrary++;
           } else {
@@ -698,17 +705,13 @@ async function main() {
             libraryEntry
           });
         } catch (error) {
-          console.error(`\n❌ Failed to upload ${item.type}: ${item.sourceUrl}`);
+          console.error(`   ❌ Upload failed: ${item.type}`);
           console.error(`   Error: ${error.message}\n`);
-          throw error; // Stop on upload failure
+          throw error;
         }
       }
       
-      console.log(`\n✅ Phase 3 Complete!\n`);
-      console.log(`📊 Media Library Stats:`);
-      console.log(`  • Found in library: ${foundInLibrary}`);
-      console.log(`  • New uploads: ${newUploads}`);
-      console.log(`  • Total processed: ${uploadedMedia.length}\n`);
+      console.log(`   ✓ Uploaded: ${newUploads} new, ${foundInLibrary} from library\n`);
       
       // Cleanup temp directory
       cleanupTempDir();
@@ -731,43 +734,15 @@ async function main() {
         componentHTML: generateLinkComponentHTML(item.sourceUrl, item.componentParams)
       }));
       
-      // Print final result with readable component HTML
-      console.log('\n' + '='.repeat(80));
-      console.log('📦 FINAL PACKAGE - MEDIA & LINKS');
-      console.log('='.repeat(80) + '\n');
+      console.log('─'.repeat(80) + '\n');
       
-      if (processedMedia.length > 0) {
-        console.log(`📹 MEDIA (${processedMedia.length} items):\n`);
-        processedMedia.forEach((item, index) => {
-          console.log(`${index + 1}. ${item.type.toUpperCase()}`);
-          console.log(`   Library ID: ${item.libraryId}`);
-          console.log(`   Source: ${item.sourceUrl}`);
-          console.log(`   Component: ${item.componentHTML}`);
-          console.log();
-        });
-      }
-      
-      if (processedLinks.length > 0) {
-        console.log(`🔗 LINKS (${processedLinks.length} items):\n`);
-        processedLinks.forEach((item, index) => {
-          console.log(`${index + 1}. LINK`);
-          console.log(`   URL: ${item.sourceUrl}`);
-          console.log(`   Component: ${item.componentHTML}`);
-          console.log();
-        });
-      }
-      
-      console.log('='.repeat(80) + '\n');
-      
-      return {
+      result = {
         media: processedMedia,
         links: processedLinks
       };
     }
     
     if (links.length > 0) {
-      console.log(`\n🔗 ${links.length} external link(s) identified (no upload needed)\n`);
-      
       const processedLinks = links.map(item => ({
         sourceUrl: item.sourceUrl,
         type: item.type,
@@ -776,61 +751,323 @@ async function main() {
         componentHTML: generateLinkComponentHTML(item.sourceUrl, item.componentParams)
       }));
       
-      // Print links
-      console.log('\n' + '='.repeat(80));
-      console.log('📦 FINAL PACKAGE - LINKS ONLY');
-      console.log('='.repeat(80) + '\n');
+      console.log('─'.repeat(80) + '\n');
       
-      processedLinks.forEach((item, index) => {
-        console.log(`${index + 1}. LINK`);
-        console.log(`   URL: ${item.sourceUrl}`);
-        console.log(`   Component: ${item.componentHTML}`);
-        console.log();
-      });
-      
-      console.log('='.repeat(80) + '\n');
-      
-      return {
+      result = {
         media: [],
         links: processedLinks
       };
     }
   }
   
-  console.log('\n' + '='.repeat(80));
-  console.log('📦 FINAL RESULT');
-  console.log('='.repeat(80));
-  console.log(`\nMedia items with library references: ${result.media.length}`);
-  result.media.forEach(item => {
-    console.log(`  • ${item.type}: ${item.libraryId}`);
-  });
-  console.log(`\nExternal links: ${result.links.length}`);
-  result.links.forEach(item => {
-    console.log(`  • ${item.sourceUrl}`);
-  });
-  console.log('\n' + '='.repeat(80) + '\n');
-  
   // Phase 4: Generate article content based on type
-  console.log('📝 PHASE 4: Generate Article Content\n');
+  console.log('📝 Phase 4: Generating article with AI');
   
-  const draftPath = selectedDraft.path;
+  const draftPath = response.selectedDraft;
   const isCase = draftPath.includes('/cases/');
   const isPost = draftPath.includes('/posts/');
   
-  let generatedContent;
-  if (isCase) {
-    console.log('Article type: Case\n');
-    generatedContent = await generateCaseArticle(draftPath, result);
-  } else if (isPost) {
-    console.log('Article type: Blog Post\n');
-    generatedContent = await generateBlogPost(draftPath, result);
-  } else {
+  const articleType = isCase ? 'Case' : isPost ? 'Blog Post' : null;
+  if (!articleType) {
     throw new Error('Unable to determine article type from draft path');
   }
   
-  console.log('✓ Article content generated\n');
+  console.log(`   Type: ${articleType}`);
+  console.log(`   Extracting metadata...`);
   
-  return result;
+  let generatedContent;
+  if (isCase) {
+    generatedContent = await generateCaseArticle(draftPath, result);
+  } else if (isPost) {
+    generatedContent = await generateBlogPost(draftPath, result);
+  }
+  
+  console.log(`   ✓ Metadata extracted`);
+  console.log(`   ✓ Article content generated`);
+  console.log(`   Slug: ${generatedContent.slug}\n`);
+  
+  console.log('─'.repeat(80) + '\n');
+  
+  // Phase 5: Save to content collection
+  console.log('💾 Phase 5: Saving article');
+  
+  const contentDir = isCase ? './src/content/cases' : './src/content/posts';
+  const filePath = path.join(contentDir, `${generatedContent.slug}.mdx`);
+  
+  console.log(`   → ${contentDir}/${generatedContent.slug}.mdx`);
+  
+  // Check if file already exists
+  if (await fs.access(filePath).then(() => true).catch(() => false)) {
+    console.log(`\n   ⚠️  File already exists`);
+    const overwrite = await prompts({
+      type: 'confirm',
+      name: 'value',
+      message: '   Overwrite?',
+      initial: false
+    });
+    
+    if (!overwrite.value) {
+      console.log('\n❌ Cancelled\n');
+      process.exit(0);
+    }
+    console.log();
+  }
+  
+  // Write the MDX file
+  await fs.writeFile(filePath, generatedContent.content, 'utf-8');
+  
+  console.log(`   ✓ File saved\n`);
+  console.log('─'.repeat(80));
+  console.log('\n✅ Publishing complete!\n');
+  console.log(`📄 File: src/content/${isCase ? 'cases' : 'posts'}/${generatedContent.slug}.mdx`);
+  console.log('='.repeat(80) + '\n');
+  
+  return { result, generatedContent, filePath };
+}
+
+/**
+ * Build component reference string for AI
+ * @param {object} mediaPackage - Processed media and links
+ * @returns {string} - Component reference for AI prompt
+ */
+function buildComponentReference(mediaPackage) {
+  let reference = '**Available Components:**\n\n';
+  
+  if (mediaPackage.media.length > 0) {
+    reference += 'MEDIA:\n';
+    mediaPackage.media.forEach((item, index) => {
+      reference += `${index + 1}. ${item.componentHTML}\n`;
+      reference += `   Source: ${item.sourceUrl}\n`;
+      reference += `   Library ID: ${item.libraryId}\n\n`;
+    });
+  }
+  
+  if (mediaPackage.links.length > 0) {
+    reference += '\nEXTERNAL LINKS:\n';
+    mediaPackage.links.forEach((item, index) => {
+      reference += `${index + 1}. ${item.componentHTML}\n`;
+      reference += `   URL: ${item.sourceUrl}\n\n`;
+    });
+  }
+  
+  return reference;
+}
+
+/**
+ * Build metadata extraction prompt for cases
+ */
+function buildCaseMetadataPrompt(draftContent, schemaContent, registry, mediaPackage) {
+  const registrySection = `
+**Canonical Metadata Registry:**
+Use these exact values when they match the case details:
+
+**Agencies:**
+${registry.agencies.map(a => `- ${a}`).join('\n')}
+
+**Counties:**
+${registry.counties.map(c => `- ${c}`).join('\n')}
+
+**Force Types:**
+${registry.force_types.map(f => `- ${f}`).join('\n')}
+
+**Threat Levels:**
+${registry.threat_levels.map(t => `- ${t}`).join('\n')}
+
+**Investigation Statuses:**
+${registry.investigation_statuses.map(s => `- ${s}`).join('\n')}
+`;
+
+  // Build documents array from media
+  const documents = mediaPackage.media
+    .filter(item => item.type === 'document')
+    .map(item => ({
+      title: item.componentParams.title,
+      description: item.componentParams.description,
+      url: item.sourceUrl // Will be replaced with R2 URL
+    }));
+  
+  // Build external_links array
+  const external_links = mediaPackage.links.map(item => ({
+    title: item.componentParams.title || '',
+    description: item.componentParams.description || '',
+    url: item.sourceUrl,
+    icon: item.componentParams.icon || 'generic'
+  }));
+  
+  // Find featured image
+  let featuredImageId = null;
+  const imageMedia = mediaPackage.media.filter(item => item.type === 'image');
+  if (imageMedia.length > 0) {
+    // Use first image as featured for now (could be enhanced with AI selection)
+    const featuredImage = imageMedia[0];
+    // Extract imageId from library entry
+    featuredImageId = featuredImage.libraryId.replace('image-', '');
+  }
+
+  return `You are an expert legal writer generating metadata for a police misconduct case article.
+
+**Draft Content:**
+${draftContent}
+
+${registrySection}
+
+**Schema (from src/content/config.ts):**
+${schemaContent.match(/const casesCollection[\s\S]+?\}\);/)[0]}
+
+**Processed Media:**
+Documents: ${JSON.stringify(documents, null, 2)}
+External Links: ${JSON.stringify(external_links, null, 2)}
+Featured Image ID: ${featuredImageId || 'null'}
+
+**CRITICAL INSTRUCTIONS:**
+
+1. **INFERENCE RULES - What you CAN infer:**
+   - Gender from pronouns (he/his/him → "Male", she/her → "Female") or gendered names
+   - Age from explicit mentions ("35-year-old" → 35)
+   - Force type from incident description ("tased" → ["Taser"], "shot" → ["Shooting"])
+   - Investigation status from legal mentions ("charges filed" → "Charges Filed")
+   - Civil lawsuit from mentions of lawsuits/settlements
+   - Bodycam availability if footage is mentioned or provided
+   - Armed status from descriptions ("unarmed", "holding a knife", etc.)
+   - Threat level from incident context
+
+2. **What you CANNOT infer - use null:**
+   - Race/ethnicity (NEVER assume - must be explicitly stated)
+   - Exact dates not mentioned
+   - Names not mentioned
+   - Specific details not in the draft
+
+3. **Registry Matching:**
+   - For agencies: Match to registry values exactly (e.g., "LAPD" → "Los Angeles Police Department")
+   - For counties: Use registry values
+   - For force_types, threat_level, investigation_status: Use registry values
+   - Add new values ONLY if registry doesn't have a match
+
+4. **Required Fields:**
+   - case_id: Format "ca-[agency-slug]-[year]-[sequential-number]" (e.g., "ca-lapd-2023-001")
+   - title: Victim's full name
+   - description: 1-2 sentence summary of the case
+   - incident_date: "YYYY-MM-DD" format as STRING
+   - city: City name
+   - county: County name (from registry)
+   - agencies: Array of agency names (from registry)
+
+5. **Media Fields:**
+   - documents: Use the "Processed Media" documents array exactly as provided
+   - external_links: Use the "Processed Media" external_links array exactly as provided
+   - featured_image: Use the Featured Image ID provided (or null)
+
+6. **Data Types:**
+   - Strings: Use quotes
+   - Numbers: No quotes (age: 35, not "35")
+   - Booleans: true/false (not "true"/"false")
+   - Arrays: Use brackets []
+   - Null: Use null (not "null")
+
+7. **All Fields:** Include EVERY field from the schema. Use null for missing/unknown values.
+
+Return ONLY valid JSON:
+\`\`\`json
+{
+  "case_id": "ca-agency-year-001",
+  "title": "Victim Name",
+  ...all other fields...
+}
+\`\`\``;
+}
+
+/**
+ * Build article generation prompt for cases
+ */
+function buildCaseArticlePrompt(draftContent, metadata, componentReference) {
+  return `You are an expert legal writer creating a publication-ready police misconduct case article.
+
+**Draft Content:**
+${draftContent}
+
+**Extracted Metadata:**
+${JSON.stringify(metadata, null, 2)}
+
+${componentReference}
+
+**WRITING GUIDELINES:**
+
+1. **TONE - Encyclopedic (Wikipedia-style):**
+   - Neutral, dispassionate, objective
+   - NO emotional language ("tragically", "unfortunately", "shockingly")
+   - NO dramatic framing or narrative embellishment
+   - State facts directly without editorial commentary
+   - Example: "died from injuries" NOT "tragically lost their life"
+
+2. **STRUCTURE:**
+   - DO NOT follow draft order - reorganize for best narrative flow
+   - Lead with most important information
+   - Build context logically
+   - 3-5 paragraphs minimum for main summary
+   - Use ## for section headings (not #)
+
+3. **MEDIA PLACEMENT:**
+   - Integrate components naturally throughout article
+   - Place media where they enhance understanding
+   - Use components from "Available Components" section above
+   - Import ONLY components you actually use at the top
+
+4. **WHAT TO INCLUDE:**
+   - Comprehensive case summary
+   - Timeline of events (if enough detail available)
+   - Key legal/investigative developments
+   - Relevant context
+
+5. **WHAT NOT TO INCLUDE:**
+   - NO "## Related Documents" section (handled automatically)
+   - NO "## External Links" section (handled automatically)
+   - NO "## Sources" section (in frontmatter)
+   - DO reference documents/links naturally in text (e.g., "According to court filings...")
+
+6. **COMPONENTS:**
+   Available: CloudflareVideo, CloudflareImage, DocumentCard, ExternalLinkCard
+   - Only import what you use
+   - Use exact HTML from "Available Components"
+   - Place strategically for narrative flow
+
+**OUTPUT FORMAT:**
+
+Return complete MDX file with frontmatter:
+
+\`\`\`mdx
+---
+case_id: "${metadata.case_id}"
+title: "${metadata.title}"
+description: "${metadata.description}"
+incident_date: "${metadata.incident_date}"
+city: "${metadata.city}"
+county: "${metadata.county}"
+agencies: ${JSON.stringify(metadata.agencies)}
+published: true
+age: ${metadata.age || 'null'}
+race: ${metadata.race ? `"${metadata.race}"` : 'null'}
+gender: ${metadata.gender ? `"${metadata.gender}"` : 'null'}
+cause_of_death: ${metadata.cause_of_death ? `"${metadata.cause_of_death}"` : 'null'}
+armed_status: ${metadata.armed_status ? `"${metadata.armed_status}"` : 'null'}
+threat_level: ${metadata.threat_level ? `"${metadata.threat_level}"` : 'null'}
+force_type: ${metadata.force_type ? JSON.stringify(metadata.force_type) : 'null'}
+shooting_officers: ${metadata.shooting_officers ? JSON.stringify(metadata.shooting_officers) : 'null'}
+investigation_status: ${metadata.investigation_status ? `"${metadata.investigation_status}"` : 'null'}
+charges_filed: ${metadata.charges_filed !== undefined && metadata.charges_filed !== null ? metadata.charges_filed : 'null'}
+civil_lawsuit_filed: ${metadata.civil_lawsuit_filed !== undefined && metadata.civil_lawsuit_filed !== null ? metadata.civil_lawsuit_filed : 'null'}
+bodycam_available: ${metadata.bodycam_available !== undefined && metadata.bodycam_available !== null ? metadata.bodycam_available : 'null'}
+featured_image: ${metadata.featured_image ? `"${metadata.featured_image}"` : 'null'}
+documents: ${metadata.documents ? JSON.stringify(metadata.documents) : 'null'}
+external_links: ${metadata.external_links ? JSON.stringify(metadata.external_links) : 'null'}
+related_cases: ${metadata.related_cases ? JSON.stringify(metadata.related_cases) : 'null'}
+attorney: ${metadata.attorney ? `"${metadata.attorney}"` : 'null'}
+---
+
+import CloudflareImage from '../../components/CloudflareImage.astro';
+import CloudflareVideo from '../../components/CloudflareVideo.astro';
+
+[Your encyclopedic article content with embedded media, proper headings, timeline, etc.]
+\`\`\``;
 }
 
 /**
@@ -840,20 +1077,76 @@ async function main() {
  * @returns {Promise<object>} - Generated article with frontmatter and content
  */
 async function generateCaseArticle(draftPath, mediaPackage) {
-  console.log('→ Reading draft content...');
+  const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY
+  });
+  
   const draftContent = await fs.readFile(draftPath, 'utf-8');
+  const registry = JSON.parse(await fs.readFile('./metadata-registry.json', 'utf-8'));
+  const schemaContent = await fs.readFile('./src/content/config.ts', 'utf-8');
+  const componentReference = buildComponentReference(mediaPackage);
   
-  // TODO: Parse existing frontmatter if present
-  // TODO: Build AI prompt with draft content, media, and case-specific requirements
-  // TODO: Call Claude API to generate complete case article
-  // TODO: Validate required case frontmatter fields (case_id, victim_name, incident_date, etc.)
-  // TODO: Return { frontmatter, content }
+  // Step 1: Extract metadata from draft
+  const metadataPrompt = buildCaseMetadataPrompt(
+    draftContent,
+    schemaContent,
+    registry,
+    mediaPackage
+  );
   
-  console.log('→ TODO: Implement case article generation');
+  const metadataResponse = await anthropic.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4000,
+    messages: [{
+      role: 'user',
+      content: metadataPrompt
+    }]
+  });
+  
+  const metadataText = metadataResponse.content[0].text;
+  const metadataMatch = metadataText.match(/```json\n([\s\S]+?)\n```/);
+  
+  if (!metadataMatch) {
+    throw new Error('Failed to extract JSON metadata from AI response');
+  }
+  
+  const metadata = JSON.parse(metadataMatch[1]);
+  
+  // Step 2: Generate article content
+  const articlePrompt = buildCaseArticlePrompt(
+    draftContent,
+    metadata,
+    componentReference
+  );
+  
+  const articleResponse = await anthropic.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 8000,
+    messages: [{
+      role: 'user',
+      content: articlePrompt
+    }]
+  });
+  
+  const fullArticle = articleResponse.content[0].text;
+  const mdxMatch = fullArticle.match(/```mdx\n([\s\S]+?)\n```/);
+  
+  if (!mdxMatch) {
+    throw new Error('Failed to extract MDX content from AI response');
+  }
+  
+  const mdxContent = mdxMatch[1];
+  
+  // Generate slug from title
+  const slug = metadata.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  
   return {
-    frontmatter: {},
-    content: draftContent,
-    slug: 'placeholder-slug'
+    metadata,
+    content: mdxContent,
+    slug
   };
 }
 
