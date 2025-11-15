@@ -847,6 +847,110 @@ async function main() {
 }
 
 /**
+ * Field-to-Registry mapping with AI generation instructions
+ * Defines which schema fields map to registry keys and how AI should handle them
+ */
+const FIELD_REGISTRY_MAP = {
+  // Case fields
+  agencies: {
+    registryKey: 'agencies',
+    instruction: 'Match abbreviations or informal names to full agency names from registry (e.g., "LAPD" → "Los Angeles Police Department"). Add new agencies if not in registry.',
+    canInfer: true,
+    inferenceHints: ['Extract from incident descriptions', 'Match to full official names']
+  },
+  county: {
+    registryKey: 'counties',
+    instruction: 'Use exact county name from registry. Infer from city if possible.',
+    canInfer: true,
+    inferenceHints: ['Look up city to determine county']
+  },
+  force_type: {
+    registryKey: 'force_types',
+    instruction: 'Select all applicable force types from registry based on incident description. Can infer from action verbs ("shot" → "Shooting", "tased" → "Taser").',
+    canInfer: true,
+    inferenceHints: ['Multiple types possible', 'Infer from incident verbs and descriptions']
+  },
+  threat_level: {
+    registryKey: 'threat_levels',
+    instruction: 'Assess threat level from incident context and subject behavior. Use registry categories.',
+    canInfer: true,
+    inferenceHints: ['Based on subject actions', 'Consider weapon presence', 'Evaluate behavior described']
+  },
+  investigation_status: {
+    registryKey: 'investigation_statuses',
+    instruction: 'Determine current status from legal developments mentioned. Use registry values.',
+    canInfer: true,
+    inferenceHints: ['Look for mentions of charges, trials, settlements', 'May be explicitly stated']
+  },
+  
+  // Post fields
+  tags: {
+    registryKey: 'post_tags',
+    instruction: 'Select relevant topic tags from registry. Add new tags if article covers topics not yet in registry. Tags should be 1-3 words, title case.',
+    canInfer: true,
+    inferenceHints: ['Choose 2-5 tags per post', 'Can create new tags for new topics', 'Be specific but reusable']
+  }
+};
+
+/**
+ * Build registry section for a specific field
+ * @param {string} fieldName - The field name (e.g., 'agencies')
+ * @param {object} config - Field configuration from FIELD_REGISTRY_MAP
+ * @param {object} registry - Full metadata registry
+ * @returns {string} - Formatted registry section for AI prompt
+ */
+function buildRegistrySection(fieldName, config, registry) {
+  const values = registry[config.registryKey] || [];
+  
+  let section = `**${fieldName.toUpperCase()}:**\n`;
+  section += `${config.instruction}\n`;
+  
+  if (values.length > 0) {
+    section += `Available values:\n`;
+    values.forEach(value => {
+      section += `- ${value}\n`;
+    });
+  } else {
+    section += `(Registry currently empty - you may create initial values)\n`;
+  }
+  
+  section += '\n';
+  return section;
+}
+
+/**
+ * Build inference rules section from field configurations
+ * @param {string[]} fieldNames - Fields applicable to this content type
+ * @returns {string} - Formatted inference rules for AI prompt
+ */
+function buildInferenceRules(fieldNames) {
+  let rules = '**INFERENCE RULES:**\n\n';
+  rules += 'What you CAN infer:\n';
+  
+  const inferableFields = fieldNames
+    .filter(field => FIELD_REGISTRY_MAP[field]?.canInfer)
+    .map(field => FIELD_REGISTRY_MAP[field]);
+  
+  if (inferableFields.length > 0) {
+    inferableFields.forEach(config => {
+      if (config.inferenceHints) {
+        config.inferenceHints.forEach(hint => {
+          rules += `- ${hint}\n`;
+        });
+      }
+    });
+  }
+  
+  rules += '\nWhat you CANNOT infer (use null if not stated):\n';
+  rules += '- Race/ethnicity (NEVER assume)\n';
+  rules += '- Exact dates not mentioned\n';
+  rules += '- Names not provided\n';
+  rules += '- Specific details not in source\n\n';
+  
+  return rules;
+}
+
+/**
  * Build component reference string for AI
  * @param {object} mediaPackage - Processed media and links
  * @returns {string} - Component reference for AI prompt
@@ -876,25 +980,22 @@ function buildComponentReference(mediaPackage) {
  * Build metadata extraction prompt for cases
  */
 function buildCaseMetadataPrompt(draftContent, schemaContent, registry, mediaPackage) {
-  const registrySection = `
-**Canonical Metadata Registry:**
-Use these exact values when they match the case details:
-
-**Agencies:**
-${registry.agencies.map(a => `- ${a}`).join('\n')}
-
-**Counties:**
-${registry.counties.map(c => `- ${c}`).join('\n')}
-
-**Force Types:**
-${registry.force_types.map(f => `- ${f}`).join('\n')}
-
-**Threat Levels:**
-${registry.threat_levels.map(t => `- ${t}`).join('\n')}
-
-**Investigation Statuses:**
-${registry.investigation_statuses.map(s => `- ${s}`).join('\n')}
-`;
+  // Define which fields from FIELD_REGISTRY_MAP apply to cases
+  const caseRegistryFields = ['agencies', 'county', 'force_type', 'threat_level', 'investigation_status'];
+  
+  // Build registry sections dynamically
+  let registrySections = '**Canonical Metadata Registry:**\n';
+  registrySections += 'Use these exact values when they match the case details:\n\n';
+  
+  for (const fieldName of caseRegistryFields) {
+    const config = FIELD_REGISTRY_MAP[fieldName];
+    if (config) {
+      registrySections += buildRegistrySection(fieldName, config, registry);
+    }
+  }
+  
+  // Build inference rules
+  const inferenceRules = buildInferenceRules(caseRegistryFields);
 
   // Build documents array from media - use R2 public URL
   const documents = mediaPackage.media
@@ -931,7 +1032,9 @@ ${registry.investigation_statuses.map(s => `- ${s}`).join('\n')}
 **Draft Content:**
 ${draftContent}
 
-${registrySection}
+${registrySections}
+
+${inferenceRules}
 
 **Schema (from src/content/config.ts):**
 ${schemaContent.match(/const casesCollection[\s\S]+?\}\);/)[0]}
@@ -958,29 +1061,7 @@ External Links: ${JSON.stringify(external_links, null, 2)}
    - If caption is not needed for featured display, you can omit it or set to empty string
    - **DO NOT use null** - always select from available images
 
-2. **INFERENCE RULES - What you CAN infer:**
-   - Gender from pronouns (he/his/him → "Male", she/her → "Female") or gendered names
-   - Age from explicit mentions ("35-year-old" → 35)
-   - Force type from incident description ("tased" → ["Taser"], "shot" → ["Shooting"])
-   - Investigation status from legal mentions ("charges filed" → "Charges Filed")
-   - Civil lawsuit from mentions of lawsuits/settlements
-   - Bodycam availability if footage is mentioned or provided
-   - Armed status from descriptions ("unarmed", "holding a knife", etc.)
-   - Threat level from incident context
-
-3. **What you CANNOT infer - use null:**
-   - Race/ethnicity (NEVER assume - must be explicitly stated)
-   - Exact dates not mentioned
-   - Names not mentioned
-   - Specific details not in the draft
-
-4. **Registry Matching:**
-   - For agencies: Match to registry values exactly (e.g., "LAPD" → "Los Angeles Police Department")
-   - For counties: Use registry values
-   - For force_types, threat_level, investigation_status: Use registry values
-   - Add new values ONLY if registry doesn't have a match
-
-5. **Required Fields:**
+2. **Required Fields:**
    - case_id: Format "ca-[agency-slug]-[year]-[sequential-number]" (e.g., "ca-lapd-2023-001")
    - title: Victim's full name
    - description: 1-2 sentence summary of the case
@@ -989,12 +1070,12 @@ External Links: ${JSON.stringify(external_links, null, 2)}
    - county: County name (from registry)
    - agencies: Array of agency names (from registry)
 
-6. **Media Fields:**
+3. **Media Fields:**
    - documents: Use the "Processed Media" documents array exactly as provided
    - external_links: Use the "Processed Media" external_links array exactly as provided
    - featured_image: REQUIRED - Select best image from "Available Images" list and return as object with {imageId, alt, caption}
 
-7. **Data Types:**
+4. **Data Types:**
    - Strings: Use quotes
    - Numbers: No quotes (age: 35, not "35")
    - Booleans: true/false (not "true"/"false")
@@ -1002,7 +1083,7 @@ External Links: ${JSON.stringify(external_links, null, 2)}
    - Objects: Use curly braces {}
    - Null: Use null (not "null")
 
-8. **All Fields:** Include EVERY field from the schema. Use null for missing/unknown values.
+5. **All Fields:** Include EVERY field from the schema. Use null for missing/unknown values.
 
 Return ONLY valid JSON:
 \`\`\`json
@@ -1011,6 +1092,113 @@ Return ONLY valid JSON:
   "title": "Victim Name",
   "featured_image": {"imageId": "...", "alt": "...", "caption": "..."},
   ...all other fields...
+}
+\`\`\``;
+}
+
+/**
+ * Build metadata extraction prompt for blog posts
+ */
+function buildBlogMetadataPrompt(draftContent, schemaContent, registry, mediaPackage) {
+  // Define which fields from FIELD_REGISTRY_MAP apply to posts
+  const postRegistryFields = ['tags'];
+  
+  // Build registry sections dynamically
+  let registrySections = '**Canonical Metadata Registry:**\n';
+  registrySections += 'Use these values as starting points:\n\n';
+  
+  for (const fieldName of postRegistryFields) {
+    const config = FIELD_REGISTRY_MAP[fieldName];
+    if (config) {
+      registrySections += buildRegistrySection(fieldName, config, registry);
+    }
+  }
+
+  // Build documents array from media - use R2 public URL
+  const documents = mediaPackage.media
+    .filter(item => item.type === 'document')
+    .map(item => ({
+      title: item.componentParams.title,
+      description: item.componentParams.description,
+      url: item.publicUrl
+    }));
+  
+  // Build external_links array
+  const external_links = mediaPackage.links.map(item => ({
+    title: item.componentParams.title || '',
+    description: item.componentParams.description || '',
+    url: item.sourceUrl,
+    icon: item.componentParams.icon || 'generic'
+  }));
+  
+  // Find featured image
+  const imageMedia = mediaPackage.media.filter(item => item.type === 'image');
+
+  return `You are an expert writer generating metadata for a blog post about police misconduct and legal issues.
+
+**Draft Content:**
+${draftContent}
+
+${registrySections}
+
+**Schema (from src/content/config.ts):**
+${schemaContent.match(/const postsCollection[\s\S]+?\}\);/)[0]}
+
+**Available Images for Featured Image:**
+${imageMedia.length > 0 ? imageMedia.map((img, i) => `${i + 1}. imageId: ${img.imageId}
+   alt: ${img.componentParams.alt}
+   caption: ${img.componentParams.caption || 'none'}
+   source: ${img.sourceUrl}`).join('\n') : 'No images available'}
+
+**Processed Media:**
+Documents: ${JSON.stringify(documents, null, 2)}
+External Links: ${JSON.stringify(external_links, null, 2)}
+
+**CRITICAL INSTRUCTIONS:**
+
+1. **REQUIRED FIELDS:**
+   - title: Clear, engaging title (5-10 words)
+   - description: Concise summary for SEO/previews (15-25 words)
+   - published_date: Today's date "2025-11-15" (use YYYY-MM-DD format as STRING)
+   - published: Set to true
+   - tags: Array of 2-5 relevant topic tags
+
+2. **TAGS:**
+   - Select from registry when topics match
+   - Create NEW tags if article covers topics not in registry
+   - Tags should be 1-3 words, Title Case
+   - Examples: "Police Accountability", "California Legislation", "Civil Rights"
+   - Be specific but reusable across posts
+
+3. **FEATURED IMAGE:**
+   - Optional but recommended
+   - If available, select most relevant image from "Available Images" list
+   - Return as object: {imageId: "...", alt: "...", caption: "..."}
+   - Use EXACT imageId - do not modify
+   - Set to null if no suitable image available
+
+4. **MEDIA FIELDS:**
+   - documents: Use "Processed Media" documents array exactly as provided (or null if empty)
+   - external_links: Use "Processed Media" external_links array exactly as provided (or null if empty)
+
+5. **DATA TYPES:**
+   - Strings: Use quotes
+   - Arrays: Use brackets []
+   - Objects: Use curly braces {}
+   - Booleans: true/false (not "true"/"false")
+   - Null: Use null (not "null") for optional fields with no value
+
+Return ONLY valid JSON:
+\`\`\`json
+{
+  "title": "Your Post Title",
+  "description": "Your post description",
+  "published_date": "2025-11-15",
+  "published": true,
+  "tags": ["Tag One", "Tag Two"],
+  "featured_image": {"imageId": "...", "alt": "...", "caption": "..."} or null,
+  "documents": [...] or null,
+  "external_links": [...] or null
 }
 \`\`\``;
 }
@@ -1193,26 +1381,161 @@ async function generateCaseArticle(draftPath, mediaPackage) {
 }
 
 /**
+ * Build article generation prompt for blog posts
+ */
+function buildBlogArticlePrompt(draftContent, metadata, componentReference) {
+  return `You are an expert writer creating a publication-ready blog post about police misconduct and legal issues.
+
+**Draft Content:**
+${draftContent}
+
+**Extracted Metadata:**
+${JSON.stringify(metadata, null, 2)}
+
+${componentReference}
+
+**WRITING GUIDELINES:**
+
+1. **TONE - Engaging and Informative:**
+   - Professional but conversational
+   - Explain legal concepts clearly for general audience
+   - Use active voice
+   - Be informative without being dry
+   - Example: "Understanding qualified immunity starts with..." NOT "This doctrine is complex and..."
+
+2. **STRUCTURE:**
+   - DO NOT follow draft order - reorganize for best flow
+   - Lead with engaging introduction that hooks reader
+   - Build arguments/explanations logically
+   - 4-7 paragraphs minimum for main content
+   - Use ## for section headings (not #)
+
+3. **REQUIRED SECTION - Key Takeaways:**
+   - Include a "## Key Takeaways" section near the end
+   - 3-5 bullet points summarizing main points
+   - Clear, actionable insights
+
+4. **MEDIA PLACEMENT:**
+   - Integrate components naturally throughout article
+   - Place media where they enhance understanding
+   - Use components from "Available Components" section above
+   - Import ONLY components you actually use at the top
+
+5. **WHAT NOT TO INCLUDE:**
+   - NO "## Related Documents" section (handled automatically)
+   - NO "## External Links" section (handled automatically)
+   - NO "## Sources" section (in frontmatter)
+   - DO reference documents/links naturally in text when relevant
+
+6. **COMPONENTS:**
+   Available: CloudflareVideo, CloudflareImage, DocumentCard, ExternalLinkCard
+   - Only import what you use
+   - **CRITICAL**: Copy component HTML EXACTLY from "Available Components" - do NOT modify IDs
+   - The videoId and imageId values are Cloudflare UUIDs - never change them
+   - Place strategically for narrative flow
+
+**OUTPUT FORMAT:**
+
+Return complete MDX file with frontmatter:
+
+\`\`\`mdx
+---
+title: "${metadata.title}"
+description: "${metadata.description}"
+published_date: "${metadata.published_date}"
+published: ${metadata.published}
+tags: ${JSON.stringify(metadata.tags)}${metadata.featured_image ? `
+featured_image:
+  imageId: "${metadata.featured_image.imageId}"
+  alt: "${metadata.featured_image.alt}"${metadata.featured_image.caption ? `\n  caption: "${metadata.featured_image.caption}"` : ''}` : ''}
+documents: ${metadata.documents ? JSON.stringify(metadata.documents) : 'null'}
+external_links: ${metadata.external_links ? JSON.stringify(metadata.external_links) : 'null'}
+---
+
+import CloudflareImage from '../../components/CloudflareImage.astro';
+import CloudflareVideo from '../../components/CloudflareVideo.astro';
+
+[Your engaging article content with embedded media, proper headings, Key Takeaways section, etc.]
+\`\`\``;
+}
+
+/**
  * Generate a blog post from draft and media
  * @param {string} draftPath - Path to draft file
  * @param {object} mediaPackage - Processed media and links from Phase 3
  * @returns {Promise<object>} - Generated article with frontmatter and content
  */
 async function generateBlogPost(draftPath, mediaPackage) {
-  console.log('→ Reading draft content...');
+  const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY
+  });
+  
   const draftContent = await fs.readFile(draftPath, 'utf-8');
+  const registry = JSON.parse(await fs.readFile('./metadata-registry.json', 'utf-8'));
+  const schemaContent = await fs.readFile('./src/content/config.ts', 'utf-8');
+  const componentReference = buildComponentReference(mediaPackage);
   
-  // TODO: Parse existing frontmatter if present
-  // TODO: Build AI prompt with draft content, media, and blog-specific requirements
-  // TODO: Call Claude API to generate complete blog post
-  // TODO: Validate required post frontmatter fields (title, description, published_date, tags, etc.)
-  // TODO: Return { frontmatter, content }
+  // Step 1: Extract metadata from draft
+  const metadataPrompt = buildBlogMetadataPrompt(
+    draftContent,
+    schemaContent,
+    registry,
+    mediaPackage
+  );
   
-  console.log('→ TODO: Implement blog post generation');
+  const metadataResponse = await anthropic.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 4000,
+    messages: [{
+      role: 'user',
+      content: metadataPrompt
+    }]
+  });
+  
+  const metadataText = metadataResponse.content[0].text;
+  const metadataMatch = metadataText.match(/```json\n([\s\S]+?)\n```/);
+  
+  if (!metadataMatch) {
+    throw new Error('Failed to extract JSON metadata from AI response');
+  }
+  
+  const metadata = JSON.parse(metadataMatch[1]);
+  
+  // Step 2: Generate article content
+  const articlePrompt = buildBlogArticlePrompt(
+    draftContent,
+    metadata,
+    componentReference
+  );
+  
+  const articleResponse = await anthropic.messages.create({
+    model: 'claude-sonnet-4-20250514',
+    max_tokens: 8000,
+    messages: [{
+      role: 'user',
+      content: articlePrompt
+    }]
+  });
+  
+  const fullArticle = articleResponse.content[0].text;
+  const mdxMatch = fullArticle.match(/```mdx\n([\s\S]+?)\n```/);
+  
+  if (!mdxMatch) {
+    throw new Error('Failed to extract MDX content from AI response');
+  }
+  
+  const mdxContent = mdxMatch[1];
+  
+  // Generate slug from title
+  const slug = metadata.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  
   return {
-    frontmatter: {},
-    content: draftContent,
-    slug: 'placeholder-slug'
+    metadata,
+    content: mdxContent,
+    slug
   };
 }
 
