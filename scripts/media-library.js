@@ -350,11 +350,6 @@ export function addVideoToLibrary(videoData) {
     caption: videoData.caption || '',
     tags: videoData.tags || [],
     addedAt: new Date().toISOString(),
-    componentProps: {
-      videoId: videoData.videoId,
-      title: videoData.title || '',
-      poster: videoData.poster || ''
-    },
     cloudflareData: videoData.metadata || {}
   };
   
@@ -388,12 +383,6 @@ export function addImageToLibrary(imageData) {
     caption: imageData.caption || '',
     tags: imageData.tags || [],
     addedAt: new Date().toISOString(),
-    componentProps: {
-      imageId: imageData.imageId,
-      alt: imageData.alt || imageData.description || imageData.fileName || '',
-      variant: imageData.variant || 'public',
-      class: imageData.class || ''
-    },
     urls: imageData.urls || {}
   };
   
@@ -429,13 +418,6 @@ export function addDocumentToLibrary(documentData) {
     fileSize: documentData.fileSize || null,
     tags: documentData.tags || [],
     addedAt: new Date().toISOString(),
-    componentProps: {
-      href: documentData.publicUrl || documentData.url || '',
-      text: documentData.linkText || documentData.description || documentData.fileName || '',
-      download: documentData.download || false,
-      target: '_blank',
-      rel: 'noopener noreferrer'
-    },
     metadata: documentData.metadata || {}
   };
   

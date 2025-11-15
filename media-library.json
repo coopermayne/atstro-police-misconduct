@@ -294,6 +294,58 @@
         },
         "originalUrl": "https://dl.dropboxusercontent.com/scl/fi/bxy9ksft1vduyaagze85o/vlc-record-2024-08-06-16h10m41s-DEF-00028-Camara.mp4.mp4?rlkey=ualb31c28cbrwcfhf2bbmljja&st=z6dhav4a&dl=0"
       }
+    },
+    "video-9af00356-a1c5-4913-914d-37280c708838": {
+      "id": "video-9af00356-a1c5-4913-914d-37280c708838",
+      "videoId": "5628191f9435865ae92b28128d58dd1c",
+      "fileName": "video",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/8o4u7ar3j0d0xwjg91e23/Clip-from-LVMPD-005630.mp4?rlkey=rpk2r4lg77jl3az0ympaydh4j&st=rydwefyz&dl=0",
+      "description": "Surveillance camera footage of the incident",
+      "alt": "Surveillance camera footage of the incident",
+      "caption": "Surveillance camera footage of the incident",
+      "tags": [],
+      "addedAt": "2025-11-15T08:38:53.923Z",
+      "cloudflareData": {
+        "uid": "5628191f9435865ae92b28128d58dd1c",
+        "creator": null,
+        "thumbnail": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/5628191f9435865ae92b28128d58dd1c/thumbnails/thumbnail.jpg",
+        "thumbnailTimestampPct": 0,
+        "readyToStream": false,
+        "readyToStreamAt": null,
+        "status": {
+          "state": "downloading",
+          "errorReasonCode": "",
+          "errorReasonText": ""
+        },
+        "meta": {
+          "description": "Surveillance camera footage of the incident",
+          "downloaded-from": "https://www.dropbox.com/scl/fi/8o4u7ar3j0d0xwjg91e23/Clip-from-LVMPD-005630.mp4?rlkey=rpk2r4lg77jl3az0ympaydh4j&st=rydwefyz&dl=1",
+          "name": "Surveillance camera footage of the incident"
+        },
+        "created": "2025-11-15T08:38:53.966767Z",
+        "modified": "2025-11-15T08:38:53.966767Z",
+        "scheduledDeletion": null,
+        "size": 49310235,
+        "preview": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/5628191f9435865ae92b28128d58dd1c/watch",
+        "allowedOrigins": [],
+        "requireSignedURLs": false,
+        "uploaded": "2025-11-15T08:38:53.964883Z",
+        "uploadExpiry": null,
+        "maxSizeBytes": null,
+        "maxDurationSeconds": null,
+        "duration": -1,
+        "input": {
+          "width": -1,
+          "height": -1
+        },
+        "playback": {
+          "hls": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/5628191f9435865ae92b28128d58dd1c/manifest/video.m3u8",
+          "dash": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/5628191f9435865ae92b28128d58dd1c/manifest/video.mpd"
+        },
+        "watermark": null,
+        "clippedFrom": null,
+        "publicDetails": null
+      }
     }
   },
   "images": {
@@ -494,12 +546,6 @@
       "caption": "Test image of a puppy",
       "tags": [],
       "addedAt": "2025-11-15T08:33:27.068Z",
-      "componentProps": {
-        "imageId": "c95c09bb-f9ca-4b20-7f0d-5becca493900",
-        "alt": "Puppy test image",
-        "variant": "public",
-        "class": ""
-      },
       "urls": {
         "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c95c09bb-f9ca-4b20-7f0d-5becca493900/thumbnail",
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c95c09bb-f9ca-4b20-7f0d-5becca493900/medium",

@@ -73,12 +73,44 @@ export async function uploadVideo(filePath, metadata = {}) {
 }
 
 /**
+ * Convert Dropbox/Google Drive URLs to direct download links
+ * @param {string} url - Original URL
+ * @returns {string} - Direct download URL
+ */
+function convertToDirectDownloadUrl(url) {
+  // Handle Dropbox URLs
+  if (url.includes('dropbox.com')) {
+    // Convert dl=0 to dl=1 for direct download
+    if (url.includes('dl=0')) {
+      return url.replace('dl=0', 'dl=1');
+    }
+    // If no dl parameter, add it
+    if (!url.includes('dl=')) {
+      return url + (url.includes('?') ? '&' : '?') + 'dl=1';
+    }
+  }
+  
+  // Handle Google Drive URLs
+  if (url.includes('drive.google.com')) {
+    const fileIdMatch = url.match(/\/d\/([^/]+)/);
+    if (fileIdMatch) {
+      return `https://drive.google.com/uc?export=download&id=${fileIdMatch[1]}`;
+    }
+  }
+  
+  return url;
+}
+
+/**
  * Upload a video from URL directly to Cloudflare Stream
  * @param {string} videoUrl - URL of video to upload
  * @param {object} metadata - Optional metadata
  * @returns {Promise<object>} - Upload result
  */
 export async function uploadVideoFromUrl(videoUrl, metadata = {}) {
+  // Convert to direct download URL if needed
+  const directUrl = convertToDirectDownloadUrl(videoUrl);
+  
   const response = await fetch(
     `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/stream/copy`,
     {
@@ -88,7 +120,7 @@ export async function uploadVideoFromUrl(videoUrl, metadata = {}) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        url: videoUrl,
+        url: directUrl,
         meta: metadata
       })
     }
