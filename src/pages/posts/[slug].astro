@@ -40,10 +40,11 @@ const relatedPosts = allPosts
 
     <!-- Post Header and Content -->
     <div class="bg-white dark:bg-gray-800 rounded-none md:rounded-lg shadow-md border-x-0 md:border-x border-y md:border border-gray-200 dark:border-gray-700 p-8 mb-8">
-      <div class="mb-4">
-        <span class="text-sm text-gray-500 dark:text-gray-400">
-          Published: {new Date(post.data.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-        </span>
+      <div class="mb-4 flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>Published: {new Date(post.data.published_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
       </div>
       
       <h1 class="text-3xl lg:text-4xl font-semibold text-gray-800 dark:text-white mb-4 border-b-4 border-red-600 pb-4" data-pagefind-weight="10">
@@ -59,8 +60,11 @@ const relatedPosts = allPosts
         {post.data.tags.map(tag => (
           <a 
             href={`/posts/tags/${createSlug(tag)}`}
-            class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm border border-gray-300 dark:border-gray-600"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm border border-gray-300 dark:border-gray-600"
           >
+            <svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
             {tag}
           </a>
         ))}
