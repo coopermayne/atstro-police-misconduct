@@ -132,7 +132,9 @@ function createSlug(name: string): string {
                     <MetadataItem type="age" content={sortedCases[0].data.age} size="md" />
                   </div>
                   <div class="flex flex-wrap gap-2">
-                    <MetadataItem type="agency" content={sortedCases[0].data.agencies?.slice(0, 2)} size="md" shortname={true} /> 
+                    <MetadataItem type="agency" content={sortedCases[0].data.agencies?.slice(0, 2)} size="md" />
+                    <MetadataItem type="forceType" content={sortedCases[0].data.force_type} size="md" />
+
                     <MetadataItem type="bodycam" content={sortedCases[0].data.bodycam_available} size="md" variant="badge" />
                   </div>
                 </div>

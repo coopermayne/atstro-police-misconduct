@@ -44,8 +44,9 @@ const { Content } = await caseItem.render();
         <MetadataItem type="age" content={caseItem.data.age} size="md" />
       </div>
       
-      <h1 class="text-3xl lg:text-4xl font-semibold text-gray-800 dark:text-white mb-4 border-b-4 border-red-600 pb-4" data-pagefind-weight="10">
-        {caseItem.data.title}
+      <h1 class="text-3xl lg:text-4xl font-semibold text-gray-800 dark:text-white mb-4 border-b-4 border-red-600 pb-4 flex justify-between items-center" data-pagefind-weight="10">
+        <span>{caseItem.data.title}</span>
+        <MetadataItem type="bodycam" content={caseItem.data.bodycam_available} size="md" variant="badge" />
       </h1>
 
       <p class="text-lg text-gray-600 dark:text-gray-400 mb-6">
