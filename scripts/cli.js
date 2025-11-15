@@ -35,6 +35,7 @@ const MAIN_MENU = [
   { title: '⚖️  Create draft case article', value: 'create-case' },
   { title: '🚀 Publish draft', value: 'publish' },
   { title: '💻 Run dev server', value: 'dev-server' },
+  { title: '📚 Browse media library', value: 'media-browser' },
   { title: '🔄 Rebuild registry', value: 'rebuild-registry' },
   { title: '📊 Media library statistics', value: 'media-stats' },
   { title: '❌ Exit', value: 'exit' }
@@ -181,6 +182,29 @@ async function runDevServer() {
   });
 
   console.log('\n✅ Dev server stopped\n');
+}
+
+/**
+ * Run media browser
+ */
+async function runMediaBrowser() {
+  console.log('\n📚 Starting media library browser...\n');
+  console.log('   Opening http://localhost:3001 in your browser...');
+  console.log('   Press Ctrl+C to stop the server\n');
+  
+  const mediaBrowserScript = path.join(__dirname, 'media-browser.js');
+  const child = spawn('node', [mediaBrowserScript], {
+    stdio: 'inherit',
+    cwd: ROOT_DIR
+  });
+
+  // Wait for exit (user will Ctrl+C to stop)
+  await new Promise((resolve) => {
+    child.on('close', resolve);
+    child.on('error', resolve);
+  });
+
+  console.log('\n✅ Media browser stopped\n');
 }
 
 /**
@@ -348,6 +372,9 @@ async function mainMenu() {
         break;
       case 'dev-server':
         await runDevServer();
+        break;
+      case 'media-browser':
+        await runMediaBrowser();
         break;
       case 'rebuild-registry':
         await rebuildRegistry();
