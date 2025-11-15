@@ -5,8 +5,12 @@ This folder contains the automated content generation workflow scripts.
 ## Scripts Overview
 
 ### Main Script
-- **`publish-draft.js`** - Main orchestration script that runs the entire publishing workflow
+- **`publish-draft.js`** - Main orchestration script that runs the entire publishing workflow (~250 lines)
 - **`cli.js`** - Interactive command-line interface for the publishing workflow
+
+### AI Modules (`ai/`)
+- **`prompts.js`** - AI prompt building functions for metadata extraction and article generation
+- **`generators.js`** - Content generation functions using Claude AI
 
 ### Cloudflare Uploaders (`cloudflare/`)
 - **`cloudflare-stream.js`** - Uploads videos to Cloudflare Stream
@@ -17,6 +21,7 @@ This folder contains the automated content generation workflow scripts.
 - **`file-downloader.js`** - Downloads files from external URLs (Dropbox, Google Drive, etc.)
 - **`media-library.js`** - Tracks uploaded media assets to avoid duplicates
 - **`media-browser.js`** - Interactive browser for viewing uploaded media
+- **`processor.js`** - Media scanning, validation, and upload orchestration
 
 ### Metadata Registry (`registry/`)
 - **`metadata-registry.js`** - Core module for managing canonical metadata values (agencies, counties, tags)
@@ -29,6 +34,11 @@ This folder contains the automated content generation workflow scripts.
 ### Build Utilities (`build/`)
 - **`validate-config.js`** - Validates environment configuration
 - **`copy-pagefind.js`** - Copies Pagefind search assets
+
+### Utilities (`utils/`)
+- **`components.js`** - MDX component HTML generation
+- **`files.js`** - File system operations and directory management
+- **`debug.js`** - Debug mode interactive prompts
 
 ## Usage
 
@@ -177,10 +187,14 @@ CLOUDFLARE_R2_PUBLIC_URL=https://files.yoursite.com
 ## Architecture
 
 ```
-publish-draft.js (Main Orchestrator)
+publish-draft.js (~250 lines - Main Orchestrator)
+  ├── ai/
+  │   ├── prompts.js (Prompt building)
+  │   └── generators.js (AI content generation)
   ├── media/
   │   ├── file-downloader.js (Downloads from external URLs)
-  │   └── media-library.js (Tracks uploaded media)
+  │   ├── media-library.js (Tracks uploaded media)
+  │   └── processor.js (Scan, validate, upload)
   ├── cloudflare/
   │   ├── cloudflare-stream.js (Uploads videos)
   │   ├── cloudflare-r2.js (Uploads images/PDFs)
@@ -188,9 +202,15 @@ publish-draft.js (Main Orchestrator)
   ├── registry/
   │   ├── metadata-registry.js (Core registry functions)
   │   └── sync-registry.js (Auto-syncs on build)
-  └── build/
-      └── validate-config.js (Validates environment)
+  ├── build/
+  │   └── validate-config.js (Validates environment)
+  └── utils/
+      ├── components.js (Component HTML generation)
+      ├── files.js (File operations)
+      └── debug.js (Interactive debugging)
 ```
+
+**Key Improvement**: The main `publish-draft.js` file was reduced from ~1400 lines to ~250 lines by extracting reusable modules. This makes the codebase more maintainable and testable.
 
 ## Error Handling
 

@@ -7,6 +7,7 @@ This folder contains tools for managing media assets (videos, images, documents)
 - **`file-downloader.js`** - Downloads files from external URLs (Dropbox, Google Drive, direct links)
 - **`media-library.js`** - Central registry for tracking all uploaded media assets
 - **`media-browser.js`** - Web-based browser for viewing and managing the media library
+- **`processor.js`** - Media scanning, validation, and upload orchestration
 
 ## Usage
 
@@ -39,6 +40,27 @@ Launch a web interface to browse uploaded media:
 ```bash
 npm run media:browse
 # Opens at http://localhost:3456
+```
+
+### Media Processor
+Core module used by the publishing workflow for automated media handling:
+
+```javascript
+import {
+  scanMediaAndLinks,
+  extractMediaMetadata,
+  uploadAndRegisterMedia,
+  validateMediaMetadataItem
+} from './media/processor.js';
+
+// Scan markdown file for URLs
+const mediaItems = scanMediaAndLinks('/path/to/draft.md');
+
+// Extract metadata using AI
+const enrichedMedia = await extractMediaMetadata(filePath, mediaItems, debugMode);
+
+// Upload to Cloudflare and register in library
+const libraryEntry = await uploadAndRegisterMedia(mediaItem);
 ```
 
 ## Data Storage
