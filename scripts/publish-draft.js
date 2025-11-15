@@ -723,6 +723,10 @@ async function main() {
         componentParams: item.componentParams,
         confidence: item.confidence,
         libraryId: item.libraryEntry.id,
+        // Store the Cloudflare IDs for easy access
+        imageId: item.type === 'image' ? item.libraryEntry.imageId : undefined,
+        videoId: item.type === 'video' ? item.libraryEntry.videoId : undefined,
+        publicUrl: item.type === 'document' ? item.libraryEntry.publicUrl : undefined,
         componentHTML: generateComponentHTML(item.type, item.libraryEntry, item.componentParams)
       }));
       
@@ -832,21 +836,19 @@ async function main() {
  */
 function buildComponentReference(mediaPackage) {
   let reference = '**Available Components:**\n\n';
+  reference += '**CRITICAL**: Copy these component tags EXACTLY as shown. Do NOT modify the IDs.\n\n';
   
   if (mediaPackage.media.length > 0) {
     reference += 'MEDIA:\n';
     mediaPackage.media.forEach((item, index) => {
-      reference += `${index + 1}. ${item.componentHTML}\n`;
-      reference += `   Source: ${item.sourceUrl}\n`;
-      reference += `   Library ID: ${item.libraryId}\n\n`;
+      reference += `${index + 1}. ${item.componentHTML}\n\n`;
     });
   }
   
   if (mediaPackage.links.length > 0) {
-    reference += '\nEXTERNAL LINKS:\n';
+    reference += 'EXTERNAL LINKS:\n';
     mediaPackage.links.forEach((item, index) => {
-      reference += `${index + 1}. ${item.componentHTML}\n`;
-      reference += `   URL: ${item.sourceUrl}\n\n`;
+      reference += `${index + 1}. ${item.componentHTML}\n\n`;
     });
   }
   
@@ -894,14 +896,17 @@ ${registry.investigation_statuses.map(s => `- ${s}`).join('\n')}
     icon: item.componentParams.icon || 'generic'
   }));
   
-  // Find featured image
-  let featuredImageId = null;
+  // Find featured image - build full object with component params
+  let featuredImageData = null;
   const imageMedia = mediaPackage.media.filter(item => item.type === 'image');
   if (imageMedia.length > 0) {
-    // Use first image as featured for now (could be enhanced with AI selection)
+    // Use first image as featured (AI will be instructed to select best one)
     const featuredImage = imageMedia[0];
-    // Extract imageId from library entry
-    featuredImageId = featuredImage.libraryId.replace('image-', '');
+    featuredImageData = {
+      imageId: featuredImage.imageId,
+      alt: featuredImage.componentParams.alt,
+      caption: featuredImage.componentParams.caption
+    };
   }
 
   return `You are an expert legal writer generating metadata for a police misconduct case article.
@@ -914,14 +919,29 @@ ${registrySection}
 **Schema (from src/content/config.ts):**
 ${schemaContent.match(/const casesCollection[\s\S]+?\}\);/)[0]}
 
+**Available Images for Featured Image:**
+${imageMedia.length > 0 ? imageMedia.map((img, i) => `${i + 1}. imageId: ${img.imageId}
+   alt: ${img.componentParams.alt}
+   caption: ${img.componentParams.caption || 'none'}
+   source: ${img.sourceUrl}`).join('\n') : 'No images available'}
+
 **Processed Media:**
 Documents: ${JSON.stringify(documents, null, 2)}
 External Links: ${JSON.stringify(external_links, null, 2)}
-Featured Image ID: ${featuredImageId || 'null'}
 
 **CRITICAL INSTRUCTIONS:**
 
-1. **INFERENCE RULES - What you CAN infer:**
+1. **FEATURED IMAGE (REQUIRED):**
+   - You MUST select a featured_image from the "Available Images" list above
+   - Choose the most appropriate image that represents the case (usually a photo of the victim)
+   - Return it as an object with: {imageId: "...", alt: "...", caption: "..."}
+   - **IMPORTANT**: Use the EXACT imageId from the list above - do not modify or transform it
+   - The imageId is a UUID like "9fec38c7-4fe6-42bb-f7f3-84cdc0b6dd00" - copy it exactly as shown
+   - If multiple images available, choose the best one for featured display
+   - If caption is not needed for featured display, you can omit it or set to empty string
+   - **DO NOT use null** - always select from available images
+
+2. **INFERENCE RULES - What you CAN infer:**
    - Gender from pronouns (he/his/him → "Male", she/her → "Female") or gendered names
    - Age from explicit mentions ("35-year-old" → 35)
    - Force type from incident description ("tased" → ["Taser"], "shot" → ["Shooting"])
@@ -931,19 +951,19 @@ Featured Image ID: ${featuredImageId || 'null'}
    - Armed status from descriptions ("unarmed", "holding a knife", etc.)
    - Threat level from incident context
 
-2. **What you CANNOT infer - use null:**
+3. **What you CANNOT infer - use null:**
    - Race/ethnicity (NEVER assume - must be explicitly stated)
    - Exact dates not mentioned
    - Names not mentioned
    - Specific details not in the draft
 
-3. **Registry Matching:**
+4. **Registry Matching:**
    - For agencies: Match to registry values exactly (e.g., "LAPD" → "Los Angeles Police Department")
    - For counties: Use registry values
    - For force_types, threat_level, investigation_status: Use registry values
    - Add new values ONLY if registry doesn't have a match
 
-4. **Required Fields:**
+5. **Required Fields:**
    - case_id: Format "ca-[agency-slug]-[year]-[sequential-number]" (e.g., "ca-lapd-2023-001")
    - title: Victim's full name
    - description: 1-2 sentence summary of the case
@@ -952,25 +972,27 @@ Featured Image ID: ${featuredImageId || 'null'}
    - county: County name (from registry)
    - agencies: Array of agency names (from registry)
 
-5. **Media Fields:**
+6. **Media Fields:**
    - documents: Use the "Processed Media" documents array exactly as provided
    - external_links: Use the "Processed Media" external_links array exactly as provided
-   - featured_image: Use the Featured Image ID provided (or null)
+   - featured_image: REQUIRED - Select best image from "Available Images" list and return as object with {imageId, alt, caption}
 
-6. **Data Types:**
+7. **Data Types:**
    - Strings: Use quotes
    - Numbers: No quotes (age: 35, not "35")
    - Booleans: true/false (not "true"/"false")
    - Arrays: Use brackets []
+   - Objects: Use curly braces {}
    - Null: Use null (not "null")
 
-7. **All Fields:** Include EVERY field from the schema. Use null for missing/unknown values.
+8. **All Fields:** Include EVERY field from the schema. Use null for missing/unknown values.
 
 Return ONLY valid JSON:
 \`\`\`json
 {
   "case_id": "ca-agency-year-001",
   "title": "Victim Name",
+  "featured_image": {"imageId": "...", "alt": "...", "caption": "..."},
   ...all other fields...
 }
 \`\`\``;
@@ -1027,7 +1049,8 @@ ${componentReference}
 6. **COMPONENTS:**
    Available: CloudflareVideo, CloudflareImage, DocumentCard, ExternalLinkCard
    - Only import what you use
-   - Use exact HTML from "Available Components"
+   - **CRITICAL**: Copy component HTML EXACTLY from "Available Components" - do NOT modify IDs
+   - The videoId and imageId values are Cloudflare UUIDs - never change them
    - Place strategically for narrative flow
 
 **OUTPUT FORMAT:**
@@ -1056,7 +1079,9 @@ investigation_status: ${metadata.investigation_status ? `"${metadata.investigati
 charges_filed: ${metadata.charges_filed !== undefined && metadata.charges_filed !== null ? metadata.charges_filed : 'null'}
 civil_lawsuit_filed: ${metadata.civil_lawsuit_filed !== undefined && metadata.civil_lawsuit_filed !== null ? metadata.civil_lawsuit_filed : 'null'}
 bodycam_available: ${metadata.bodycam_available !== undefined && metadata.bodycam_available !== null ? metadata.bodycam_available : 'null'}
-featured_image: ${metadata.featured_image ? `"${metadata.featured_image}"` : 'null'}
+featured_image: ${metadata.featured_image ? `
+  imageId: "${metadata.featured_image.imageId}"
+  alt: "${metadata.featured_image.alt}"${metadata.featured_image.caption ? `\n  caption: "${metadata.featured_image.caption}"` : ''}` : 'null'}
 documents: ${metadata.documents ? JSON.stringify(metadata.documents) : 'null'}
 external_links: ${metadata.external_links ? JSON.stringify(metadata.external_links) : 'null'}
 related_cases: ${metadata.related_cases ? JSON.stringify(metadata.related_cases) : 'null'}

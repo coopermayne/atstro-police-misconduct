@@ -9,7 +9,11 @@ const casesCollection = defineCollection({
     description: z.string(),
     incident_date: z.string(),
     published: z.boolean().default(true),
-    featured_image: z.string().nullable().optional(), // Cloudflare Image ID for featured display
+    featured_image: z.object({
+      imageId: z.string(),
+      alt: z.string(),
+      caption: z.string().optional(),
+    }).nullable().optional(),
     
     // Location
     city: z.string(),
@@ -86,7 +90,11 @@ const postsCollection = defineCollection({
     published_date: z.string(),
     published: z.boolean().default(true),
     tags: z.array(z.string()),
-    featured_image: z.string().nullable().optional(),
+    featured_image: z.object({
+      imageId: z.string(),
+      alt: z.string(),
+      caption: z.string().optional(),
+    }).nullable().optional(),
     
     // Documents
     documents: z.array(z.object({

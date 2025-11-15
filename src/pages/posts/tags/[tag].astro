@@ -39,10 +39,10 @@ const allPosts = await getCollection('posts', ({ data }) => data.published);
 const allTags = [...new Set(allPosts.flatMap(p => p.data.tags))];
 
 // Helper to get featured image URL
-function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
-  if (!imageId) return undefined;
+function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, caption?: string} | undefined): string | undefined {
+  if (!featuredImage?.imageId) return undefined;
   const accountHash = "3oZsG34qPq3SIXQhl47vqA";
-  return `https://imagedelivery.net/${accountHash}/${imageId}/medium`;
+  return `https://imagedelivery.net/${accountHash}/${featuredImage.imageId}/medium`;
 }
 
 // Create tagSlug for template use
