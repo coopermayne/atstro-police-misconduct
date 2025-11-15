@@ -10,14 +10,19 @@ interface Props {
   content?: string | number | boolean | null | undefined | string[] | { city: string; county?: string };
   variant?: 'inline' | 'badge';
   size?: 'sm' | 'md' | 'lg';
+  shortname?: boolean;
 }
 
 const { 
   type, 
   content, 
   variant = type === 'agency' || type === 'forceType' || type === 'tag' || type === 'investigationStatus' ? 'badge' : 'inline',
-  size = 'md'
+  size = 'md',
+  shortname = false
 } = Astro.props;
+
+// Import utility function for shortname lookup (assumes this will be created)
+import { getShortName } from '../utils/display-names';
 
 const sizeConfig = {
   sm: { text: 'text-xs', icon: 'w-3 h-3', gap: 'gap-1', badge: 'px-2 py-1 text-xs' },
@@ -30,6 +35,11 @@ const config = sizeConfig[size];
 // Handle array content (for agencies, forceTypes, tags)
 const isArrayType = Array.isArray(content);
 const items = isArrayType ? content.filter(Boolean) : [];
+
+// Apply shortname transformation if requested
+const processedItems = shortname && isArrayType 
+  ? items.map(item => getShortName(String(item))) 
+  : items;
 
 // Extract location data if content is an object
 const locationData = type === 'location' && typeof content === 'object' && content !== null && !Array.isArray(content)
@@ -67,7 +77,7 @@ function formatLocation(locationData: { city: string; county?: string } | null):
 
 // Determine if component should render
 const shouldRender = isArrayType
-  ? items.length > 0
+  ? processedItems.length > 0
   : type === 'bodycam' 
     ? content === true 
     : type === 'location'
@@ -79,7 +89,9 @@ const displayText = !isArrayType
   ? type === 'location' 
     ? formatLocation(locationData)
     : content && typeof content !== 'object'
-      ? formatContent(type, content as string | number | boolean, size)
+      ? shortname 
+        ? getShortName(formatContent(type, content as string | number | boolean, size))
+        : formatContent(type, content as string | number | boolean, size)
       : ''
   : '';
 
@@ -126,7 +138,7 @@ const iconColor = type === 'bodycam' && variant === 'inline' ? '' : 'text-gray-4
   </span>
 )}
 
-{shouldRender && isArrayType && items.map(item => (
+{shouldRender && isArrayType && processedItems.map(item => (
   <span class={`inline-flex items-center ${config.gap} ${config.badge} ${colors[type]} rounded border`}>
     <svg class={`${config.icon} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[type]} />
     {String(item)}
