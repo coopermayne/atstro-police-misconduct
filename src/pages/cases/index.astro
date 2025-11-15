@@ -52,37 +52,54 @@ function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
         <!-- Most Recent Case (Featured) -->
         {featuredCase && (
           <div class="lg:w-3/4 lg:px-6">
-            {featuredCase.data.featured_image ? (
-              <img 
-                class="object-cover object-center w-full h-80 xl:h-[28rem] rounded-xl" 
-                src={getFeaturedImageUrl(featuredCase.data.featured_image)} 
-                alt={featuredCase.data.title}
-              />
-            ) : (
-              <div class="bg-gray-100 dark:bg-gray-800 w-full h-80 xl:h-[28rem] rounded-xl flex flex-col items-center justify-center p-8 border-2 border-gray-300 dark:border-gray-600">
-                <h3 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">{featuredCase.data.title}</h3>
-                <p class="text-xl text-gray-600 dark:text-gray-400">{featuredCase.data.city}, {featuredCase.data.county} County</p>
-                <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">{new Date(featuredCase.data.incident_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-              </div>
-            )}
+            <a href={`/cases/${featuredCase.slug}`}>
+              {featuredCase.data.featured_image ? (
+                <img 
+                  class="object-cover object-center w-full h-80 xl:h-[28rem] rounded-xl" 
+                  src={getFeaturedImageUrl(featuredCase.data.featured_image)} 
+                  alt={featuredCase.data.title}
+                />
+              ) : (
+                <div class="bg-gray-100 dark:bg-gray-800 w-full h-80 xl:h-[28rem] rounded-xl flex flex-col items-center justify-center p-8 border-2 border-gray-300 dark:border-gray-600">
+                  <h3 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">{featuredCase.data.title}</h3>
+                  <p class="text-xl text-gray-600 dark:text-gray-400">{featuredCase.data.city}, {featuredCase.data.county} County</p>
+                  <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">{new Date(featuredCase.data.incident_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                </div>
+              )}
+            </a>
             
             <div>
               <p class="mt-6 text-sm text-red-600 uppercase">Most Recent Case</p>
               
-              <!-- Name with Age and Location -->
-              <div class="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-2">
-                <h1 class="text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
+              <!-- Name -->
+              <h1 class="mt-4 text-2xl font-semibold leading-tight text-gray-800 dark:text-white">
+                <a href={`/cases/${featuredCase.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
                   {featuredCase.data.title}
-                </h1>
-                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
-                  {featuredCase.data.age && (
-                    <>
-                      <span class="text-gray-400">•</span>
-                      <span>Age {featuredCase.data.age}</span>
-                      <span class="text-gray-400">•</span>
-                    </>
-                  )}
+                </a>
+              </h1>
+              
+              <!-- Metadata with Icons -->
+              <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-600 dark:text-gray-400 mt-3">
+                {featuredCase.data.age && (
+                  <div class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>Age {featuredCase.data.age}</span>
+                  </div>
+                )}
+                <div class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
                   <span>{featuredCase.data.city}, {featuredCase.data.county} County</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>{new Date(featuredCase.data.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                 </div>
               </div>
               
@@ -114,19 +131,36 @@ function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
         <div class="mt-8 lg:w-1/4 lg:mt-0 lg:px-6">
           {recentCases.map((caseItem, index) => (
             <div>
-              <h3 class="text-red-600 capitalize">Recent Case</h3>
+              <h3 class="text-red-600 capitalize text-sm">Recent Case</h3>
               <a 
                 href={`/cases/${caseItem.slug}`} 
-                class="block mt-2 font-medium text-gray-700 hover:underline hover:text-gray-500 dark:text-gray-400"
+                class="block mt-2 font-medium text-gray-800 hover:underline hover:text-red-600 dark:text-white dark:hover:text-red-500"
               >
                 {caseItem.data.title}
               </a>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {caseItem.data.city}, {caseItem.data.county} County
-              </p>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                {new Date(caseItem.data.incident_date).toLocaleDateString('en-US', { month: 'numeric', day: 'numeric', year: 'numeric' })}
-              </p>
+              <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600 dark:text-gray-400 mt-2">
+                {caseItem.data.age && (
+                  <div class="flex items-center gap-1">
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span>Age {caseItem.data.age}</span>
+                  </div>
+                )}
+                <div class="flex items-center gap-1">
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span>{caseItem.data.city}, {caseItem.data.county} County</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>{new Date(caseItem.data.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                </div>
+              </div>
               {index < recentCases.length - 1 && (
                 <hr class="my-6 border-gray-200 dark:border-gray-700" />
               )}

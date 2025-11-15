@@ -1,0 +1,106 @@
+---
+/**
+ * ArticleGrid Component
+ * Displays a grid of articles (posts or cases) with consistent styling
+ * Used on homepage and post/case listing pages
+ */
+
+interface Props {
+  items: any[]; // Accepts Astro collection items
+  type: 'post' | 'case';
+}
+
+const { items, type } = Astro.props;
+
+// Helper to get featured image URL
+function getFeaturedImageUrl(imageId: string | undefined): string | undefined {
+  if (!imageId) return undefined;
+  const accountHash = "3oZsG34qPq3SIXQhl47vqA";
+  return `https://imagedelivery.net/${accountHash}/${imageId}/public`;
+}
+
+// Helper to format date
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+}
+
+// Get the appropriate URL prefix
+const urlPrefix = type === 'post' ? '/posts' : '/cases';
+---
+
+<!-- Grid container with responsive columns -->
+<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+  {items.map(item => (
+    <!-- Individual article/case card -->
+    <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700">
+      
+      <!-- Featured image or placeholder (clickable) -->
+      <a href={`${urlPrefix}/${item.slug}`}>
+        {item.data.featured_image ? (
+          <img 
+            src={getFeaturedImageUrl(item.data.featured_image)} 
+            alt={item.data.title}
+            class="w-full h-48 object-cover rounded-t-lg"
+          />
+        ) : (
+          <div class="w-full h-48 bg-gray-200 dark:bg-gray-700 rounded-t-lg flex items-center justify-center">
+            <span class="text-gray-400 dark:text-gray-500">No image</span>
+          </div>
+        )}
+      </a>
+      
+      <!-- Card content -->
+      <div class="p-6">
+        
+        <!-- Title (clickable) -->
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-3">
+          <a href={`${urlPrefix}/${item.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
+            {item.data.title}
+          </a>
+        </h2>
+        
+        <!-- Description -->
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          {item.data.description}
+        </p>
+
+        <!-- Date (published_date for posts, incident_date for cases) -->
+        <p class="text-xs text-gray-500 dark:text-gray-500 mb-3">
+          {type === 'post' 
+            ? formatDate(item.data.published_date!) 
+            : formatDate(item.data.incident_date!)
+          }
+        </p>
+
+        <!-- Tags (for posts) or Agencies (for cases) -->
+        <div class="flex flex-wrap gap-2">
+          {type === 'post' 
+            ? item.data.tags?.slice(0, 2).map((tag: string) => (
+                <span class="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs rounded">
+                  {tag}
+                </span>
+              ))
+            : item.data.agencies?.slice(0, 2).map((agency: string) => (
+                <span class="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs rounded">
+                  {agency}
+                </span>
+              ))
+          }
+        </div>
+        
+        <!-- Read more link (subtle affordance) -->
+        <a 
+          href={`${urlPrefix}/${item.slug}`}
+          class="inline-block text-red-600 dark:text-red-500 hover:underline text-sm mt-3"
+        >
+          Read more →
+        </a>
+        
+      </div>
+    </article>
+  ))}
+</div>
