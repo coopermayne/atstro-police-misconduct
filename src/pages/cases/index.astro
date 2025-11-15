@@ -1,5 +1,6 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
+import MetadataItem from '../../components/MetadataItem.astro';
 import { getCollection } from 'astro:content';
 
 // Get all published cases
@@ -78,38 +79,18 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
                 </a>
               </h1>
               
-              <!-- Metadata with Icons -->
-              <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-600 dark:text-gray-400 mt-2">
-                {featuredCase.data.age && (
-                  <div class="flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span>Age {featuredCase.data.age}</span>
-                  </div>
-                )}
-                <div class="flex items-center gap-1.5">
-                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span>{featuredCase.data.city}, {featuredCase.data.county} County</span>
+              <!-- Metadata -->
+              <div class="mt-2">
+                <div class="flex flex-wrap gap-x-4 gap-y-2 mb-2">
+                  <MetadataItem type="date" content={featuredCase.data.incident_date} size="md" />
+                  <MetadataItem type="location" content={{ city: featuredCase.data.city, county: featuredCase.data.county }} size="md" />
+                  <MetadataItem type="age" content={featuredCase.data.age} size="md" />
                 </div>
-                <div class="flex items-center gap-1.5">
-                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span>{new Date(featuredCase.data.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <div class="flex flex-wrap gap-2">
+                  <MetadataItem type="agency" content={featuredCase.data.agencies.slice(0, 3)} size="md" />
+                  <MetadataItem type="forceType" content={featuredCase.data.force_type.slice(0, 2)} size="md" />
+                  <MetadataItem type="bodycam" content={featuredCase.data.bodycam_available} size="md" variant="badge" />
                 </div>
-              </div>
-              
-              <!-- Agency Pills -->
-              <div class="flex flex-wrap gap-2 mt-3">
-                {featuredCase.data.agencies.slice(0, 3).map(agency => (
-                  <span class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded border border-gray-300 dark:border-gray-600">
-                    {agency}
-                  </span>
-                ))}
               </div>
               
               <!-- Description -->
@@ -138,27 +119,12 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
               >
                 {caseItem.data.title}
               </a>
-              <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600 dark:text-gray-400 mt-2">
-                {caseItem.data.age && (
-                  <div class="flex items-center gap-1">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                    <span>Age {caseItem.data.age}</span>
-                  </div>
-                )}
-                <div class="flex items-center gap-1">
-                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span>{caseItem.data.city}, {caseItem.data.county} County</span>
-                </div>
-                <div class="flex items-center gap-1">
-                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span>{new Date(caseItem.data.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+              <div class="mt-2">
+                <div class="flex flex-wrap gap-x-3 gap-y-1">
+                  <MetadataItem type="date" content={caseItem.data.incident_date} size="sm" />
+                  <MetadataItem type="location" content={{ city: caseItem.data.city, county: caseItem.data.county }} size="sm" />
+                  <MetadataItem type="age" content={caseItem.data.age} size="sm" />
+                  <MetadataItem type="bodycam" content={caseItem.data.bodycam_available} size="sm" variant="inline" />
                 </div>
               </div>
               {index < recentCases.length - 1 && (
@@ -318,25 +284,22 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
               </a>
             </h2>
             
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              {caseItem.data.description}
-            </p>
+            {caseItem.data.description && (
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                {caseItem.data.description}
+              </p>
+            )}
 
-            <p class="text-xs text-gray-500 dark:text-gray-500 mb-4">
-              {new Date(caseItem.data.incident_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
-
-            <div class="flex flex-wrap gap-2 mb-4">
-              {caseItem.data.agencies.map(agency => (
-                <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded border border-gray-300 dark:border-gray-600">
-                  {agency}
-                </span>
-              ))}
-              {caseItem.data.bodycam_available && (
-                <span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs rounded border border-green-300 dark:border-green-700">
-                  📹 Body Cam
-                </span>
-              )}
+            <div class="mb-4">
+              <div class="flex flex-wrap gap-x-3 gap-y-1 mb-2">
+                <MetadataItem type="date" content={caseItem.data.incident_date} size="sm" />
+                <MetadataItem type="location" content={{ city: caseItem.data.city, county: caseItem.data.county }} size="sm" />
+                <MetadataItem type="age" content={caseItem.data.age} size="sm" />
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <MetadataItem type="agency" content={caseItem.data.agencies} size="sm" />
+                <MetadataItem type="bodycam" content={caseItem.data.bodycam_available} size="sm" variant="badge" />
+              </div>
             </div>
 
             <a 

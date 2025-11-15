@@ -4,6 +4,7 @@
  * Shows related cases based on relationships
  */
 import { getCollection } from 'astro:content';
+import MetadataItem from './MetadataItem.astro';
 
 interface Props {
   currentSlug: string;
@@ -106,25 +107,21 @@ function formatDate(dateString: string) {
             </a>
           </h3>
           
-          <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            <span>{formatDate(relatedCase.data.incident_date)}</span>
-            <span class="mx-2">•</span>
-            <span>{relatedCase.data.city}, {relatedCase.data.county}</span>
+          <div class="mb-3">
+            <div class="flex flex-wrap gap-x-3 gap-y-1 mb-2">
+              <MetadataItem type="date" content={relatedCase.data.incident_date} size="sm" />
+              <MetadataItem type="location" content={{ city: relatedCase.data.city, county: relatedCase.data.county }} size="sm" />
+              <MetadataItem type="age" content={relatedCase.data.age} size="sm" />
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <MetadataItem type="agency" content={relatedCase.data.agencies?.slice(0, 2)} size="sm" />
+              <MetadataItem type="bodycam" content={relatedCase.data.bodycam_available} size="sm" variant="badge" />
+            </div>
           </div>
           
           <p class="text-sm text-gray-700 dark:text-gray-300 mb-4 line-clamp-2">
             {relatedCase.data.description}
           </p>
-          
-          {relatedCase.data.agencies && relatedCase.data.agencies.length > 0 && (
-            <div class="flex flex-wrap gap-2 mb-3">
-              {relatedCase.data.agencies.slice(0, 2).map(agency => (
-                <span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-xs">
-                  {agency}
-                </span>
-              ))}
-            </div>
-          )}
           
           <a 
             href={`/cases/${relatedCase.slug}`}
