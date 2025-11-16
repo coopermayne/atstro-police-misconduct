@@ -53,10 +53,10 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
         <!-- Most Recent Case (Featured) -->
         {featuredCase && (
           <div class="lg:w-3/4 lg:px-6">
-            <a href={`/cases/${featuredCase.slug}`} class="block group">
+            <a href={`/cases/${featuredCase.slug}`} class="block group overflow-hidden rounded-xl">
               {featuredCase.data.featured_image ? (
                 <img 
-                  class="object-cover object-center w-full h-80 xl:h-[28rem] rounded-xl transition-transform duration-200 group-hover:scale-[1.02]" 
+                  class="object-cover object-center w-full h-80 xl:h-[28rem] transition-transform duration-200 group-hover:scale-[1.02]" 
                   src={getFeaturedImageUrl(featuredCase.data.featured_image)} 
                   alt={featuredCase.data.title}
                 />
