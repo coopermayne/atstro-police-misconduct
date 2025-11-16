@@ -52,10 +52,8 @@ function formatContent(type: string, content: string | number | boolean, size: s
     try {
       const date = new Date(content);
       if (isNaN(date.getTime())) return String(content);
-      if (size === 'sm') {
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      }
-      return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      // Always use short date format
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     } catch {
       return String(content);
     }
@@ -72,7 +70,7 @@ function formatContent(type: string, content: string | number | boolean, size: s
 // Format location from object
 function formatLocation(locationData: { city: string; county?: string } | null): string {
   if (!locationData?.city) return '';
-  return `${locationData.city}, ${locationData.county ? `${locationData.county} County` : 'CA'}`;
+  return `${locationData.city}, CA`;
 }
 
 // Determine if component should render

@@ -63,7 +63,7 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
               ) : (
                 <div class="bg-gray-100 dark:bg-gray-800 w-full h-80 xl:h-[28rem] rounded-xl flex flex-col items-center justify-center p-8 border-2 border-gray-300 dark:border-gray-600">
                   <h3 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">{featuredCase.data.title}</h3>
-                  <p class="text-xl text-gray-600 dark:text-gray-400">{featuredCase.data.city}, {featuredCase.data.county} County</p>
+                  <p class="text-xl text-gray-600 dark:text-gray-400">{featuredCase.data.city}, CA</p>
                   <p class="text-lg text-gray-600 dark:text-gray-400 mt-2">{new Date(featuredCase.data.incident_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                 </div>
               )}
