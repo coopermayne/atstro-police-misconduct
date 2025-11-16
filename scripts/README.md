@@ -28,8 +28,7 @@ This folder contains the automated content generation workflow scripts.
 - **`metadata-registry-cli.js`** - CLI tool for managing metadata registry
 - **`rebuild-registry.js`** - Rebuilds entire registry from published content
 - **`sync-registry.js`** - Syncs registry with all published content (runs automatically on build/dev)
-- **`update-registry-from-content.js`** - Updates registry from a single published file
-- **`normalize-metadata.js`** - Normalizes existing content metadata against registry
+- **`utils.js`** - Shared utility functions (parseFrontmatter, getMDXFiles)
 
 ### Build Utilities (`build/`)
 - **`validate-config.js`** - Validates environment configuration
@@ -72,16 +71,6 @@ This simple test:
 - ✅ Shows frontmatter format for the documents array
 
 This verifies that the R2 upload function properly uploads files and generates working URLs for referencing documents later.
-
-### Update Metadata Registry from Published Content
-
-If you need to manually scan a published file and update the registry:
-
-```bash
-node scripts/registry/update-registry-from-content.js src/content/cases/anthony-silva.mdx case
-```
-
-This scans the frontmatter and adds any new agencies, counties, or tags to the registry. This happens automatically after publishing, but can be run manually if needed.
 
 ### Manage Metadata Registry
 

@@ -17,7 +17,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const REGISTRY_PATH = path.join(__dirname, '..', 'metadata-registry.json');
+const REGISTRY_PATH = path.join(__dirname, '..', '..', 'metadata-registry.json');
 
 /**
  * Load the metadata registry
@@ -63,62 +63,6 @@ export function matchCounty(input, registry = null) {
   for (const county of registry.counties) {
     if (county.toLowerCase() === normalized) {
       return county;
-    }
-  }
-  
-  return null;
-}
-
-/**
- * Match force types to canonical names
- */
-export function matchForceTypes(inputs, registry = null) {
-  if (!registry) registry = loadRegistry();
-  if (!Array.isArray(inputs)) inputs = [inputs];
-  
-  const matches = new Set();
-  
-  for (const input of inputs) {
-    const normalized = input.toLowerCase().trim();
-    
-    for (const forceType of registry.force_types) {
-      if (forceType.toLowerCase() === normalized) {
-        matches.add(forceType);
-      }
-    }
-  }
-  
-  return Array.from(matches);
-}
-
-/**
- * Match threat level to canonical name
- */
-export function matchThreatLevel(input, registry = null) {
-  if (!registry) registry = loadRegistry();
-  
-  const normalized = input.toLowerCase().trim();
-  
-  for (const threat of registry.threat_levels) {
-    if (threat.toLowerCase() === normalized) {
-      return threat;
-    }
-  }
-  
-  return null;
-}
-
-/**
- * Match investigation status to canonical name
- */
-export function matchInvestigationStatus(input, registry = null) {
-  if (!registry) registry = loadRegistry();
-  
-  const normalized = input.toLowerCase().trim();
-  
-  for (const status of registry.investigation_statuses) {
-    if (status.toLowerCase() === normalized) {
-      return status;
     }
   }
   
@@ -274,22 +218,9 @@ export function normalizeMetadata(metadata, contentType = 'case') {
     if (match) normalized.county = match;
   }
   
-  // Normalize force types (cases only)
-  if (contentType === 'case' && metadata.force_type && Array.isArray(metadata.force_type)) {
-    normalized.force_type = matchForceTypes(metadata.force_type, registry);
-  }
-  
-  // Normalize threat level (cases only)
-  if (contentType === 'case' && metadata.threat_level) {
-    const match = matchThreatLevel(metadata.threat_level, registry);
-    if (match) normalized.threat_level = match;
-  }
-  
-  // Normalize investigation status (cases only)
-  if (contentType === 'case' && metadata.investigation_status) {
-    const match = matchInvestigationStatus(metadata.investigation_status, registry);
-    if (match) normalized.investigation_status = match;
-  }
+  // Note: Force types, threat levels, and investigation statuses are validated
+  // by Astro's content collection schema but not normalized here since they
+  // follow a fixed enum pattern defined in src/content/config.ts
   
   // Normalize tags
   if (metadata.tags && Array.isArray(metadata.tags)) {

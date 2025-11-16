@@ -8,8 +8,7 @@ This folder contains tools for managing canonical metadata values used across th
 - **`metadata-registry-cli.js`** - Command-line interface for managing registry entries
 - **`rebuild-registry.js`** - Rebuilds entire registry from all published content
 - **`sync-registry.js`** - Auto-syncs registry (called during `npm run dev` and `npm run build`)
-- **`update-registry-from-content.js`** - Updates registry from a single content file
-- **`normalize-metadata.js`** - Normalizes existing content against registry values
+- **`utils.js`** - Shared utility functions (parseFrontmatter, getMDXFiles)
 
 ## Purpose
 
