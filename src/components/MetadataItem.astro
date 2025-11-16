@@ -120,6 +120,11 @@ const colors = {
 };
 
 const iconColor = type === 'bodycam' && variant === 'inline' ? '' : 'text-gray-400 dark:text-gray-500';
+
+// Helper function to create slug from agency name
+function createSlug(name: string): string {
+  return name.toLowerCase().trim().replace(/\s+/g, '-');
+}
 ---
 
 {shouldRender && !isArrayType && variant === 'inline' && (
@@ -137,8 +142,15 @@ const iconColor = type === 'bodycam' && variant === 'inline' ? '' : 'text-gray-4
 )}
 
 {shouldRender && isArrayType && processedItems.map(item => (
-  <span class={`inline-flex items-center ${config.gap} ${config.badge} ${colors[type]} rounded border`}>
-    <svg class={`${config.icon} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[type]} />
-    {String(item)}
-  </span>
+  type === 'agency' ? (
+    <a href={`/agencies/${createSlug(String(item))}`} class={`inline-flex items-center ${config.gap} ${config.badge} ${colors[type]} rounded border hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors`}>
+      <svg class={`${config.icon} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[type]} />
+      {String(item)}
+    </a>
+  ) : (
+    <span class={`inline-flex items-center ${config.gap} ${config.badge} ${colors[type]} rounded border`}>
+      <svg class={`${config.icon} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[type]} />
+      {String(item)}
+    </span>
+  )
 ))}

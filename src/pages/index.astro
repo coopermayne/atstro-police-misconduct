@@ -116,11 +116,13 @@ function createSlug(name: string): string {
             <div class="md:flex">
               {sortedCases[0].data.featured_image ? (
                 <div class="md:w-1/3">
-                  <img 
-                    src={`https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/${sortedCases[0].data.featured_image.imageId}/medium`}
-                    alt={sortedCases[0].data.title}
-                    class="w-full h-full object-cover"
-                  />
+                  <a href={`/cases/${sortedCases[0].slug}`} class="block h-full group">
+                    <img 
+                      src={`https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/${sortedCases[0].data.featured_image.imageId}/medium`}
+                      alt={sortedCases[0].data.title}
+                      class="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                    />
+                  </a>
                 </div>
               ) : null}
               
