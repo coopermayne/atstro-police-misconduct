@@ -8,7 +8,7 @@ import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const DISPLAY_NAMES_PATH = join(__dirname, '../../display-names.json');
+const DISPLAY_NAMES_PATH = join(__dirname, '../../data/display-names.json');
 
 /**
  * Load the display names from file

@@ -26,7 +26,7 @@ const CASES_TEMPLATE = path.join(DRAFTS_DIR, 'cases', 'TEMPLATE.md_template');
 const POSTS_TEMPLATE = path.join(DRAFTS_DIR, 'posts', 'TEMPLATE.md_template');
 const CASES_DIR = path.join(DRAFTS_DIR, 'cases');
 const POSTS_DIR = path.join(DRAFTS_DIR, 'posts');
-const MEDIA_LIBRARY_PATH = path.join(ROOT_DIR, 'media-library.json');
+const MEDIA_LIBRARY_PATH = path.join(ROOT_DIR, 'data', 'media-library.json');
 
 /**
  * Main menu options

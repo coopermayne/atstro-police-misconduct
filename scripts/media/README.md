@@ -65,4 +65,4 @@ const libraryEntry = await uploadAndRegisterMedia(mediaItem);
 
 ## Data Storage
 
-Media library data is stored in `/media-library.json` at the project root.
+Media library data is stored in `/data/media-library.json` at the project root.

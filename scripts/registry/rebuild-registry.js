@@ -18,7 +18,7 @@ const ROOT_DIR = path.resolve(__dirname, '..', '..');
 
 const CASES_DIR = path.join(ROOT_DIR, 'src', 'content', 'cases');
 const POSTS_DIR = path.join(ROOT_DIR, 'src', 'content', 'posts');
-const REGISTRY_PATH = path.join(ROOT_DIR, 'metadata-registry.json');
+const REGISTRY_PATH = path.join(ROOT_DIR, 'data', 'metadata-registry.json');
 
 /**
  * Build registry from published content

@@ -53,7 +53,7 @@ export async function generateCaseArticle(draftPath, mediaPackage, debugMode = f
   });
   
   const draftContent = await fs.readFile(draftPath, 'utf-8');
-  const registry = JSON.parse(await fs.readFile('./metadata-registry.json', 'utf-8'));
+  const registry = JSON.parse(await fs.readFile('./data/metadata-registry.json', 'utf-8'));
   const schemaContent = await fs.readFile('./src/content/config.ts', 'utf-8');
   const componentReference = buildComponentReference(mediaPackage);
   
@@ -167,7 +167,7 @@ export async function generateBlogPost(draftPath, mediaPackage, debugMode = fals
   });
   
   const draftContent = await fs.readFile(draftPath, 'utf-8');
-  const registry = JSON.parse(await fs.readFile('./metadata-registry.json', 'utf-8'));
+  const registry = JSON.parse(await fs.readFile('./data/metadata-registry.json', 'utf-8'));
   const schemaContent = await fs.readFile('./src/content/config.ts', 'utf-8');
   const componentReference = buildComponentReference(mediaPackage);
   

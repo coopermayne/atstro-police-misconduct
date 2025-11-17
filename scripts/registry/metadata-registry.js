@@ -17,7 +17,7 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const REGISTRY_PATH = path.join(__dirname, '..', '..', 'metadata-registry.json');
+const REGISTRY_PATH = path.join(__dirname, '..', '..', 'data', 'metadata-registry.json');
 
 /**
  * Load the metadata registry

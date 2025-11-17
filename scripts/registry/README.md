@@ -56,6 +56,6 @@ node scripts/registry/metadata-registry-cli.js stats
 
 ## Data Storage
 
-Registry data is stored in `/metadata-registry.json` at the project root.
+Registry data is stored in `/data/metadata-registry.json` at the project root.
 
 See [METADATA-REGISTRY.md](../../METADATA-REGISTRY.md) for complete documentation.

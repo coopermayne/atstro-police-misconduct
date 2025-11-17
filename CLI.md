@@ -43,7 +43,7 @@ This launches an interactive menu with the following options:
 
 ### 🔄 Rebuild Registry
 - Scans all published content
-- Rebuilds `metadata-registry.json` from scratch
+- Rebuilds `data/metadata-registry.json` from scratch
 - Ensures canonical metadata values are up-to-date
 
 ### 📊 Media Library Statistics

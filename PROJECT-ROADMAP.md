@@ -196,19 +196,87 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 
 ## 🚀 Upcoming Phases
 
-### Phase 8: Content Creation Sprint
-**Goal:** Build out 10-20 high-quality cases
+### Phase 8: MPV Dataset Integration & Video Case Documentation
+**Goal:** Integrate MappingPoliceViolence dataset schema and publish California 2025 cases with video evidence
 
+**Context:**
+The MappingPoliceViolence (MPV) dataset provides comprehensive structured data on police killings nationwide, including demographic info, geographic data, officer information, external database cross-references, and Washington Post tracking fields. By adopting their schema, we gain compatibility with a well-established dataset and can import high-quality case metadata automatically.
+
+**Sub-phases:**
+
+#### Phase 8.1: Schema Migration to MPV Format
 **Tasks:**
-- [ ] Research and compile 10-20 notable California cases
-- [ ] Gather media files (bodycam, documents, photos)
-- [ ] Create drafts using templates
-- [ ] Process through publishing workflow
-- [ ] Review and edit for accuracy
-- [ ] Publish and deploy
+- [ ] Extend `src/content/config.ts` casesCollection with ~40 MPV fields
+  - Victim info: `victim_image`, `name` (separate from title)
+  - Location enhanced: `street_address`, `state`, `zip`, `latitude`, `longitude`
+  - Geographic/demographic: `geography`, `tract`, `urban_rural_uspsai`, `urban_rural_nchs`, `hhincome_median_census_tract`
+  - Agency: `agency_responsible`, `ori` (FBI ORI code)
+  - Incident details: `circumstances`, `encounter_type`, `initial_reason`, `call_for_service`, `off_duty_killing`, `signs_of_mental_illness`, `allegedly_armed`
+  - Officer info: `officer_names`, `officer_races`, `officer_known_past_shootings`, `officer_charged`
+  - Legal/investigation: `disposition_official`, `news_urls`
+  - WAPO fields: `wapo_armed`, `wapo_threat_level`, `wapo_flee`, `wapo_body_camera`, `wapo_id`
+  - External IDs: `mpv_id`, `fe_id` (Fatal Encounters database)
+- [ ] Mark all new fields as `.nullable().optional()` for backward compatibility
+- [ ] Update `src/pages/cases/[slug].astro` to display new MPV fields conditionally
+- [ ] Update `src/components/MetadataItem.astro` with new metadata types (mentalIllness, officerCharged, geography, coordinates)
+- [ ] Update `scripts/ai/prompts.js` field mapping and extraction prompts for MPV fields
+- [ ] Update `scripts/registry/registry-builder.js` to extract new enum fields
+- [ ] Test that existing 2 cases still build without changes
+- [ ] Create `MPV-SCHEMA-MIGRATION.md` documenting field mappings and differences
+- [ ] Update `METADATA-REGISTRY.md` and `PROJECT-ROADMAP.md` with schema changes
 
-**Timeline:** 2-4 weeks  
-**Success Metric:** 10+ published cases with media
+**Timeline:** 1 week  
+**Success Metric:** Extended schema validated, existing cases still build, documentation complete
+
+---
+
+#### Phase 8.2: MPV Dataset Import Tooling
+**Tasks:**
+- [ ] Obtain latest MPV dataset (CSV format)
+- [ ] Create import script `scripts/import-mpv-dataset.js`
+  - Parse MPV CSV data
+  - Filter for California cases only
+  - Filter for 2025 incidents only
+  - Filter for cases with `wapo_body_camera = true` OR high video likelihood from `news_urls`
+  - Map MPV fields to extended case schema
+  - Generate draft MDX files with populated frontmatter
+  - Create `description` field from `circumstances` + context
+  - Leave MDX body minimal (AI will expand in next phase)
+- [ ] Generate prioritized video research checklist
+  - Rank cases by video availability likelihood
+  - Note which cases have bodycam confirmed
+  - Identify which need news video sourcing
+- [ ] Validate generated drafts against schema
+- [ ] Review sample of generated drafts for quality
+
+**Timeline:** 1 week  
+**Success Metric:** Import script working, 20-50 California 2025 case drafts with video potential generated
+
+---
+
+#### Phase 8.3: Video Sourcing & Publishing Workflow
+**Tasks:**
+- [ ] Process generated MPV drafts through AI publishing workflow
+  - AI expands minimal drafts into full articles
+  - AI maintains encyclopedic tone
+  - AI uses populated frontmatter as authoritative source
+- [ ] Manual video research and sourcing (prioritized by likelihood)
+  - Search for bodycam footage releases
+  - Source news clips with embedded video
+  - Download courtroom/hearing videos if available
+  - Verify video authenticity and relevance
+- [ ] Upload sourced videos to Cloudflare Stream
+- [ ] Insert video components into article MDX
+- [ ] Review AI-generated articles for accuracy against MPV data
+- [ ] Fact-check against original news sources
+- [ ] Publish completed cases with video through standard workflow
+- [ ] Track progress: goal is 10+ published cases with video
+
+**Timeline:** 2 weeks  
+**Success Metric:** 10+ California 2025 MPV cases published with video content, 20+ total MPV cases published
+
+**Overall Phase 8 Timeline:** 3-4 weeks  
+**Overall Success Metric:** MPV schema integrated, 20+ California 2025 cases published from dataset, 10+ include video evidence
 
 ---
 

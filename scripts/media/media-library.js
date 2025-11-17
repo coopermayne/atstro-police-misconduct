@@ -21,7 +21,7 @@ import { uploadVideo, getVideoDetails } from '../cloudflare/cloudflare-stream.js
 import { uploadImage, getImageDetails } from '../cloudflare/cloudflare-images.js';
 import { uploadPDF } from '../cloudflare/cloudflare-r2.js';
 
-const LIBRARY_PATH = path.join(process.cwd(), 'media-library.json');
+const LIBRARY_PATH = path.join(process.cwd(), 'data', 'media-library.json');
 
 /**
  * Load the media library

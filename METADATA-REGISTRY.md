@@ -125,7 +125,7 @@ If the draft mentions an agency not in the registry, the AI will:
 
 ## File Locations
 
-- **Registry**: `/metadata-registry.json`
+- **Registry**: `/data/metadata-registry.json`
 - **CLI Tool**: `/scripts/metadata-registry-cli.js`
 - **Module**: `/scripts/registry/metadata-registry.js`
 - **Integration**: `/scripts/publish-draft.js` (automatic)

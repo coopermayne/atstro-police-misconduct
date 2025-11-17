@@ -97,7 +97,7 @@ The workflow automatically:
 **Metadata & Registry:**
 - **[METADATA-REGISTRY.md](./METADATA-REGISTRY.md)** - Understanding the metadata registry
 - **[METADATA-COMPONENT.md](./METADATA-COMPONENT.md)** - Using metadata components
-- **[display-names.json](./display-names.json)** - Display name mappings
+- **[data/display-names.json](./data/display-names.json)** - Display name mappings
 
 **Technical Reference:**
 - **[CLI.md](./CLI.md)** - Command-line interface guide

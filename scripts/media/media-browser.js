@@ -19,7 +19,7 @@ import open from 'open';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..', '..');
-const LIBRARY_PATH = path.join(ROOT_DIR, 'media-library.json');
+const LIBRARY_PATH = path.join(ROOT_DIR, 'data', 'media-library.json');
 const PORT = 3001;
 
 const app = express();
