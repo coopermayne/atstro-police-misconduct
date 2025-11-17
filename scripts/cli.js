@@ -16,6 +16,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 import prompts from 'prompts';
+import readline from 'readline';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,14 +32,13 @@ const MEDIA_LIBRARY_PATH = path.join(ROOT_DIR, 'media-library.json');
  * Main menu options
  */
 const MAIN_MENU = [
-  { title: '📝 Create draft blog post', value: 'create-blog' },
-  { title: '⚖️  Create draft case article', value: 'create-case' },
-  { title: '🚀 Publish draft', value: 'publish' },
-  { title: '💻 Run dev server', value: 'dev-server' },
-  { title: '📚 Browse media library', value: 'media-browser' },
-  { title: '🔄 Rebuild registry', value: 'rebuild-registry' },
-  { title: '📊 Media library statistics', value: 'media-stats' },
-  { title: '❌ Exit', value: 'exit' }
+  { title: '1. 📝 Create draft blog post', value: 'create-blog' },
+  { title: '2. ⚖️  Create draft case article', value: 'create-case' },
+  { title: '3. 🚀 Publish draft', value: 'publish' },
+  { title: '4. 💻 Run dev server', value: 'dev-server' },
+  { title: '5. 📚 Browse media library', value: 'media-browser' },
+  { title: '6. 🔄 Rebuild registry', value: 'rebuild-registry' },
+  { title: '7. ❌ Exit', value: 'exit' }
 ];
 
 /**
@@ -214,7 +214,7 @@ async function runMediaBrowser() {
 async function rebuildRegistry() {
   console.log('\n🔄 Rebuilding registry...\n');
   
-  const rebuildScript = path.join(__dirname, 'rebuild-registry.js');
+  const rebuildScript = path.join(__dirname, 'registry', 'rebuild-registry.js');
   
   try {
     const child = spawn('node', [rebuildScript], {
@@ -240,128 +240,32 @@ async function rebuildRegistry() {
 }
 
 /**
- * Show media library statistics
- */
-function showMediaStats() {
-  try {
-    if (!fs.existsSync(MEDIA_LIBRARY_PATH)) {
-      console.log('\n⚠️  Media library not found\n');
-      return;
-    }
-
-    const library = JSON.parse(fs.readFileSync(MEDIA_LIBRARY_PATH, 'utf-8'));
-    
-    const videoCount = Object.keys(library.videos || {}).length;
-    const imageCount = Object.keys(library.images || {}).length;
-    const documentCount = Object.keys(library.documents || {}).length;
-    const totalCount = videoCount + imageCount + documentCount;
-
-    console.log('\n📊 Media Library Statistics\n');
-    console.log('═'.repeat(50));
-    console.log(`📹 Videos:    ${videoCount.toString().padStart(4)}`);
-    console.log(`🖼️  Images:    ${imageCount.toString().padStart(4)}`);
-    console.log(`📄 Documents: ${documentCount.toString().padStart(4)}`);
-    console.log('─'.repeat(50));
-    console.log(`📦 Total:     ${totalCount.toString().padStart(4)}`);
-    console.log('═'.repeat(50));
-
-    // Calculate storage estimates
-    let totalVideoSize = 0;
-    let totalImageSize = 0;
-    let totalDocumentSize = 0;
-
-    Object.values(library.videos || {}).forEach(video => {
-      if (video.cloudflareData?.metadata?.size) {
-        totalVideoSize += video.cloudflareData.metadata.size;
-      }
-    });
-
-    Object.values(library.images || {}).forEach(image => {
-      // Estimate 2MB average per image (Cloudflare doesn't provide size)
-      totalImageSize += 2 * 1024 * 1024;
-    });
-
-    Object.values(library.documents || {}).forEach(doc => {
-      if (doc.size) {
-        totalDocumentSize += doc.size;
-      }
-    });
-
-    const totalSize = totalVideoSize + totalImageSize + totalDocumentSize;
-
-    if (totalSize > 0) {
-      console.log(`\n💾 Storage Estimates:\n`);
-      console.log(`📹 Videos:    ${formatBytes(totalVideoSize)}`);
-      console.log(`🖼️  Images:    ${formatBytes(totalImageSize)} (estimated)`);
-      console.log(`📄 Documents: ${formatBytes(totalDocumentSize)}`);
-      console.log('─'.repeat(50));
-      console.log(`📦 Total:     ${formatBytes(totalSize)}`);
-    }
-
-    // Show recent additions
-    const allAssets = [
-      ...Object.values(library.videos || {}).map(v => ({ ...v, type: 'video' })),
-      ...Object.values(library.images || {}).map(i => ({ ...i, type: 'image' })),
-      ...Object.values(library.documents || {}).map(d => ({ ...d, type: 'document' }))
-    ];
-
-    allAssets.sort((a, b) => {
-      const dateA = new Date(a.addedAt || a.uploadedAt || 0);
-      const dateB = new Date(b.addedAt || b.uploadedAt || 0);
-      return dateB - dateA;
-    });
-
-    const recent = allAssets.slice(0, 5);
-    if (recent.length > 0) {
-      console.log(`\n⏱️  Recent Additions:\n`);
-      recent.forEach((asset, i) => {
-        const icon = asset.type === 'video' ? '📹' : asset.type === 'image' ? '🖼️' : '📄';
-        const date = new Date(asset.addedAt || asset.uploadedAt);
-        const dateStr = date.toLocaleDateString();
-        const name = asset.fileName || asset.title || asset.id;
-        console.log(`${i + 1}. ${icon} ${name.substring(0, 40)} (${dateStr})`);
-      });
-    }
-
-    console.log('\n');
-  } catch (error) {
-    console.error(`\n❌ Failed to read media library: ${error.message}\n`);
-  }
-}
-
-/**
- * Format bytes to human readable
- */
-function formatBytes(bytes) {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
-}
-
-/**
  * Main menu loop
  */
 async function mainMenu() {
-  console.log('\n╔════════════════════════════════════════════════╗');
-  console.log('║   Police Misconduct Documentation System      ║');
-  console.log('╚════════════════════════════════════════════════╝\n');
+  console.log('\n╔═══════════════════════════════════════════════════╗');
+  console.log('║                                                   ║');
+  console.log('║      Police Misconduct Law - Dev Tools            ║');
+  console.log('║                                                   ║');
+  console.log('╚═══════════════════════════════════════════════════╝\n');
 
   while (true) {
-    const response = await prompts({
-      type: 'select',
-      name: 'action',
-      message: 'What would you like to do?',
-      choices: MAIN_MENU
+    // Display menu options
+    console.log('What would you like to do?\n');
+    MAIN_MENU.forEach(item => {
+      console.log(`  ${item.title}`);
     });
+    console.log('\nPress a number key (1-7) to select an option...\n');
 
-    if (!response.action || response.action === 'exit') {
+    // Wait for single key press
+    const action = await waitForKeyPress();
+    
+    if (!action || action === 'exit') {
       console.log('\n👋 Goodbye!\n');
       process.exit(0);
     }
 
-    switch (response.action) {
+    switch (action) {
       case 'create-blog':
         await createDraft('blog');
         break;
@@ -380,14 +284,56 @@ async function mainMenu() {
       case 'rebuild-registry':
         await rebuildRegistry();
         break;
-      case 'media-stats':
-        showMediaStats();
-        break;
     }
 
     // Add a small delay before showing menu again
     await new Promise(resolve => setTimeout(resolve, 500));
   }
+}
+
+/**
+ * Wait for a single key press and return the corresponding action
+ */
+function waitForKeyPress() {
+  return new Promise((resolve) => {
+    const keyMap = {
+      '1': 'create-blog',
+      '2': 'create-case',
+      '3': 'publish',
+      '4': 'dev-server',
+      '5': 'media-browser',
+      '6': 'rebuild-registry',
+      '7': 'exit'
+    };
+
+    readline.emitKeypressEvents(process.stdin);
+    if (process.stdin.isTTY) {
+      process.stdin.setRawMode(true);
+    }
+
+    const onKeypress = (str, key) => {
+      if (key && key.ctrl && key.name === 'c') {
+        console.log('\n\n👋 Goodbye!\n');
+        process.exit(0);
+      }
+
+      if (keyMap[str]) {
+        cleanup();
+        resolve(keyMap[str]);
+      }
+    };
+
+    const cleanup = () => {
+      process.stdin.removeListener('keypress', onKeypress);
+      if (process.stdin.isTTY) {
+        process.stdin.setRawMode(false);
+      }
+      process.stdin.pause();
+    };
+
+    process.stdin.on('keypress', onKeypress);
+    process.stdin.resume();
+  });
 }
 
 // Handle Ctrl+C gracefully
