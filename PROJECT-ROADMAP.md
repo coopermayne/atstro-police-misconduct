@@ -382,6 +382,36 @@ The MappingPoliceViolence (MPV) dataset provides comprehensive structured data o
 
 ---
 
+### Phase 13: Geographic Expansion Strategy
+**Goal:** Establish regional presence and capture local search traffic
+**Planned:**
+- [ ] Regional landing pages (subfolder structure)
+  - `/los-angeles/` - LA County focus (LAPD/LASD)
+  - `/san-diego/` - San Diego County
+  - `/bay-area/` - SF/Oakland/surrounding
+  - `/inland-empire/` - Riverside/San Bernardino
+  - `/sacramento/` - Sacramento region
+  - `/orange-county/` - Orange County
+- [ ] Regional page unique content (avoid duplicate content)
+  - Region-specific statistics from database
+  - Pattern analysis for local agencies
+  - Local case results and testimonials
+  - "View all [Region] cases" → filtered database view
+  - Local legal considerations
+- [ ] Site-wide linking implementation
+  - Footer "Regions We Serve" section (all pages)
+  - Homepage "Serving Communities Across California" section
+  - Contextual in-content links to regional pages
+- [ ] Database integration
+  - Regional filter functionality on main database
+  - Canonical URLs (one page per case)
+  - Breadcrumb navigation for regional views
+    
+**Timeline:** 2-3 weeks  
+**Success Metric:** Regional pages rank top 10 for "[City] police shooting lawyer" within 6 months; 25%+ of organic traffic from regional searches
+
+---
+
 ## 📈 Metrics & Goals
 
 ### Current Stats
