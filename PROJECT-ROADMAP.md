@@ -664,6 +664,8 @@ Very affordable for a professional site with this much functionality!
 - [ ] Gather media files for 10 cases
 - [ ] Create and publish 10 cases
 - [ ] Write 2-3 blog posts
+- [ ] Keep all associated files, documents, and links in metadata.
+- [ ] Display all associated files, documents, and links at end of each article (even if not used in article itself)
 
 ### Recently Completed (November 17, 2025)
 - [x] Built media library browser with visual interface
