@@ -1,6 +1,6 @@
 # Police Misconduct Law - Project Roadmap
 
-**Last Updated:** November 13, 2025
+**Last Updated:** November 17, 2025
 
 ## 🎯 Project Vision
 
@@ -12,7 +12,7 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 
 ---
 
-## 📊 Current Status: Phase 5 - Validation & Polish
+## 📊 Current Status: Phase 6 - Content Creation & Feature Enhancement
 
 ### ✅ Completed Phases
 
@@ -134,9 +134,69 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 
 ---
 
+#### Phase 6: Media Library & Developer Tools ✅
+**Goal:** Create professional media management and CLI tools
+
+**Completed:**
+- ✅ Media library browser with visual interface (localhost:3001)
+- ✅ File size display for videos (always in GB format)
+- ✅ Interactive CLI tool for all common tasks
+- ✅ Media statistics and recent additions tracking
+- ✅ Fixed CLI media browser path
+- ✅ Cloudflare Images, Stream, and R2 integration
+
+**Features:**
+- Visual media library browser with filtering and search
+- Click-to-copy MDX component codes
+- Video file size tracking and display
+- Unified CLI menu for drafts, publishing, media, and dev server
+- Media library statistics with storage estimates
+
+**Documentation:**
+- `scripts/media/README.md` - Media management guide
+- `CLI.md` - Command-line interface documentation
+
+---
+
+## 🚀 Current Phase
+
+### Phase 7: Forms & Newsletter Integration (In Progress)
+**Goal:** Enable user engagement through contact forms and newsletter
+
+**Status:** Planning complete, ready for implementation
+
+**Planned:**
+- [ ] **Contact form with Netlify Forms** (Attorney referral form on /contact)
+  - Using Netlify's built-in form handling (free, 100 submissions/month)
+  - Honeypot spam protection to prevent bot submissions
+  - Form fields: name, email, phone, location, incident date, description
+  - Email notifications on new submissions
+  
+- [ ] **Newsletter signup with Buttondown** (Newsletter form on homepage + /contact)
+  - Using Buttondown (free for up to 100 subscribers)
+  - Can write newsletters in Markdown or custom HTML
+  - Simple API integration
+  - Privacy-focused, no tracking pixels
+  - Upgrade path: $9/month when reaching 100 subscribers
+
+**Implementation Steps:**
+1. Sign up for Buttondown account and get API key
+2. Update `NewsletterCTA.astro` component with Buttondown integration
+3. Add Netlify form attributes to contact form
+4. Add honeypot fields for spam protection on both forms
+5. Test form submissions in development
+6. Add success/error message handling
+7. Deploy and verify on production
+8. Test email notifications
+
+**Timeline:** 1 week  
+**Success Metric:** Working contact form + newsletter signup on production
+
+---
+
 ## 🚀 Upcoming Phases
 
-### Phase 6: Content Creation Sprint (Next)
+### Phase 8: Content Creation Sprint
 **Goal:** Build out 10-20 high-quality cases
 
 **Tasks:**
@@ -152,7 +212,7 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 
 ---
 
-### Phase 7: Blog Content
+### Phase 9: Blog Content
 **Goal:** Educational content about police accountability law
 
 **Planned Posts:**
@@ -170,7 +230,7 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 
 ---
 
-### Phase 8: Enhanced Features
+### Phase 10: Enhanced Features
 **Goal:** Improve user experience and functionality
 
 **Planned:**
@@ -194,22 +254,44 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 
 ---
 
-### Phase 9: Community Features (Optional)
+### Phase 9: Community Features (In Progress)
 **Goal:** Enable user engagement and contributions
+
+**Planned Features:**
+- [ ] **Contact form with Netlify Forms** (Attorney referral form on /contact)
+  - Using Netlify's built-in form handling (free, 100 submissions/month)
+  - Honeypot spam protection
+  - Form fields: name, email, phone, location, incident date, description
+- [ ] **Newsletter signup with Buttondown** (Newsletter form on homepage + /contact)
+  - Using Buttondown (free for up to 100 subscribers)
+  - Can write newsletters in Markdown or custom HTML
+  - Simple API integration
+  - Privacy-focused, no tracking
+  - Plan: Start free, upgrade to $9/month when reaching 100 subscribers
+- [ ] Comment system (Giscus/Disqus)
+- [ ] Social sharing optimization
+- [ ] RSS feed for updates
+
+**Timeline:** 2-3 weeks  
+**Success Metric:** Working search + filters deployed
+
+---
+
+### Phase 11: Additional Community Features (Optional)
+**Goal:** Enable additional user engagement
 
 **Possible Features:**
 - [ ] Case submission form (for tips/new cases)
-- [ ] Newsletter signup (Mailchimp/ConvertKit)
 - [ ] Comment system (Giscus/Disqus)
 - [ ] Social sharing optimization
 - [ ] RSS feed for updates
 
 **Timeline:** 1-2 weeks  
-**Success Metric:** 100+ newsletter subscribers
+**Success Metric:** Active community engagement
 
 ---
 
-### Phase 10: SEO & Analytics
+### Phase 12: SEO & Analytics
 **Goal:** Maximize reach and track impact
 
 **Planned:**
@@ -239,6 +321,8 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 - **Total Posts:** 4 educational articles
 - **Pages:** 44 (last build)
 - **Deployment:** Netlify (auto-deploy on push)
+- **Media Library:** Visual browser available at localhost:3001
+- **CLI Tool:** Unified menu for all development tasks
 
 ### 3-Month Goals
 - **Cases:** 25+ documented cases
@@ -272,7 +356,8 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 ### Planned Additions
 - **Search:** Pagefind or Fuse.js
 - **Analytics:** Plausible Analytics
-- **Newsletter:** ConvertKit or Mailchimp
+- **Newsletter:** Buttondown (free tier)
+- **Forms:** Netlify Forms (built-in)
 - **Comments:** Giscus (GitHub-based)
 
 ---
@@ -293,11 +378,11 @@ Create a comprehensive, accessible resource documenting police misconduct cases 
 - **Per 10 articles:** ~$1.50-6.00
 
 **At Scale (50+ cases):**
-- Netlify: $0 (still free tier)
+- Netlify: $0 (still free tier, forms included)
 - Cloudflare: ~$10-15/month
 - Analytics: $0-9/month (Plausible)
-- Newsletter: $0-20/month (ConvertKit)
-- **Total: $10-44/month**
+- Newsletter: $0-9/month (Buttondown free tier or paid)
+- **Total: $10-33/month**
 
 Very affordable for a professional site with this much functionality!
 
@@ -346,16 +431,18 @@ Very affordable for a professional site with this much functionality!
 
 ### Current Limitations
 1. **Search not functional** - UI exists but needs implementation
-2. **Newsletter not connected** - Form exists but no backend
-3. **No user comments** - Static site limitation
-4. **AI may hallucinate** - Always review generated content
-5. **Large files may timeout** - Videos >1GB may fail upload
-6. **No draft auto-save** - Manual save required
+2. **Newsletter not connected** - Form exists, Buttondown integration pending
+3. **Contact form not connected** - Form exists, Netlify setup pending
+4. **No user comments** - Static site limitation
+5. **AI may hallucinate** - Always review generated content
+6. **Large files may timeout** - Videos >1GB may fail upload
+7. **No draft auto-save** - Manual save required
 
 ### Planned Fixes
-- Search: Phase 8 (Pagefind integration)
-- Newsletter: Phase 9 (ConvertKit)
-- Comments: Phase 9 (Giscus)
+- Search: Phase 10 (Pagefind integration)
+- Newsletter: Phase 7 (Buttondown integration) - IN PROGRESS
+- Contact form: Phase 7 (Netlify Forms) - IN PROGRESS
+- Comments: Phase 11 (Giscus)
 - AI accuracy: Ongoing prompt refinement
 - File size: Cloudflare Stream supports up to 30GB (should be fine)
 
@@ -412,19 +499,23 @@ Very affordable for a professional site with this much functionality!
 
 ## 📅 Timeline
 
-### Completed (Phases 1-5)
+### Completed (Phases 1-6)
 - **Phase 1:** October 2025 - Foundation
 - **Phase 2:** October 2025 - Cloudflare Integration
 - **Phase 3:** November 2025 - AI Workflow
 - **Phase 4:** November 2025 - Flexible Drafts
 - **Phase 5:** November 13, 2025 - Validation & Polish ✅
+- **Phase 6:** November 17, 2025 - Media Library & Developer Tools ✅
+
+### In Progress
+- **Phase 7:** November 2025 - Forms & Newsletter Integration (CURRENT)
 
 ### Upcoming
-- **Phase 6:** November-December 2025 - Content Sprint
-- **Phase 7:** Ongoing - Blog Content
-- **Phase 8:** January 2026 - Enhanced Features
-- **Phase 9:** February 2026 - Community Features (optional)
-- **Phase 10:** March 2026 - SEO & Analytics
+- **Phase 8:** November-December 2025 - Content Sprint
+- **Phase 9:** Ongoing - Blog Content
+- **Phase 10:** January 2026 - Enhanced Features
+- **Phase 11:** February 2026 - Additional Community Features (optional)
+- **Phase 12:** March 2026 - SEO & Analytics
 
 ---
 
@@ -436,41 +527,44 @@ Very affordable for a professional site with this much functionality!
 - ✅ **Developer Experience:** One-command publishing workflow
 - ✅ **Comprehensive Docs:** 1000+ lines of documentation
 - ✅ **Quality Controls:** Validation before processing
+- ✅ **Media Library:** Visual browser with click-to-copy codes
+- ✅ **Unified CLI:** All development tasks in one interactive menu
 
 ---
 
 ## 🚀 Next Actions
 
 ### Immediate (This Week)
-1. ✅ Complete validation system
-2. ✅ Update all documentation
-3. ✅ Create project roadmap
-4. ✅ Simplify metadata registry
-5. ✅ Add validation overrides
-6. [ ] Begin researching 10 cases for content sprint
+1. [ ] Set up Buttondown account for newsletter
+2. [ ] Integrate Buttondown API with NewsletterCTA component
+3. [ ] Add Netlify Forms attributes to contact form
+4. [ ] Add honeypot spam protection to both forms
+5. [ ] Test form submissions locally and on production
 
 ### Short-term (This Month)
-1. [ ] Compile case research notes
-2. [ ] Gather media files for 10 cases
-3. [ ] Create and publish 10 cases
-4. [ ] Write 2-3 blog posts
+1. [ ] Complete forms and newsletter integration
+2. [ ] Begin researching 10 cases for content sprint
+3. [ ] Compile case research notes
+4. [ ] Gather media files for 10 cases
+5. [ ] Write 2-3 blog posts
 
 ### Medium-term (Next 3 Months)
-1. [ ] Reach 25 published cases
-2. [ ] Implement search functionality
-3. [ ] Add advanced filtering
-4. [ ] Set up analytics
+1. [ ] Create and publish 10 cases
+2. [ ] Reach 25 published cases
+3. [ ] Implement search functionality
+4. [ ] Add advanced filtering
+5. [ ] Set up analytics
 
 ---
 
-**Current Focus:** Phase 6 - Content Creation Sprint  
-**Status:** Ready to begin researching and documenting cases  
-**Blocker:** None - all systems operational  
-**Next Milestone:** 10 published cases with professional media
+**Current Focus:** Phase 7 - Forms & Newsletter Integration  
+**Status:** Planning complete, implementation ready to begin  
+**Blocker:** Need to sign up for Buttondown account  
+**Next Milestone:** Working contact form + newsletter signup on production
 
 ---
 
-*Last updated: November 14, 2025*  
+*Last updated: November 17, 2025*  
 *Maintained by: Cooper Mayne*
 
 ---
@@ -478,10 +572,15 @@ Very affordable for a professional site with this much functionality!
 ## 📋 TODO List
 
 ### In Progress
-- [ ] 
+- [ ] Set up Buttondown account and get API key
+- [ ] Integrate newsletter form with Buttondown API
+- [ ] Configure Netlify Forms for contact form
+- [ ] Add spam protection (honeypot fields)
 
 ### Up Next
-- [ ] 
+- [ ] Test form submissions in development
+- [ ] Deploy and verify forms on production
+- [ ] Begin researching cases for content sprint
 
 ### Backlog
 - [ ] Gracefully handle duplicate slugs for articles and posts
@@ -498,7 +597,16 @@ Very affordable for a professional site with this much functionality!
 - [ ] Create and publish 10 cases
 - [ ] Write 2-3 blog posts
 
-### Recently Completed (November 14, 2025)
+### Recently Completed (November 17, 2025)
+- [x] Built media library browser with visual interface
+- [x] Added video file size display (always in GB)
+- [x] Created unified CLI tool for all development tasks
+- [x] Fixed CLI media browser path issue
+- [x] Added media statistics and tracking
+- [x] Researched and selected forms/newsletter services
+- [x] Planned forms and newsletter integration approach
+
+### Previously Completed (November 14, 2025)
 - [x] Simplified metadata registry to use simple strings instead of objects
 - [x] Added override option for validation failures in publish script
 - [x] Fixed content type detection for blog posts vs cases
