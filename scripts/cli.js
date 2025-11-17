@@ -192,7 +192,8 @@ async function runMediaBrowser() {
   console.log('   Opening http://localhost:3001 in your browser...');
   console.log('   Press Ctrl+C to stop the server\n');
   
-  const mediaBrowserScript = path.join(__dirname, 'media-browser.js');
+  const mediaBrowserScript = path.join(__dirname, 'media', 'media-browser.js');
+
   const child = spawn('node', [mediaBrowserScript], {
     stdio: 'inherit',
     cwd: ROOT_DIR

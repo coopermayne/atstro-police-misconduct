@@ -860,7 +860,7 @@ const HTML_TEMPLATE = `<!DOCTYPE html>
               <div class="card-title" title="\${item.fileName}">\${item.fileName}</div>
               <div class="card-meta">
                 <span>\${date}</span>
-                \${item.fileSize ? \`<span>\${formatBytes(item.fileSize)}</span>\` : ''}
+                \${item.type === 'video' && item.fileSize ? \`<span>\${formatVideoSize(item.fileSize)}</span>\` : ''}
               </div>
               \${item.tags && item.tags.length > 0 ? \`
                 <div class="card-tags">
@@ -971,7 +971,7 @@ const HTML_TEMPLATE = `<!DOCTYPE html>
           <h3>Metadata</h3>
           <p>Added: \${new Date(item.addedAt).toLocaleString()}</p>
           <p>Asset ID: <code>\${item.id}</code></p>
-          \${item.fileSize ? \`<p>File Size: \${formatBytes(item.fileSize)}</p>\` : ''}
+          \${item.type === 'video' && item.fileSize ? \`<p>File Size: \${formatVideoSize(item.fileSize)}</p>\` : ''}
           \${item.duration && item.duration > 0 ? \`<p>Duration: \${formatDuration(item.duration)}</p>\` : ''}
         </div>
       \`;
@@ -1075,6 +1075,12 @@ const HTML_TEMPLATE = `<!DOCTYPE html>
       const sizes = ['Bytes', 'KB', 'MB', 'GB'];
       const i = Math.floor(Math.log(bytes) / Math.log(k));
       return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+    }
+    
+    function formatVideoSize(bytes) {
+      if (!bytes || bytes === 0) return '0 GB';
+      const gb = bytes / (1024 * 1024 * 1024);
+      return gb.toFixed(2) + ' GB';
     }
     
     function formatDuration(seconds) {
