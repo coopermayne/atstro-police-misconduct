@@ -1,6 +1,7 @@
 # Blog Post Draft Template
 
-> **Just dump your ideas here!** The AI will structure it into a proper article.
+> **Workflow:** Dump your ideas here → Add media via browser → Publish via CLI
+> The AI will structure this into a proper article with frontmatter.
 
 ## Topic
 [What is this post about?]
@@ -13,21 +14,43 @@
 
 ## Media Files
 
-Use the shortcode format below for each media file:
+**Adding Media:**
+1. Run `npm start` and select "Browse media library"
+2. Visual browser opens at http://localhost:3001
+3. Click any media item to copy its MDX component code
+4. Paste directly into this draft
 
-**Video:** {{video: URL | caption: Your caption here}}
-**Image:** {{image: URL | caption: Your caption here | featured: true}}
-**Document:** {{document: URL | title: Document Title | description: Brief description}}
-**External Link:** {{link: URL | title: Link Title | description: Brief description | icon: news}}
-(icon options: news, video, generic)
+**Media Component Examples:**
 
-Examples:
-{{image: https://example.com/diagram.jpg | caption: Diagram showing legal process | featured: true}}
-{{document: https://example.com/guide.pdf | title: Legal Rights Guide | description: Know your rights during police encounters}}
+Videos (Cloudflare Stream):
+<CloudflareVideo videoId="abc123xyz" caption="Explaining the legal concept" />
+
+Images (Cloudflare Images):
+<CloudflareImage imageId="abc123xyz" alt="Diagram showing legal process" variant="public" />
+
+Documents (Cloudflare R2):
+<DocumentLink documentId="rights-guide-2024" title="Legal Rights Guide" description="Know your rights during police encounters" />
+
+**External Links:**
+For news articles, YouTube videos, or other external content:
 {{link: https://news.example.com/article | title: Related News Story | description: Additional context from local reporting | icon: news}}
+{{link: https://youtu.be/abc123 | title: Educational Video | description: Video explanation of this topic | icon: video}}
+
+Note: Media browser copies the exact component code you need. Just click and paste!
 
 ## Target Tags
-[What topics does this relate to? e.g., qualified-immunity, legal-strategy, etc.]
+[What topics does this relate to? e.g., qualified-immunity, legal-strategy, police-accountability]
 
 ## Notes
 [Any specific things you want to make sure are included]
+
+---
+
+**Publishing:**
+1. Save this draft file
+2. Run `npm start` and select "Publish draft"
+3. The publish script will:
+   - Generate proper frontmatter (title, description, tags, featured_image)
+   - Convert to MDX format
+   - Move to src/content/posts/
+   - Add timestamp to filename

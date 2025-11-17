@@ -1,6 +1,6 @@
 # Case Draft Template
 
-> **Just dump your notes here!** The AI will extract metadata and structure it.
+> **Workflow:** Dump your notes here → Add media via browser → Publish via CLI
 > This template is a guide - feel free to write in any format that works for you.
 
 ## Basic Info
@@ -15,35 +15,43 @@
 
 ## Media Files
 
-Use the shortcode format below for each media file. This makes it easy for the AI to process them correctly.
+**Adding Media:**
+1. Run `npm start` and select "Browse media library"
+2. Visual browser opens at http://localhost:3001
+3. Click any media item to copy its MDX component code
+4. Paste directly into this draft
 
-**Video Format:**
-{{video: URL | caption: Your caption here}}
+**Media Component Examples:**
 
-**Image Format:**
-{{image: URL | caption: Your caption here | featured: true}}
-(Set featured: true for the main/hero image)
+Videos (Cloudflare Stream):
+<CloudflareVideo videoId="abc123xyz" caption="Body camera footage from the incident" />
 
-**Document Format:**
-{{document: URL | title: Document Title | description: Brief description}}
+Images (Cloudflare Images):
+<CloudflareImage imageId="abc123xyz" alt="Scene of the incident" variant="public" />
 
-**External Link Format:**
-{{link: URL | title: Link Title | description: Brief description | icon: news}}
-(icon options: news, video, generic)
+Documents (Cloudflare R2):
+<DocumentLink documentId="complaint-2024-01-15" title="Civil Rights Complaint" description="Original complaint filed by the victim" />
 
-**Examples:**
-{{video: https://dropbox.com/bodycam.mp4 | caption: Body camera footage from the incident}}
-
-{{image: https://example.com/photo.jpg | caption: Scene of the incident | featured: true}}
-
-{{document: https://example.com/complaint.pdf | title: Civil Rights Complaint | description: Original complaint filed by the victim}}
-
+**External Links:**
+For news articles, YouTube videos, or other external content:
 {{link: https://news.example.com/article | title: Local News Coverage | description: Initial reporting on the incident | icon: news}}
-
 {{link: https://youtu.be/abc123 | title: Analysis Video | description: Expert breakdown of body cam footage | icon: video}}
+
+Note: Media browser copies the exact component code you need. Just click and paste!
 
 ## Legal Details
 [If known - lawsuit details, settlement amount, charges, etc.]
 
 ## Notes
 [Any other relevant information, quotes, sources, etc.]
+
+---
+
+**Publishing:**
+1. Save this draft file
+2. Run `npm start` and select "Publish draft"
+3. The publish script will:
+   - Extract metadata into frontmatter
+   - Convert to MDX format
+   - Move to src/content/cases/
+   - Add timestamp to filename
