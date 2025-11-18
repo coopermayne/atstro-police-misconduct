@@ -339,6 +339,18 @@ The MappingPoliceViolence (MPV) dataset provides comprehensive structured data o
 - [ ] Comment system (Giscus/Disqus)
 - [ ] Social sharing optimization
 - [ ] RSS feed for updates
+- [ ] Shooting at moving cars
+    2.	Harper
+    3.	Villanueva/Orozco
+    4.	Losee
+    5.	Gomez v. Santa Clara
+    6.	Monzon
+    7.	Williams
+    8.	Lopez v. Mesa
+    9.	Bowles
+    10.	Franco 
+
+
 
 **Timeline:** 2-3 weeks  
 **Success Metric:** Working search + filters deployed
