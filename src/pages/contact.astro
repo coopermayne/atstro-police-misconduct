@@ -114,7 +114,47 @@ import NewsletterCTA from '../components/NewsletterCTA.astro';
             Fill out this form and we'll help connect you with qualified civil rights attorneys in California.
           </p>
 
-          <form class="space-y-4">
+          <!-- Success Message -->
+          <div id="form-success" class="hidden mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <div>
+                <h4 class="font-semibold text-green-800 dark:text-green-300">Thank you for your submission!</h4>
+                <p class="text-sm text-green-700 dark:text-green-400 mt-1">We've received your request and will be in touch soon.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <div id="form-error" class="hidden mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+              <div>
+                <h4 class="font-semibold text-red-800 dark:text-red-300">There was a problem</h4>
+                <p class="text-sm text-red-700 dark:text-red-400 mt-1">Please try again or contact us directly.</p>
+              </div>
+            </div>
+          </div>
+
+          <form
+            id="contact-form"
+            name="contact"
+            method="POST"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
+            class="space-y-4"
+          >
+            <!-- Netlify Forms requires a hidden input with the form name -->
+            <input type="hidden" name="form-name" value="contact" />
+
+            <!-- Honeypot field for spam protection (hidden from users) -->
+            <div class="hidden">
+              <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+            </div>
             <div>
               <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Full Name <span class="text-red-600">*</span>
@@ -274,3 +314,47 @@ import NewsletterCTA from '../components/NewsletterCTA.astro';
   </section>
 
 </MainLayout>
+
+<script>
+  // Handle contact form submission
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const successMessage = document.getElementById('form-success');
+  const errorMessage = document.getElementById('form-error');
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Get form data
+      const formData = new FormData(form);
+
+      try {
+        // Submit to Netlify
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(formData as any).toString(),
+        });
+
+        if (response.ok) {
+          // Show success message
+          successMessage?.classList.remove('hidden');
+          errorMessage?.classList.add('hidden');
+          form.reset();
+
+          // Scroll to success message
+          successMessage?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          throw new Error('Form submission failed');
+        }
+      } catch (error) {
+        // Show error message
+        errorMessage?.classList.remove('hidden');
+        successMessage?.classList.add('hidden');
+
+        // Scroll to error message
+        errorMessage?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  }
+</script>
