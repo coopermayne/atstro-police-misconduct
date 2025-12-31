@@ -14,7 +14,12 @@
     "publish:debug": "node scripts/publish-draft.js --debug",
     "media:browse": "node scripts/media/media-browser.js",
     "rebuild-registry": "node scripts/registry/rebuild-registry.js",
-    "validate:config": "node scripts/build/validate-config.js"
+    "validate:config": "node scripts/build/validate-config.js",
+    "upload:video": "node scripts/cli/upload-video.js",
+    "upload:image": "node scripts/cli/upload-image.js",
+    "upload:document": "node scripts/cli/upload-document.js",
+    "media:find": "node scripts/cli/media-search.js",
+    "link:external": "node scripts/cli/external-link.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

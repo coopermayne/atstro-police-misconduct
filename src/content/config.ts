@@ -8,6 +8,7 @@ const casesCollection = defineCollection({
     description: z.string(),
     incident_date: z.string(),
     published: z.boolean().default(true),
+    notes_file: z.string().nullable().optional(), // Path to notes file (e.g., "notes/cases/victim-name.md")
     featured_image: z.object({
       imageId: z.string(),
       alt: z.string(),
@@ -84,6 +85,7 @@ const postsCollection = defineCollection({
     description: z.string(),
     published_date: z.string(),
     published: z.boolean().default(true),
+    notes_file: z.string().nullable().optional(), // Path to notes file (e.g., "notes/posts/article-slug.md")
     tags: z.array(z.string()),
     featured_image: z.object({
       imageId: z.string(),
