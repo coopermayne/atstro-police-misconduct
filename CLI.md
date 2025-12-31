@@ -53,34 +53,26 @@ Shows comprehensive statistics about uploaded media:
 - **Recent additions**: Last 5 uploaded assets with dates
 - **File details**: Names and upload timestamps
 
-Example output:
+### 🖼️ Browse Media Library
+Opens a visual web browser for all uploaded media:
+
+```bash
+npm run media:browse
+# Opens at http://localhost:3001
 ```
-📊 Media Library Statistics
 
-══════════════════════════════════════════════════
-📹 Videos:       15
-🖼️  Images:       42
-📄 Documents:    23
-──────────────────────────────────────────────────
-📦 Total:        80
-══════════════════════════════════════════════════
+Features:
+- **Visual grid** of all videos, images, and documents
+- **Click-to-copy** MDX component codes
+- **Original source URLs** shown for each asset
+- **Search and filter** by type or keyword
 
-💾 Storage Estimates:
+**Reusing media in new drafts:**
+1. Find the asset in the browser
+2. Copy the **original source URL**
+3. Paste in your new draft
 
-📹 Videos:    1.2 GB
-🖼️  Images:    84 MB (estimated)
-📄 Documents: 156 MB
-──────────────────────────────────────────────────
-📦 Total:     1.44 GB
-
-⏱️  Recent Additions:
-
-1. 📹 vlc-record-2024-08-06-16h11m32s-DEF-0002... (11/14/2025)
-2. 🖼️ Anthony-before-incident.jpg (11/14/2025)
-3. 📄 Second-Amended-Complaint.pdf (11/14/2025)
-4. 📹 All-Videos-Combined.mov (11/14/2025)
-5. 🖼️ after_surgery.png (11/14/2025)
-```
+The system recognizes URLs already in the library and reuses them instead of re-downloading.
 
 ## Navigation
 

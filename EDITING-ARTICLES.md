@@ -5,7 +5,8 @@ This guide explains how to edit existing articles and add media files to them.
 ## Quick Reference
 
 - **Simple text edits**: Edit MDX files directly in `src/content/cases/` or `src/content/posts/`
-- **Adding media**: Use the media library CLI to upload and get component code
+- **Finding existing media**: Run `npm run media:browse` to open the visual browser
+- **Adding new media**: Upload via CLI and paste the component code
 - **Preview changes**: Run `npm run dev` and view at `http://localhost:4321`
 
 ---
@@ -20,7 +21,33 @@ Simply open the file and edit the content. Changes will appear immediately in de
 
 ---
 
-## Adding Media to Existing Articles
+## Finding Existing Media (Visual Browser)
+
+The easiest way to find and reuse media is the visual browser:
+
+```bash
+npm run media:browse
+# Opens at http://localhost:3001
+```
+
+The browser shows all uploaded videos, images, and documents with:
+- Thumbnails and previews
+- Original source URLs
+- Click-to-copy component codes
+
+**To reuse media in a new article:**
+1. Find the asset in the browser
+2. Copy the MDX component code (click the copy button)
+3. Paste into your article
+
+**To reuse media in a new draft:**
+1. Find the asset in the browser
+2. Copy the **original source URL**
+3. Paste the URL in your draft—the system will recognize it's already uploaded
+
+---
+
+## Adding New Media to Existing Articles
 
 ### Step 1: Upload Media to Library
 

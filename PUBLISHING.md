@@ -14,11 +14,13 @@
 
 This automated content generation workflow allows you to:
 
-1. **Draft** cases and blog posts using simple markdown templates
+1. **Draft** cases and blog posts using simple markdown—just write your notes
 2. **Link** to external media files (Dropbox, Google Drive, etc.)
 3. **Automatically** download, upload, and process media
-4. **Generate** complete, publication-ready articles using AI
+4. **Generate** complete, publication-ready articles using AI (it **rewrites** your content, not just formats it)
 5. **Deploy** with a single command
+
+**Key insight:** You don't need to write polished prose. Just dump your facts, notes, and research. The AI completely rewrites it into a structured article with proper headings and tone.
 
 ### What Gets Automated
 
@@ -114,9 +116,9 @@ That's it! The entire workflow is designed for ease of use.
 ┌─────────────────────────────────────────────────────────────┐
 │ 1. CREATE DRAFT (Anywhere)                                  │
 │    - Draft in Notes, Google Docs, or markdown editor        │
-│    - Use template structure from /drafts/templates/         │
-│    - Add case notes, metadata ideas, media URLs             │
-│    - No need for GitHub yet - just write!                   │
+│    - Copy template from drafts/cases/ or drafts/posts/      │
+│    - Add case notes, media URLs - don't worry about format  │
+│    - AI will completely rewrite your content                │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -137,7 +139,7 @@ That's it! The entire workflow is designed for ease of use.
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
 │ 4. RUN PUBLISH COMMAND                                      │
-│    npm run publish:draft                                    │
+│    npm run publish                                          │
 │    - Shows numbered list of available drafts                │
 │    - Select number (1, 2, 3, etc.)                          │
 │    - Press Enter                                            │
@@ -204,27 +206,26 @@ That's it! The entire workflow is designed for ease of use.
 #### For Cases:
 
 ```bash
-cp drafts/templates/case-draft-template.md drafts/draft-john-doe-case.md
+cp drafts/cases/TEMPLATE.md_template drafts/cases/john-doe.md
 ```
 
-Edit the file and fill in:
-- Basic information (victim name, date, location, agencies)
-- Case summary/notes
-- External media file URLs
-- Special AI instructions
-- Sources
+Write your notes—the AI will rewrite them into an encyclopedic article:
+- Victim info (name, age, date, location, agency)
+- What happened (timeline, force used, officers)
+- Legal details (case number, status, settlement)
+- Media URLs with brief descriptions
 
 #### For Blog Posts:
 
 ```bash
-cp drafts/templates/blog-draft-template.md drafts/draft-qualified-immunity.md
+cp drafts/posts/TEMPLATE.md_template drafts/posts/qualified-immunity.md
 ```
 
-Edit the file and fill in:
-- Topic and outline
-- Key points to cover
-- External media URLs
-- Special AI instructions
+Write your key points—the AI will rewrite them into an engaging article:
+- Topic and main arguments
+- Research notes and examples
+- Suggested tags
+- Media URLs with descriptions
 
 ### Adding External Media URLs
 
@@ -255,18 +256,18 @@ https://example.com/settlement.pdf
 
 Simply run:
 ```bash
-npm run publish:draft
+npm run publish
 ```
 
 You'll see a numbered list of all available drafts:
 ```
 📝 Available drafts:
 
-  1. 📋 cases/john-doe-case.md
-  2. 📋 cases/sarah-johnson-case.md
-  3. 📰 posts/qualified-immunity-explained.md
+  1. 📋 cases/john-doe.md
+  2. 📋 cases/sarah-johnson.md
+  3. 📰 posts/qualified-immunity.md
 
-Select a draft to publish (enter number): 
+Select a draft to publish (enter number):
 ```
 
 Type the number and press Enter. The script handles the rest!
@@ -275,7 +276,7 @@ Type the number and press Enter. The script handles the rest!
 
 If you know the exact filename:
 ```bash
-npm run publish:draft cases/john-doe-case.md
+npm run publish cases/john-doe.md
 ```
 
 #### What Happens Next
@@ -292,15 +293,15 @@ Example output:
 ```
 📝 Available drafts:
 
-  1. 📋 cases/john-doe-case.md
+  1. 📋 cases/john-doe.md
 
 Select a draft to publish (enter number): 1
 
-✅ Selected: cases/john-doe-case.md
+✅ Selected: cases/john-doe.md
 
 🚀 Starting draft publishing workflow...
 
-Draft: cases/john-doe-case.md
+Draft: cases/john-doe.md
 
 Content Type: case
 
@@ -615,7 +616,16 @@ Dropbox/Cases/
 - Test links in incognito/private browsing
 - Use direct download links when possible
 
-**Why it matters:** Broken links waste time during processing. Good organization makes it easy to find files months later.
+**Reusing existing media:**
+If you've already uploaded media in a previous article, you can reuse it:
+1. Run `npm run media:browse` to open the visual media browser
+2. Find the asset you want to reuse
+3. Copy its **original source URL** (shown in the details)
+4. Paste that URL in your new draft
+
+The system recognizes URLs already in the library and reuses them instead of re-downloading.
+
+**Why it matters:** Broken links waste time during processing. Good organization makes it easy to find files months later. Reusing media saves upload time and storage.
 
 ### 5. Review After Publishing
 
@@ -704,13 +714,13 @@ If you encounter issues not covered here:
 ### First Time Publishing
 
 1. **Read this entire document** (you're almost done!)
-2. **Verify setup:** Run `npm run publish:draft` to check environment
+2. **Verify setup:** Run `npm run publish` to check environment
 3. **Start with a simple case:**
-   - Copy template: `cp drafts/templates/case-draft-template.md drafts/cases/test-case.md`
+   - Copy template: `cp drafts/cases/TEMPLATE.md_template drafts/cases/test-case.md`
    - Fill in minimal info (name, date, city, agency)
    - Add 1 image URL and 1 video URL
-   - Don't worry about perfection
-4. **Run publish:** `npm run publish:draft`
+   - Don't worry about perfection—the AI will rewrite it
+4. **Run publish:** `npm run publish`
 5. **Review validation report** carefully
 6. **Watch the automation** work its magic
 7. **Check the published article** at the URL shown
@@ -743,7 +753,7 @@ If you encounter issues not covered here:
 │                                                          │
 │ 2. Open GitHub Codespace                                │
 │                                                          │
-│ 3. npm run publish:draft                                │
+│ 3. npm run publish                                      │
 │                                                          │
 │ 4. Select number → Review validation → Type 'yes'       │
 │                                                          │
@@ -751,25 +761,23 @@ If you encounter issues not covered here:
 │                                                          │
 ├─────────────────────────────────────────────────────────┤
 │ FILES                                                    │
-│  Templates:     /drafts/templates/                      │
-│  Your drafts:   /drafts/cases/ or /drafts/posts/        │
-│  Published:     /src/content/cases/ or /posts/          │
-│  Archived:      /drafts/published/                      │
+│  Templates:     drafts/cases/TEMPLATE.md_template       │
+│                 drafts/posts/TEMPLATE.md_template       │
+│  Your drafts:   drafts/cases/*.md or drafts/posts/*.md  │
+│  Published:     src/content/cases/ or /posts/           │
+│  Archived:      drafts/published/                       │
 │                                                          │
 ├─────────────────────────────────────────────────────────┤
-│ REQUIRED IN DRAFT                                        │
-│  ✓ Victim/subject name                                  │
-│  ✓ Incident date                                        │
-│  ✓ City & county                                        │
-│  ✓ Agency name                                          │
-│  ✓ Basic incident summary                               │
+│ KEY COMMANDS                                             │
+│  npm run publish       → Publish a draft                │
+│  npm run media:browse  → Browse uploaded media          │
+│  npm run dev           → Start dev server               │
 │                                                          │
 ├─────────────────────────────────────────────────────────┤
-│ RECOMMENDED                                              │
-│  ✓ Featured image URL                                   │
-│  ✓ Demographics (age, race, gender)                     │
-│  ✓ Media files (videos, PDFs)                           │
-│  ✓ Source citations                                     │
+│ MEDIA REUSE                                              │
+│  Already uploaded? Run npm run media:browse             │
+│  Copy the original source URL → Paste in new draft      │
+│  System recognizes it and reuses existing upload        │
 │                                                          │
 ├─────────────────────────────────────────────────────────┤
 │ TROUBLESHOOTING                                          │

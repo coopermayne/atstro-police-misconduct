@@ -1,57 +1,98 @@
-# Case Draft Template
+# Case Draft
 
-> **Workflow:** Dump your notes here → Add media via browser → Publish via CLI
-> This template is a guide - feel free to write in any format that works for you.
+> **How this works:** Write all the facts below. The AI will extract metadata and
+> rewrite this into an encyclopedic article (Wikipedia-style: neutral, factual, no
+> emotional language). Just focus on getting the information down.
 
-## Basic Info
-- Victim name:
-- Date of incident:
-- Location (city, county):
-- Police department(s):
-- Current status (ongoing/settled/closed):
+## Victim Info
+
+Include whatever you know:
+
+```
+Name: John Smith
+Age: 34
+Date of incident: February 10, 2023
+Location: Palmdale, California (Los Angeles County)
+Agency: Los Angeles County Sheriff's Department
+```
+
+The AI will extract: name, age, gender (from pronouns), race (only if explicitly
+stated—never assumed), location, agencies, armed status, cause of death, etc.
 
 ## What Happened
-[Write a summary in your own words - bullet points, paragraphs, whatever works]
 
-## Media Files
+Write the incident details. Can be any format—bullet points, paragraphs, copy-pasted
+text from news articles or court documents. Include:
 
-**Adding Media:**
-1. Run `npm start` and select "Browse media library"
-2. Visual browser opens at http://localhost:3001
-3. Click any media item to copy its MDX component code
-4. Paste directly into this draft
+- Timeline of events (what happened when)
+- What force was used (shooting, taser, physical, etc.)
+- Whether victim was armed and with what
+- Officer names if known
+- Statements made by anyone involved
 
-**Media Component Examples:**
+Example:
+```
+Deputies responded to a domestic disturbance call around 10 PM. They were told
+the subject had made "suicide by cop" statements and the Mental Evaluation Team
+could respond in 30 minutes.
 
-Videos (Cloudflare Stream):
-<CloudflareVideo videoId="abc123xyz" caption="Body camera footage from the incident" />
+Wife told deputies her husband hadn't hurt anyone, no guns in the house, he was
+having a mental health crisis. Deputies entered anyway without consent.
 
-Images (Cloudflare Images):
-<CloudflareImage imageId="abc123xyz" alt="Scene of the incident" variant="public" />
+In the backyard, victim was holding a sword, saying "kill me" and "just shoot me."
+One deputy fired a less-lethal 40mm round while another deputy simultaneously
+shot victim in the head, killing him.
+```
 
-Documents (Cloudflare R2):
-<DocumentLink documentId="complaint-2024-01-15" title="Civil Rights Complaint" description="Original complaint filed by the victim" />
+## Background
 
-**External Links:**
-For news articles, YouTube videos, or other external content:
-{{link: https://news.example.com/article | title: Local News Coverage | description: Initial reporting on the incident | icon: news}}
-{{link: https://youtu.be/abc123 | title: Analysis Video | description: Expert breakdown of body cam footage | icon: video}}
-
-Note: Media browser copies the exact component code you need. Just click and paste!
+Optional: victim's personal background, family, occupation. Humanizes the case.
 
 ## Legal Details
-[If known - lawsuit details, settlement amount, charges, etc.]
+
+Include if known:
+- Case name and number (e.g., *Smith v. County of Los Angeles*, 2:23-cv-09285)
+- Court and judge
+- Investigation status (under investigation, charges filed, no charges, settled)
+- Settlement amount
+- Trial date
+
+## Media
+
+Paste URLs with brief descriptions:
+
+```
+https://dropbox.com/file.pdf
+First amended complaint in civil case
+
+https://da.lacounty.gov/report.pdf
+DA report explaining why no charges were filed
+
+https://youtube.com/watch?v=abc123
+Body camera footage from Law&Crime Network
+
+https://cbsnews.com/article
+News coverage of the incident
+
+https://example.com/photo.jpg
+Memorial photo of victim (use as featured image)
+```
+
+**Reusing existing media:** Run `npm run media:browse` to find already-uploaded assets.
+Copy the original source URL and paste it here—the system will reuse the existing
+upload instead of downloading again.
 
 ## Notes
-[Any other relevant information, quotes, sources, etc.]
+
+Special instructions for the AI:
+- Content to emphasize or include
+- Tone adjustments (though cases are always encyclopedic/neutral)
+- Sources to cite in the text
 
 ---
 
-**Publishing:**
-1. Save this draft file
-2. Run `npm start` and select "Publish draft"
-3. The publish script will:
-   - Extract metadata into frontmatter
-   - Convert to MDX format
-   - Move to src/content/cases/
-   - Add timestamp to filename
+**To publish:** Run `npm run publish` and select this file.
+
+The AI will create sections like "Background", "The Incident", "Investigation and
+Legal Proceedings" based on the information provided. Documents and external links
+are stored in frontmatter and can be referenced naturally in the article text.

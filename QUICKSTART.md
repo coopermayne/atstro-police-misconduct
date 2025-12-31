@@ -1,161 +1,105 @@
-# Quick Start Guide - AI Content Publishing
+# Quick Start Guide
 
-## ⚡ 5-Minute Setup
+## 5-Minute Overview
 
-### 1. Open GitHub Codespace
-```
-Go to repository → Code → Codespaces → Create/Open
-Wait ~30-60 seconds for environment to load
-Environment variables automatically configured!
-```
+1. **Write a draft** with your notes and media URLs
+2. **Run publish** - AI rewrites it into a polished article
+3. **Done** - Article deployed automatically
 
-### 2. Create a Draft
-```bash
-cp drafts/templates/case-draft-template.md drafts/cases/my-first-case.md
-# Edit the draft file with your notes and media URLs
-```
+## Creating Content
 
-### 3. Publish (Interactive)
-```bash
-npm run publish:draft
-# Select draft from numbered list
-# Review validation report
-# Type 'yes' to proceed
-```
-
-### 4. Done!
-```
-Article automatically published and deployed
-View at the URL shown in terminal output
-```
-
-## 📋 Minimal Draft Example
-
-Here's the absolute minimum you need in a draft:
-
-```markdown
-# Draft: Test Case
-
-**Type:** Case
-
-## Case Summary / Notes
-
-John Doe was subjected to excessive force by LAPD officers on January 15, 2023.
-He was 28 years old. The incident occurred in Los Angeles.
-The incident was captured on body camera footage. The case settled for $500,000.
-
-## External Media Files
-
-### Images
-https://example.com/featured-photo.jpg
-
-### Videos
-https://example.com/bodycam.mp4
-```
-
-That's it! The validation will check completeness, then the AI will:
-- Generate all metadata (case ID, tags, etc.)
-- Download and upload media to Cloudflare
-- Write the full article with proper formatting
-- Embed media with correct components
-- Save, archive, commit, and deploy
-
-## 🎯 Common Commands
+### Cases (Police Misconduct Incidents)
 
 ```bash
-# Publish a draft (interactive - recommended)
-npm run publish:draft
-
-# Publish specific draft (direct)
-npm run publish:draft cases/my-case.md
-
-# Start dev server to preview locally
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+# Create a new case draft
+cp drafts/cases/TEMPLATE.md_template drafts/cases/victim-name.md
 ```
 
-## 🔑 Required Environment Variables
+Write the facts: victim info, what happened, legal details. The AI will rewrite it into an encyclopedic article (Wikipedia-style: neutral, factual).
 
-**All 6 required as Codespaces Secrets** (automatically loaded in Codespace):
-```
-ANTHROPIC_API_KEY=sk-ant-...          # Claude API for content generation
-CLOUDFLARE_ACCOUNT_ID=...             # Your Cloudflare account
-CLOUDFLARE_API_TOKEN=...              # Stream + Images access
-CLOUDFLARE_R2_ACCESS_KEY_ID=...       # R2 storage access
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=...   # R2 storage secret
-CLOUDFLARE_R2_BUCKET_NAME=...         # R2 bucket name
+### Blog Posts (Educational/Legal Topics)
+
+```bash
+# Create a new blog post draft
+cp drafts/posts/TEMPLATE.md_template drafts/posts/topic-name.md
 ```
 
-**Setup Once:** Add these to GitHub Codespaces Secrets at https://github.com/settings/codespaces
+Write your key points and research notes. The AI will rewrite it into an engaging article with a "Key Takeaways" section.
 
-**See [CLOUDFLARE-SETUP.md](./CLOUDFLARE-SETUP.md) for detailed setup instructions.**
+## Adding Media
 
-## 🚨 Troubleshooting (Quick Fixes)
-
-**Problem:** "Missing credentials"
-- **Fix:** Check `.env` file has all required variables
-
-**Problem:** "Download failed"
-- **Fix:** Ensure URLs are publicly accessible (not behind login)
-
-**Problem:** "Claude API failed"
-- **Fix:** Check your API key and account credits
-
-**Problem:** Git push failed
-- **Fix:** Article was saved - manually commit and push
-
-## 📁 Where Things Go
+Just paste URLs with descriptions in your draft:
 
 ```
-/drafts/                          ← Your drafts here
-  /templates/                     ← Copy templates from here
-  /published/                     ← Archived drafts (auto)
+https://dropbox.com/bodycam.mp4
+Body camera footage of the incident
 
-/src/content/cases/               ← Published cases (auto)
-/src/content/posts/               ← Published blog posts (auto)
+https://example.com/photo.jpg
+Photo of victim (featured image)
 
-/scripts/                         ← Publishing tools (don't edit)
+https://courtdocs.gov/complaint.pdf
+Civil rights complaint
 ```
 
-## ✅ Publishing Checklist
+The AI downloads, uploads to Cloudflare, and places media throughout the article.
 
-Before running `publish:draft`:
-- [ ] Draft has victim name, date, city, agency
-- [ ] At least one image URL (for featured image)
-- [ ] External URLs are publicly accessible
-- [ ] You have API credits (Anthropic, Cloudflare)
+### Reusing Existing Media
 
-During publishing:
-- [ ] Review validation report carefully
-- [ ] Decide if you want to add more info or proceed
-- [ ] Type 'yes' to confirm and start processing
+Already uploaded something? Run the media browser:
 
-After publishing:
-- [ ] Review generated article for accuracy
-- [ ] Check embedded media displays correctly
-- [ ] Verify metadata (dates, names, amounts)
-- [ ] Edit published MDX file if needed
+```bash
+npm run media:browse
+```
 
-## 💡 Tips
+Find the asset, copy its **original source URL**, and paste it in your new draft. The system recognizes it's already uploaded and reuses it.
 
-1. **Start with simple cases** (1-2 videos, minimal media)
-2. **Be specific in notes** - better notes = better AI output
-3. **Review before going live** - AI is good but not perfect
-4. **Save API costs** - test with minimal drafts first
+## Publishing
 
-## 🔗 Full Documentation
+```bash
+npm run publish
+```
 
-For complete documentation, see [PUBLISHING.md](./PUBLISHING.md)
+Select your draft, review the AI's work, and confirm. The article is saved, committed, and deployed automatically.
 
-## 📞 Need Help?
+## Key Commands
 
-Check the full docs for:
-- Advanced features
-- Detailed troubleshooting
-- API reference
-- Best practices
+```bash
+npm start              # Interactive menu for all tasks
+npm run publish        # Publish a draft
+npm run dev            # Start dev server (localhost:4321)
+npm run media:browse   # Browse uploaded media (localhost:3001)
+```
+
+## File Locations
+
+```
+drafts/cases/           # Your case drafts
+drafts/posts/           # Your blog post drafts
+src/content/cases/      # Published cases (MDX)
+src/content/posts/      # Published posts (MDX)
+```
+
+## What the AI Does
+
+When you publish, the AI:
+
+1. **Extracts metadata** - victim info, agencies, tags, dates
+2. **Uploads media** - videos to Stream, images to Images, PDFs to R2
+3. **Rewrites content** - creates section headings, proper structure
+4. **Generates MDX** - complete article with frontmatter
+
+You don't need to worry about formatting, MDX syntax, or component imports.
+
+## Tips
+
+- **Just dump information** - the AI handles structure and tone
+- **Cases are neutral** - encyclopedic, no emotional language
+- **Posts get Key Takeaways** - AI adds a summary section
+- **Review after publishing** - AI is good but not perfect
+
+## Full Documentation
+
+- [PUBLISHING.md](./PUBLISHING.md) - Complete publishing guide
+- [EDITING-ARTICLES.md](./EDITING-ARTICLES.md) - Editing published content
+- [CLI.md](./CLI.md) - Interactive CLI reference
+- [drafts/README.md](./drafts/README.md) - Draft templates and tips
