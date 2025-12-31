@@ -25,9 +25,46 @@ const allPosts = await getCollection('posts', ({ data }) => data.published);
 const relatedPosts = allPosts
   .filter(p => p.slug !== post.slug && p.data.tags.some(tag => post.data.tags.includes(tag)))
   .slice(0, 3);
+
+// SEO data
+const siteUrl = 'https://www.policemisconductlaw.com';
+const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
+const ogImage = post.data.featured_image?.url || `${siteUrl}/images/og-default.jpg`;
+
+// JSON-LD structured data
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": post.data.title,
+  "description": post.data.description,
+  "image": ogImage,
+  "datePublished": post.data.published_date,
+  "dateModified": post.data.updated_date || post.data.published_date,
+  "author": {
+    "@type": "Organization",
+    "name": "Police Misconduct Law"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Police Misconduct Law",
+    "url": siteUrl
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": canonicalUrl
+  },
+  "keywords": post.data.tags.join(", ")
+};
 ---
 
-<MainLayout content={{ title: post.data.title }}>
+<MainLayout content={{
+  title: post.data.title,
+  description: post.data.description,
+  image: ogImage,
+  type: 'article',
+  publishedDate: post.data.published_date
+}}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <article class="py-8" data-pagefind-body>
     <!-- Back Navigation -->
     <nav class="mb-6 px-6">

@@ -21,9 +21,59 @@ export async function getStaticPaths() {
 
 const { caseItem } = Astro.props;
 const { Content } = await caseItem.render();
+
+// SEO data
+const siteUrl = 'https://www.policemisconductlaw.com';
+const canonicalUrl = `${siteUrl}/cases/${caseItem.slug}`;
+const ogImage = caseItem.data.featured_image?.url || `${siteUrl}/images/og-default.jpg`;
+
+// JSON-LD structured data
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  "headline": caseItem.data.title,
+  "description": caseItem.data.description,
+  "image": ogImage,
+  "datePublished": caseItem.data.incident_date,
+  "dateModified": caseItem.data.last_updated || caseItem.data.incident_date,
+  "author": {
+    "@type": "Organization",
+    "name": "Police Misconduct Law"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Police Misconduct Law",
+    "url": siteUrl
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": canonicalUrl
+  },
+  "about": {
+    "@type": "Event",
+    "name": caseItem.data.title,
+    "startDate": caseItem.data.incident_date,
+    "location": {
+      "@type": "Place",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": caseItem.data.city,
+        "addressRegion": caseItem.data.county,
+        "addressCountry": "US"
+      }
+    }
+  }
+};
 ---
 
-<MainLayout content={{ title: caseItem.data.title }}>
+<MainLayout content={{
+  title: caseItem.data.title,
+  description: caseItem.data.description,
+  image: ogImage,
+  type: 'article',
+  publishedDate: caseItem.data.incident_date
+}}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <article class="py-8" data-pagefind-body>
     <!-- Breadcrumb / Back Navigation -->
     <nav class="mb-6 px-6">

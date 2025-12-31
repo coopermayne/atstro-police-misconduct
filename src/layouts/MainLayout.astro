@@ -3,15 +3,72 @@ import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import SearchModal from '../components/SearchModal.astro';
+
+interface Props {
+    content: {
+        title: string;
+        description?: string;
+        image?: string;
+        type?: 'website' | 'article';
+        publishedDate?: string;
+        modifiedDate?: string;
+        noindex?: boolean;
+    };
+}
+
 const { content } = Astro.props;
+const siteUrl = 'https://www.policemisconductlaw.com';
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const defaultDescription = 'Documenting police misconduct cases in California. Comprehensive database of incidents, legal outcomes, and accountability efforts.';
+const defaultImage = `${siteUrl}/images/og-default.jpg`;
+
+const description = content.description || defaultDescription;
+const image = content.image || defaultImage;
+const pageType = content.type || 'website';
 ---
 
 <html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+        <!-- Favicons -->
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <meta name="theme-color" content="#dc2626" />
+
+        <link rel="canonical" href={canonicalUrl} />
+
         <title>{content.title}</title>
+        <meta name="description" content={description} />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content={pageType} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={content.title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={image} />
+        <meta property="og:site_name" content="Police Misconduct Law" />
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={canonicalUrl} />
+        <meta name="twitter:title" content={content.title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={image} />
+
+        {content.publishedDate && (
+            <meta property="article:published_time" content={content.publishedDate} />
+        )}
+        {content.modifiedDate && (
+            <meta property="article:modified_time" content={content.modifiedDate} />
+        )}
+        {content.noindex && (
+            <meta name="robots" content="noindex, nofollow" />
+        )}
 
         <script is:inline>
             // Apply the theme immediately based on localStorage or system preference
