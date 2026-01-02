@@ -3,7 +3,7 @@
  * Upload Video CLI
  *
  * Uploads a video to Cloudflare Stream and outputs the MDX component.
- * Designed for use by Claude Code - outputs only the component snippet.
+ * Downloads file first to avoid URL length/encoding issues with Cloudflare API.
  *
  * Usage:
  *   npm run upload:video <url> [--caption "..."]
@@ -11,8 +11,12 @@
  */
 
 import 'dotenv/config';
-import { uploadVideoFromUrl } from '../cloudflare/cloudflare-stream.js';
+import fs from 'fs';
+import { uploadVideo } from '../cloudflare/cloudflare-stream.js';
 import { addVideoToLibrary, findAssetBySourceUrl } from '../media/media-library.js';
+import { downloadFile } from '../media/file-downloader.js';
+
+const TEMP_DIR = '.tmp-upload';
 
 function parseArgs(args) {
   const result = { url: null, caption: '' };
@@ -31,6 +35,18 @@ function parseArgs(args) {
 
 function escapeQuotes(str) {
   return str ? str.replace(/"/g, '&quot;') : '';
+}
+
+function generateShortFilename(description) {
+  // Create a short, clean filename from description
+  const slug = (description || 'video')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')  // Replace non-alphanumeric with dashes
+    .replace(/^-+|-+$/g, '')       // Trim leading/trailing dashes
+    .slice(0, 40);                 // Max 40 chars
+
+  const timestamp = Date.now().toString(36); // Short timestamp
+  return `${slug}-${timestamp}`;
 }
 
 function generateComponent(videoId, caption) {
@@ -59,9 +75,18 @@ async function main() {
     process.exit(0);
   }
 
+  let tempFilePath = null;
+
   try {
+    // Generate short descriptive filename from caption
+    const shortName = generateShortFilename(caption);
+
+    // Download file first (avoids URL length/encoding issues)
+    const downloadResult = await downloadFile(url, TEMP_DIR, shortName);
+    tempFilePath = downloadResult.filePath;
+
     // Upload to Cloudflare Stream
-    const result = await uploadVideoFromUrl(url, {
+    const result = await uploadVideo(tempFilePath, {
       name: caption || 'Video',
       description: caption || ''
     });
@@ -70,7 +95,7 @@ async function main() {
     addVideoToLibrary({
       sourceUrl: url,
       videoId: result.videoId,
-      fileName: result.originalUrl || 'video',
+      fileName: downloadResult.fileName,
       caption: caption,
       description: caption,
       metadata: result.metadata
@@ -82,6 +107,14 @@ async function main() {
   } catch (error) {
     console.error(`Error: ${error.message}`);
     process.exit(1);
+  } finally {
+    // Clean up temp file
+    if (tempFilePath && fs.existsSync(tempFilePath)) {
+      fs.unlinkSync(tempFilePath);
+      if (fs.existsSync(TEMP_DIR) && fs.readdirSync(TEMP_DIR).length === 0) {
+        fs.rmdirSync(TEMP_DIR);
+      }
+    }
   }
 }
 
