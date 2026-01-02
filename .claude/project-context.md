@@ -1,13 +1,14 @@
 # Project Context: Police Misconduct Law Website
 
-## Project Overview
-California-focused police misconduct documentation website with AI-assisted content generation. Combines case database, legal blog, and victim resources.
+## Overview
 
-**Primary Goal**: Document police misconduct cases with embedded media and provide legal resources for victims and families.
+California-focused police misconduct documentation website with interactive content creation through Claude Code. Combines case database, legal blog, and victim resources.
 
-**Live Site**: Deployed on Netlify with auto-deploy from `main` branch
+**Primary Goal**: Document police misconduct cases with embedded media and provide legal resources.
 
-**Development Environment**: This project is developed **exclusively in GitHub Codespaces**. All development, testing, and deployment happens in the Codespaces environment. This context may help explain certain errors or behaviors during testing.
+**Live Site**: Deployed on Netlify (auto-deploy from `main`)
+
+**Development**: GitHub Codespaces exclusively
 
 ---
 
@@ -20,18 +21,13 @@ California-focused police misconduct documentation website with AI-assisted cont
 - **TypeScript** - Type safety
 
 ### Media CDN (Cloudflare)
-- **Cloudflare Stream** - Video hosting with adaptive streaming
-- **Cloudflare Images** - Responsive images with automatic resizing
-- **Cloudflare R2** - S3-compatible document storage
+- **Cloudflare Stream** - Video hosting
+- **Cloudflare Images** - Responsive images
+- **Cloudflare R2** - Document storage
 
-### AI & Automation
-- **Anthropic Claude Sonnet 4** - Content generation from drafts
-- **Structured Outputs** - Metadata extraction and article generation
-
-### Deployment & Forms
+### Deployment
 - **Netlify** - Hosting with auto-deploy
-- **Netlify Forms** - Contact form (attorney referrals)
-- **Buttondown** - Newsletter (planned, not yet integrated)
+- **Netlify Forms** - Contact form
 
 ---
 
@@ -41,90 +37,52 @@ California-focused police misconduct documentation website with AI-assisted cont
 /
 ├── src/
 │   ├── content/          # MDX content collections
-│   │   ├── cases/        # Case documentation (victim stories)
-│   │   ├── posts/        # Blog articles (legal guides)
+│   │   ├── cases/        # Case documentation
+│   │   ├── posts/        # Blog articles
 │   │   ├── agencies/     # Police department profiles
 │   │   └── counties/     # County pages
 │   ├── components/       # Astro components
 │   ├── layouts/          # Page layouts
-│   └── pages/            # Routes (Astro file-based routing)
+│   └── pages/            # Routes
 │
-├── drafts/               # AI publishing workflow
-│   ├── cases/            # Case drafts → AI generates final
-│   ├── posts/            # Blog post drafts → AI generates
-│   └── published/        # Archived drafts after publishing
+├── instructions/         # Content creation guidelines
+│   ├── common.md         # Shared utilities, components
+│   ├── cases.md          # Case article guidelines
+│   └── posts.md          # Blog post guidelines
 │
-├── scripts/              # Automation & tooling
-│   ├── publish-draft.js  # Main publishing orchestrator
-│   ├── cloudflare/       # Media upload scripts
-│   ├── media/            # Media downloader & library
-│   ├── registry/         # Metadata registry builder
-│   └── ai/               # AI prompts & generation
+├── notes/                # Research notes for articles
+│   ├── cases/
+│   └── posts/
 │
-├── data/
-│   ├── metadata-registry.json    # Auto-generated from content
-│   └── display-names.json        # Human-readable names
+├── scripts/              # CLI utilities
+│   ├── cli/              # Media upload tools
+│   ├── cloudflare/       # Cloudflare API scripts
+│   ├── media/            # Media library tools
+│   └── registry/         # Metadata registry tools
 │
-└── public/               # Static assets
+└── data/
+    ├── metadata-registry.json
+    └── media-library.json
 ```
 
 ---
 
-## Content Schema
+## Content Creation
 
-### Cases Collection (`src/content/cases/`)
-Key frontmatter fields:
-- `title`, `description`, `victim_name`
-- `incident_date`, `city`, `county`
-- `agencies[]` - Array of police departments
-- `force_type`, `outcome`, `settlement_amount`
-- `bodycam_available`, `criminal_charges`
-- `featured_image` - Cloudflare Images object
-- `videos[]`, `documents[]` - Cloudflare media
+Content is created interactively through Claude Code conversations (not automated scripts).
 
-### Posts Collection (`src/content/posts/`)
-Key frontmatter fields:
-- `title`, `description`, `excerpt`
-- `published_date`, `updated_date`
-- `tags[]` - Minimal, on-point tags
-- `featured_image`
+### Workflow
+1. User provides notes/research
+2. Claude Code reads instruction files and registry
+3. Clarifying questions if needed
+4. Media uploaded via CLI utilities
+5. Article created in `src/content/`
+6. Notes preserved in `notes/`
 
-**Important**: Content type detection is path-based:
-- Files in `drafts/cases/` → case
-- Files in `drafts/posts/` → blog post
-
----
-
-## AI Publishing Workflow
-
-### Command
-```bash
-npm run publish
-# or via CLI: npm start → "Publish draft"
-```
-
-### Process
-1. **Select draft** - Interactive numbered list
-2. **Validate** - AI checks completeness, shows report
-3. **User confirmation** - Proceed or abort
-4. **Download media** - From Dropbox, Drive, direct URLs
-5. **Upload to Cloudflare** - Videos → Stream, Images → Images, Docs → R2
-6. **AI generation** - Extract metadata, generate article content
-7. **Write MDX file** - Complete frontmatter + body with embedded media
-8. **Git commit** - Auto-commit with descriptive message
-9. **Deploy** - Netlify auto-deploys on push
-
-### Draft Format
-- Unstructured notes (bullet points, paragraphs)
-- Media URLs with descriptions
-- AI reads schema from `src/content/config.ts` directly
-- Validation override: `--force` flag
-
-### AI Tone
-- **Encyclopedic** - Wikipedia-style neutrality
-- No "Sources" section (baked into content)
-- Only use `<CloudflareImage>` and `<CloudflareVideo>` components
-- Minimal tags for blog posts
+### Guidelines
+- Read `instructions/common.md` + type-specific instructions before creating content
+- Reference `data/metadata-registry.json` for canonical values
+- Use CLI utilities for media uploads
 
 ---
 
@@ -134,156 +92,111 @@ npm run publish
 # Development
 npm run dev              # Start dev server (localhost:4321)
 npm run build            # Production build
-npm start                # Interactive CLI menu (recommended)
+npm start                # Interactive CLI menu
 
-# Publishing
-npm run publish          # Publish draft (interactive)
-npm run publish -- --force  # Override validation
+# Media
+npm run upload:video <url> [--caption "..."]
+npm run upload:image <url> --alt "..." [--caption "..."]
+npm run upload:document <url> --title "..." --description "..."
+npm run media:find "<search>"
+npm run media:browse     # Visual browser (localhost:3001)
 
 # Maintenance
 npm run rebuild-registry # Rebuild metadata registry
-
-# Media Library
-# Via npm start → "Browse media library" → localhost:3001
 ```
 
-### Claude Code Slash Commands
+### Custom Skills
+- `/cm` - Stage and commit changes with descriptive message
+- `/cm file1.js file2.md` - Commit specific files
 
-Custom slash commands available:
+---
 
-- **`/commit`** - Stage and commit all changes with descriptive message
-- **`/commit file1.js file2.md`** - Commit only specific files with focused message
+## Content Schema
+
+### Cases (`src/content/cases/`)
+Key fields: `title`, `description`, `victim_name`, `incident_date`, `city`, `county`, `agencies[]`, `force_type`, `outcome`, `bodycam_available`, `featured_image`, `videos[]`, `documents[]`
+
+### Posts (`src/content/posts/`)
+Key fields: `title`, `description`, `published_date`, `tags[]`, `featured_image`
+
+**Content type**: Path-based (files in `cases/` vs `posts/`)
 
 ---
 
 ## Metadata Registry
 
-**Auto-maintained** during builds via:
-- `astro:build:done` hook in `astro.config.mjs`
-- `npm run dev` pre-hook
-- Manual: `npm run rebuild-registry`
+**Auto-maintained** during `npm run dev` and `npm run build`.
 
-**Purpose**: Track all unique values for:
-- Agencies, counties, cities
-- Force types, outcomes, tags
-- Display names (human-readable mappings)
+**Purpose**: Track canonical values for agencies, counties, force types, tags, etc.
 
 **Files**:
-- `data/metadata-registry.json` - Auto-generated, don't edit
-- `data/display-names.json` - Edit manually for custom names
+- `data/metadata-registry.json` - Auto-generated, don't edit manually
+- Manual rebuild: `npm run rebuild-registry`
 
 ---
 
 ## Environment Variables
 
-Required for AI publishing workflow:
-
+Required (configured in Codespaces secrets):
 ```bash
-# AI
-ANTHROPIC_API_KEY=
-
-# Cloudflare
-CLOUDFLARE_ACCOUNT_ID=
-CLOUDFLARE_API_TOKEN=
-CLOUDFLARE_R2_ACCESS_KEY_ID=
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=
-CLOUDFLARE_R2_BUCKET_NAME=       # Optional, has default
-CLOUDFLARE_R2_PUBLIC_URL=        # Optional
+CLOUDFLARE_ACCOUNT_ID
+CLOUDFLARE_API_TOKEN
+CLOUDFLARE_R2_ACCESS_KEY_ID
+CLOUDFLARE_R2_SECRET_ACCESS_KEY
 ```
-
-See `.env.example` for details.
 
 ---
 
-## Current Implementation Status
+## Implementation Status
 
-### ✅ Complete
+### Complete
 - Astro v5 static site with dark mode
 - Content collections (cases, posts, agencies, counties)
 - Cloudflare media integration (Stream, Images, R2)
-- AI publishing workflow with validation
+- Interactive content creation workflow
 - Metadata registry auto-sync
-- Media library browser (visual UI)
-- Unified CLI tool
-- Netlify Forms contact form with spam protection
+- Media library browser
+- Pagefind search
+- Netlify Forms contact form
 
-### 🚧 In Progress / Planned
-- Newsletter integration (Buttondown) - planned
-- Search functionality - UI exists, needs implementation
-- Advanced filtering - planned
-- Case statistics dashboard - planned
-- MPV dataset integration - planned
-- SEO optimization - planned
+### Planned
+- Newsletter integration (Buttondown)
+- Advanced filtering
+- Case statistics dashboard
 
 ---
 
-## Important Patterns
-
-### File Operations
-- NEVER create new files unless absolutely necessary
-- ALWAYS prefer editing existing files
-- No markdown docs unless user requests
+## Common Patterns
 
 ### Component Usage in MDX
-Restrict to Cloudflare components only:
 ```mdx
 <CloudflareVideo videoId="abc123" caption="..." />
 <CloudflareImage imageId="def456" alt="..." caption="..." />
 ```
 
 ### Git Commits
-- Always include descriptive messages
-- End with Claude Code signature:
+Use `/cm` skill or include signature:
 ```
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-### Form Submissions
-- Netlify Forms only work on deployed sites (not localhost)
-- Check Netlify dashboard → Forms for submissions
-- Configure email notifications in Netlify settings
-
 ---
 
 ## Common Issues
 
-1. **TypeScript errors about `class`** - These are IDE warnings in .astro files, safe to ignore
-2. **Form not working locally** - Netlify Forms require deployment
-3. **Registry out of sync** - Run `npm run rebuild-registry`
-4. **Draft validation fails** - Use `npm run publish -- --force` to override
-5. **Media upload timeouts** - Videos >1GB may fail (Cloudflare supports up to 30GB)
+1. **Registry out of sync** - Run `npm run rebuild-registry`
+2. **Media upload timeouts** - Large videos may need retry
+3. **TypeScript warnings** - IDE warnings in .astro files are usually safe to ignore
+4. **Form not working locally** - Netlify Forms require deployment
 
 ---
 
 ## Documentation
 
-**Primary Docs** (read these for details):
-- `PROJECT-ROADMAP.md` - Project status, phases, goals
-- `PUBLISHING.md` - Complete AI workflow (550+ lines)
-- `QUICKSTART.md` - 5-minute setup guide
+See `CLAUDE.md` for documentation index including:
+- `instructions/` - Content creation guidelines
 - `CLOUDFLARE-SETUP.md` - Media hosting setup
 - `METADATA-REGISTRY.md` - Registry system
-- `CLI.md` - CLI tool documentation
-
-**Tech Docs**:
-- `scripts/README.md` - Script API reference
-- `drafts/README.md` - Drafting guide
-- `scripts/media/README.md` - Media management
-
----
-
-## Quick Context Tips
-
-1. **Cases vs Posts**: Cases are victim stories, posts are legal guides
-2. **Tone**: Encyclopedic, neutral, factual - like Wikipedia
-3. **Tags**: Keep minimal and on-point for blog posts
-4. **Media**: All hosted on Cloudflare CDN, never in repo
-5. **Deployment**: Auto-deploys to Netlify on push to `main`
-6. **Forms**: Contact form for attorney referrals, newsletter coming soon
-7. **Registry**: Auto-syncs, don't manually edit `metadata-registry.json`
-
----
-
-**Last Updated**: 2025-11-21
+- `docs/claude-code-structure.md` - How custom MD files work

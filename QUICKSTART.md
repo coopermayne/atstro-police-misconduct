@@ -1,42 +1,45 @@
 # Quick Start Guide
 
-## Overview
+## Development
 
-Content is created through conversations with Claude Code. You provide notes and research, and work interactively to create polished articles.
+```bash
+npm run dev            # Start dev server (localhost:4321)
+npm start              # Interactive CLI menu
+npm run media:browse   # Browse media library (localhost:3001)
+```
 
-## Creating Content
+## Creating Content with Claude Code
+
+Content is created through conversations with Claude Code.
 
 ### Starting a New Article
 
-Tell Claude Code what you want to create:
+Tell Claude Code what you want:
 
-- **Case article**: "Create a case article about [victim name]" + provide your notes/research
-- **Blog post**: "Write a blog post about [topic]" + provide your research
+- **Case article**: "Create a case article about [victim name]" + provide notes/research
+- **Blog post**: "Write a blog post about [topic]" + provide research
 
 ### What to Provide
 
 Dump whatever information you have:
 - News article links
 - Victim information (name, age, date)
-- What happened (timeline, facts)
+- Timeline and facts
 - Legal outcomes (charges, settlements)
 - Media URLs (videos, photos, documents)
 
 Claude Code will:
-1. Research additional context if needed
-2. Ask clarifying questions
-3. Upload media to Cloudflare
-4. Create the article with proper structure
-5. Save notes for future reference
+1. Read instruction files and metadata registry
+2. Research additional context if needed
+3. Ask clarifying questions
+4. Upload media to Cloudflare
+5. Create the article with proper structure
+6. Save notes for future reference
 
 ## Adding Media
 
-Provide URLs from any source:
-- Dropbox/Google Drive links
-- Direct image/video URLs
-- Document links
+Provide URLs from any source (Dropbox, Google Drive, direct links):
 
-Claude Code uploads them using:
 ```bash
 npm run upload:video <url> [--caption "..."]
 npm run upload:image <url> --alt "..." [--caption "..."]
@@ -46,16 +49,8 @@ npm run upload:document <url> --title "..." --description "..."
 ### Finding Existing Media
 
 ```bash
-npm run media:browse    # Visual browser at localhost:3001
-npm run media:find "search term"  # Search from command line
-```
-
-## Development
-
-```bash
-npm run dev            # Start dev server (localhost:4321)
-npm start              # Interactive CLI menu
-npm run media:browse   # Browse media library (localhost:3001)
+npm run media:browse        # Visual browser at localhost:3001
+npm run media:find "term"   # Search from command line
 ```
 
 ## File Locations
@@ -77,7 +72,10 @@ notes/posts/            # Research notes for posts
 
 ## Documentation
 
-- `instructions/common.md` - Media utilities and components
-- `instructions/cases.md` - Case article guidelines
-- `instructions/posts.md` - Blog post guidelines
-- `CLAUDE.md` - Full Claude Code instructions
+| Document | Purpose |
+|----------|---------|
+| `CLAUDE.md` | Main Claude Code instructions |
+| `instructions/common.md` | Media utilities and components |
+| `instructions/cases.md` | Case article guidelines |
+| `instructions/posts.md` | Blog post guidelines |
+| `docs/claude-code-structure.md` | How custom MD files work |

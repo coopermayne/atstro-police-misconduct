@@ -119,10 +119,25 @@ See `CLOUDFLARE-SETUP.md` for setup instructions.
 
 ## Documentation
 
-- `CLAUDE.md` - Claude Code instructions
-- `CLOUDFLARE-SETUP.md` - Media hosting setup
-- `METADATA-REGISTRY.md` - Registry documentation
-- `instructions/` - Content creation guidelines
+### For Humans
+
+| Document | Description |
+|----------|-------------|
+| [QUICKSTART.md](QUICKSTART.md) | Get started quickly |
+| [PROJECT-ROADMAP.md](PROJECT-ROADMAP.md) | Project status and future plans |
+| [CLOUDFLARE-SETUP.md](CLOUDFLARE-SETUP.md) | Media hosting configuration |
+| [METADATA-REGISTRY.md](METADATA-REGISTRY.md) | How canonical metadata works |
+| [SEARCH.md](SEARCH.md) | Pagefind search implementation |
+
+### For Claude Code / AI Assistants
+
+| Document | Description |
+|----------|-------------|
+| [CLAUDE.md](CLAUDE.md) | Main Claude Code instructions |
+| [docs/claude-code-structure.md](docs/claude-code-structure.md) | How custom instruction files work |
+| [instructions/common.md](instructions/common.md) | Media utilities and components |
+| [instructions/cases.md](instructions/cases.md) | Case article guidelines |
+| [instructions/posts.md](instructions/posts.md) | Blog post guidelines |
 
 ## License
 
