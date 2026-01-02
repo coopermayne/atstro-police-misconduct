@@ -17,7 +17,7 @@ interface Props {
 }
 
 const { content } = Astro.props;
-const siteUrl = 'https://www.policemisconductlaw.com';
+const siteUrl = 'https://www.californiapolicemisconduct.com';
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const defaultDescription = 'Documenting police misconduct cases in California. Comprehensive database of incidents, legal outcomes, and accountability efforts.';
 const defaultImage = `${siteUrl}/images/og-default.jpg`;
@@ -51,7 +51,7 @@ const pageType = content.type || 'website';
         <meta property="og:title" content={content.title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={image} />
-        <meta property="og:site_name" content="Police Misconduct Law" />
+        <meta property="og:site_name" content="California Police Misconduct" />
 
         <!-- Twitter -->
         <meta name="twitter:card" content="summary_large_image" />

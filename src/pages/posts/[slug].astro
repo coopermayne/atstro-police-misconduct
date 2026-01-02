@@ -27,7 +27,7 @@ const relatedPosts = allPosts
   .slice(0, 3);
 
 // SEO data
-const siteUrl = 'https://www.policemisconductlaw.com';
+const siteUrl = 'https://www.californiapolicemisconduct.com';
 const canonicalUrl = `${siteUrl}/posts/${post.slug}`;
 const ogImage = post.data.featured_image?.url || `${siteUrl}/images/og-default.jpg`;
 
@@ -42,11 +42,11 @@ const jsonLd = {
   "dateModified": post.data.updated_date || post.data.published_date,
   "author": {
     "@type": "Organization",
-    "name": "Police Misconduct Law"
+    "name": "California Police Misconduct"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Police Misconduct Law",
+    "name": "California Police Misconduct",
     "url": siteUrl
   },
   "mainEntityOfPage": {

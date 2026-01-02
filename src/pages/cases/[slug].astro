@@ -23,7 +23,7 @@ const { caseItem } = Astro.props;
 const { Content } = await caseItem.render();
 
 // SEO data
-const siteUrl = 'https://www.policemisconductlaw.com';
+const siteUrl = 'https://www.californiapolicemisconduct.com';
 const canonicalUrl = `${siteUrl}/cases/${caseItem.slug}`;
 const ogImage = caseItem.data.featured_image?.url || `${siteUrl}/images/og-default.jpg`;
 
@@ -38,11 +38,11 @@ const jsonLd = {
   "dateModified": caseItem.data.last_updated || caseItem.data.incident_date,
   "author": {
     "@type": "Organization",
-    "name": "Police Misconduct Law"
+    "name": "California Police Misconduct"
   },
   "publisher": {
     "@type": "Organization",
-    "name": "Police Misconduct Law",
+    "name": "California Police Misconduct",
     "url": siteUrl
   },
   "mainEntityOfPage": {

@@ -1,8 +1,8 @@
-# robots.txt for Police Misconduct Law
-# https://www.policemisconductlaw.com
+# robots.txt for California Police Misconduct
+# https://www.californiapolicemisconduct.com
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://www.policemisconductlaw.com/sitemap-index.xml
+Sitemap: https://www.californiapolicemisconduct.com/sitemap-index.xml

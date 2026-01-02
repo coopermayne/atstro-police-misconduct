@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://www.policemisconductlaw.com',
+  site: 'https://www.californiapolicemisconduct.com',
   vite: {
       plugins: [tailwindcss()]
     },
