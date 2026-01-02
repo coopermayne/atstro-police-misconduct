@@ -346,6 +346,58 @@
         "clippedFrom": null,
         "publicDetails": null
       }
+    },
+    "video-6fa5b9b1-4d32-439a-887a-3618050559c0": {
+      "id": "video-6fa5b9b1-4d32-439a-887a-3618050559c0",
+      "videoId": "6a5835def27b958a85717afa6fb3a6e0",
+      "fileName": "https://drive.google.com/file/d/1r8SfIxuC-2iITCs7ScnzANyZsTI1Ho09/view?usp=sharing",
+      "sourceUrl": "https://drive.google.com/file/d/1r8SfIxuC-2iITCs7ScnzANyZsTI1Ho09/view?usp=sharing",
+      "description": "Footage of the June 6, 2019 shooting in Willowbrook",
+      "alt": "Footage of the June 6, 2019 shooting in Willowbrook",
+      "caption": "Footage of the June 6, 2019 shooting in Willowbrook",
+      "tags": [],
+      "addedAt": "2026-01-02T20:50:55.014Z",
+      "cloudflareData": {
+        "uid": "6a5835def27b958a85717afa6fb3a6e0",
+        "creator": null,
+        "thumbnail": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/6a5835def27b958a85717afa6fb3a6e0/thumbnails/thumbnail.jpg",
+        "thumbnailTimestampPct": 0,
+        "readyToStream": false,
+        "readyToStreamAt": null,
+        "status": {
+          "state": "downloading",
+          "errorReasonCode": "",
+          "errorReasonText": ""
+        },
+        "meta": {
+          "description": "Footage of the June 6, 2019 shooting in Willowbrook",
+          "downloaded-from": "https://drive.google.com/uc?export=download&id=1r8SfIxuC-2iITCs7ScnzANyZsTI1Ho09",
+          "name": "Footage of the June 6, 2019 shooting in Willowbrook"
+        },
+        "created": "2026-01-02T20:50:54.974834Z",
+        "modified": "2026-01-02T20:50:54.974834Z",
+        "scheduledDeletion": null,
+        "size": 52083842,
+        "preview": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/6a5835def27b958a85717afa6fb3a6e0/watch",
+        "allowedOrigins": [],
+        "requireSignedURLs": false,
+        "uploaded": "2026-01-02T20:50:54.972315Z",
+        "uploadExpiry": null,
+        "maxSizeBytes": null,
+        "maxDurationSeconds": null,
+        "duration": -1,
+        "input": {
+          "width": -1,
+          "height": -1
+        },
+        "playback": {
+          "hls": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/6a5835def27b958a85717afa6fb3a6e0/manifest/video.m3u8",
+          "dash": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/6a5835def27b958a85717afa6fb3a6e0/manifest/video.mpd"
+        },
+        "watermark": null,
+        "clippedFrom": null,
+        "publicDetails": null
+      }
     }
   },
   "images": {
@@ -585,6 +637,23 @@
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/406dbb96-f045-41ec-9898-a12ae4fc2a00/medium",
         "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/406dbb96-f045-41ec-9898-a12ae4fc2a00/large",
         "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/406dbb96-f045-41ec-9898-a12ae4fc2a00/public"
+      }
+    },
+    "image-7419cec5-9526-4f44-82de-6aea0aea99e0": {
+      "id": "image-7419cec5-9526-4f44-82de-6aea0aea99e0",
+      "imageId": "43f340e0-700d-4f15-b871-aef793200800",
+      "fileName": "https://s3.us-west-2.amazonaws.com/homicide.latimes.com/media/homicide/e4615e07-c28b-447f-a3ad-573af6aaaf8c.jpeg",
+      "sourceUrl": "https://s3.us-west-2.amazonaws.com/homicide.latimes.com/media/homicide/e4615e07-c28b-447f-a3ad-573af6aaaf8c.jpeg",
+      "description": "Ryan Twyman, 24, was killed by Los Angeles County Sheriff's deputies on June 6, 2019",
+      "alt": "Ryan Twyman",
+      "caption": "Ryan Twyman, 24, was killed by Los Angeles County Sheriff's deputies on June 6, 2019",
+      "tags": [],
+      "addedAt": "2026-01-02T20:35:06.343Z",
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/43f340e0-700d-4f15-b871-aef793200800/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/43f340e0-700d-4f15-b871-aef793200800/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/43f340e0-700d-4f15-b871-aef793200800/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/43f340e0-700d-4f15-b871-aef793200800/public"
       }
     }
   },
