@@ -41,6 +41,13 @@ npm run publish:debug        # Publish with AI prompt/response debugging
 npm run rebuild-registry     # Rebuild metadata registry from published content
 npm run validate:config      # Validate environment variables
 npm run media:browse         # Browse media library (http://localhost:3001)
+
+# Media Upload Utilities (for Claude Code)
+npm run upload:video <url> [--caption "..."]           # Upload video, get component
+npm run upload:image <url> --alt "..." [--caption "..."]  # Upload image, get component
+npm run upload:document <url> --title "..." --description "..."  # Upload doc
+npm run media:find "<search>"                          # Search media library
+npm run link:external <url> [--title/--description/--icon]  # Generate external link
 ```
 
 ## Architecture
@@ -122,6 +129,32 @@ Two-step approach to prevent flash:
 
 **Model**: Claude Sonnet 4 with structured outputs for metadata extraction
 
+## Content Creation Instructions
+
+**When creating or editing case articles or blog posts**, read these instruction files first:
+
+| File | Read When |
+|------|-----------|
+| `instructions/common.md` | Always - covers utilities, components, registry |
+| `instructions/cases.md` | Creating/editing case articles |
+| `instructions/posts.md` | Creating/editing blog posts |
+
+These files contain:
+- Writing tone and structure guidelines
+- Complete frontmatter schema with examples
+- What you can/cannot infer from notes
+- Media upload utility usage
+- Full example articles
+
+**Interactive workflow**: When working on content, ask clarifying questions if information is ambiguous, and use web search to verify facts or find additional context.
+
+**Notes files**: Each article should have a companion notes file referenced in frontmatter:
+```yaml
+notes_file: "notes/cases/victim-name.md"
+```
+
+Notes files (`notes/cases/`, `notes/posts/`) preserve research, cut details, and edit history.
+
 ## Scripts Architecture
 
 Organized into modules:
@@ -148,6 +181,13 @@ Organized into modules:
 - `components.js` - Generates MDX component HTML
 - `files.js` - File system operations, temp directory management
 - `debug.js` - Debug mode prompts
+
+### `scripts/cli/`
+- `upload-video.js` - Upload video, output component snippet
+- `upload-image.js` - Upload image, output component snippet
+- `upload-document.js` - Upload document, output component snippet
+- `media-search.js` - Search media library
+- `external-link.js` - Generate ExternalLinkCard component
 
 ## Metadata Registry System
 
