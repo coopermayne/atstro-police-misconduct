@@ -10,8 +10,6 @@
     "build:search": "astro build && npx pagefind --site dist && node scripts/build/copy-pagefind.js",
     "preview": "astro preview",
     "astro": "astro",
-    "publish": "node scripts/publish-draft.js",
-    "publish:debug": "node scripts/publish-draft.js --debug",
     "media:browse": "node scripts/media/media-browser.js",
     "rebuild-registry": "node scripts/registry/rebuild-registry.js",
     "validate:config": "node scripts/build/validate-config.js",

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Police Misconduct Law is an Astro-based static site documenting police misconduct cases in California. The site features AI-powered content generation, Cloudflare media hosting, and automated publishing workflows.
+Police Misconduct Law is an Astro-based static site documenting police misconduct cases in California. The site features Cloudflare media hosting and an interactive content creation workflow using Claude Code.
 
 ## Development Environment
 
@@ -24,18 +24,11 @@ When debugging or troubleshooting:
 ```bash
 # Development
 npm run dev                    # Start dev server (auto-syncs registry, copies pagefind)
-npm run dev:search            # Dev server with verbose search/registry output
-npm run build                 # Production build (auto-syncs registry, runs pagefind)
-npm run preview               # Preview production build
+npm run build                  # Production build (auto-syncs registry, runs pagefind)
+npm run preview                # Preview production build
 
-# Interactive CLI (Recommended)
-npm start                     # Opens interactive menu for all tasks:
-                             # - Create drafts, publish content, browse media
-                             # - Run dev server, rebuild registry
-
-# Publishing Workflow
-npm run publish              # Interactive draft publishing with AI
-npm run publish:debug        # Publish with AI prompt/response debugging
+# Interactive CLI
+npm start                     # Opens menu: dev server, media browser, rebuild registry
 
 # Maintenance
 npm run rebuild-registry     # Rebuild metadata registry from published content
@@ -43,12 +36,58 @@ npm run validate:config      # Validate environment variables
 npm run media:browse         # Browse media library (http://localhost:3001)
 
 # Media Upload Utilities (for Claude Code)
-npm run upload:video <url> [--caption "..."]           # Upload video, get component
-npm run upload:image <url> --alt "..." [--caption "..."]  # Upload image, get component
-npm run upload:document <url> --title "..." --description "..."  # Upload doc
-npm run media:find "<search>"                          # Search media library
-npm run link:external <url> [--title/--description/--icon]  # Generate external link
+npm run upload:video <url> [--caption "..."]
+npm run upload:image <url> --alt "..." [--caption "..."]
+npm run upload:document <url> --title "..." --description "..."
+npm run media:find "<search>"
+npm run link:external <url> [--title/--description/--icon]
 ```
+
+## Content Creation Workflow
+
+Content is created interactively through Claude Code conversations. This replaces the old draft-based publishing system.
+
+### Creating Content
+
+**When creating or editing case articles or blog posts**, read these instruction files first:
+
+| File | Read When |
+|------|-----------|
+| `instructions/common.md` | Always - covers utilities, components, registry |
+| `instructions/cases.md` | Creating/editing case articles |
+| `instructions/posts.md` | Creating/editing blog posts |
+
+These files contain:
+- Writing tone and structure guidelines
+- Complete frontmatter schema with examples
+- What you can/cannot infer from notes
+- Media upload utility usage
+- Full example articles
+
+### Workflow Steps
+
+1. **User provides notes/research** - dump of information about a case or topic
+2. **Read instruction files** - `instructions/common.md` + type-specific instructions
+3. **Read metadata registry** - `data/metadata-registry.json` for canonical values
+4. **Research if needed** - use web search to verify facts or find additional context
+5. **Ask clarifying questions** - if information is ambiguous or missing
+6. **Upload media** - use CLI utilities to upload images/videos
+7. **Write article** - create MDX file in `src/content/cases/` or `src/content/posts/`
+8. **Create notes file** - save research context in `notes/cases/` or `notes/posts/`
+9. **Iterate** - accept feedback and make changes as requested
+
+### Notes Files
+
+Each article should have a companion notes file referenced in frontmatter:
+```yaml
+notes_file: "notes/cases/victim-name.md"
+```
+
+Notes files preserve:
+- Original research/notes dump
+- Source links and references
+- Details cut from the article
+- Edit history and decisions
 
 ## Architecture
 
@@ -73,7 +112,7 @@ All use `getStaticPaths()`:
 - `/counties/[slug].astro` - County pages
 - `/status/[slug].astro` - Investigation status pages
 
-Use `createSlug()` helper to convert display text to URL-safe slugs (lowercase, spaces → hyphens).
+Use `createSlug()` helper to convert display text to URL-safe slugs (lowercase, spaces to hyphens).
 
 ### Cloudflare Media Components
 
@@ -91,73 +130,15 @@ Use `createSlug()` helper to convert display text to URL-safe slugs (lowercase, 
 - **Dark mode**: `.dark` class on `<html>` (localStorage persistence)
 - **Brand color**: Red (`red-600` throughout)
 - **Typography**: `@tailwindcss/typography` for MDX prose styling
-- **Custom variant**: `@custom-variant dark (&:where(.dark, .dark *))` in `global.css`
-
-### Theme Toggle Pattern
-
-Two-step approach to prevent flash:
-1. Inline `<script is:inline>` in `MainLayout.astro` applies theme immediately
-2. Client-side `themeToggle.js` handles user interaction
-
-## AI Publishing Workflow
-
-**Core Script**: `scripts/publish-draft.js` (orchestrates entire workflow)
-
-### Workflow Steps
-
-1. **Create draft** in `/drafts/cases/` or `/drafts/posts/` (use `npm start` menu)
-2. **Add media URLs** (Dropbox, Google Drive, direct links) in frontmatter
-3. **Run** `npm run publish` (or `npm start` → "Publish draft")
-4. **System automatically**:
-   - Validates draft completeness
-   - Downloads media from external URLs
-   - Uploads videos to Cloudflare Stream
-   - Uploads images/PDFs to Cloudflare R2
-   - Extracts metadata with Claude AI
-   - Generates complete article content with Claude AI
-   - Embeds media with proper MDX components
-   - Saves to `src/content/cases/` or `src/content/posts/`
-   - Rebuilds metadata registry
-   - Commits to git
-
-**See**: `PUBLISHING.md` for 550+ line complete workflow documentation
-
-### AI Modules (`scripts/ai/`)
-
-- `prompts.js` - Builds AI prompts for metadata extraction and article generation
-- `generators.js` - Calls Claude API with structured outputs
-
-**Model**: Claude Sonnet 4 with structured outputs for metadata extraction
-
-## Content Creation Instructions
-
-**When creating or editing case articles or blog posts**, read these instruction files first:
-
-| File | Read When |
-|------|-----------|
-| `instructions/common.md` | Always - covers utilities, components, registry |
-| `instructions/cases.md` | Creating/editing case articles |
-| `instructions/posts.md` | Creating/editing blog posts |
-
-These files contain:
-- Writing tone and structure guidelines
-- Complete frontmatter schema with examples
-- What you can/cannot infer from notes
-- Media upload utility usage
-- Full example articles
-
-**Interactive workflow**: When working on content, ask clarifying questions if information is ambiguous, and use web search to verify facts or find additional context.
-
-**Notes files**: Each article should have a companion notes file referenced in frontmatter:
-```yaml
-notes_file: "notes/cases/victim-name.md"
-```
-
-Notes files (`notes/cases/`, `notes/posts/`) preserve research, cut details, and edit history.
 
 ## Scripts Architecture
 
-Organized into modules:
+### `scripts/cli/`
+- `upload-video.js` - Upload video, output component snippet
+- `upload-image.js` - Upload image, output component snippet
+- `upload-document.js` - Upload document, output component snippet
+- `media-search.js` - Search media library
+- `external-link.js` - Generate ExternalLinkCard component
 
 ### `scripts/cloudflare/`
 - `cloudflare-stream.js` - Video uploads to Stream
@@ -168,26 +149,11 @@ Organized into modules:
 - `file-downloader.js` - Downloads from external URLs (Dropbox, Drive)
 - `media-library.js` - Tracks uploaded assets in `data/media-library.json`
 - `media-browser.js` - Visual interface (http://localhost:3001)
-- `processor.js` - Orchestrates media scanning, download, upload
 
 ### `scripts/registry/`
 - `metadata-registry.js` - Core module managing canonical metadata
 - `sync-registry.js` - Auto-syncs registry (runs on `dev`/`build`)
 - `rebuild-registry.js` - Manual registry rebuild from all content
-- `metadata-registry-cli.js` - CLI for managing registry
-- `utils.js` - Frontmatter parsing, MDX file operations
-
-### `scripts/utils/`
-- `components.js` - Generates MDX component HTML
-- `files.js` - File system operations, temp directory management
-- `debug.js` - Debug mode prompts
-
-### `scripts/cli/`
-- `upload-video.js` - Upload video, output component snippet
-- `upload-image.js` - Upload image, output component snippet
-- `upload-document.js` - Upload document, output component snippet
-- `media-search.js` - Search media library
-- `external-link.js` - Generate ExternalLinkCard component
 
 ## Metadata Registry System
 
@@ -196,26 +162,14 @@ Organized into modules:
 **Location**: `data/metadata-registry.json`
 
 **Contains**:
-- Agencies: Police departments with aliases (e.g., "LAPD" → "Los Angeles Police Department")
-- Counties: California counties with variations
+- Agencies: Police departments (canonical names)
+- Counties: California counties
 - Force Types: Shooting, Taser, Physical Force, Beating, etc.
 - Threat Levels: No Threat, Low Threat, Medium Threat, High Threat, Active Threat
 - Investigation Statuses: Under Investigation, Charges Filed, Convicted, Settled, etc.
-- Case Tags: Topical categorization
-- Post Tags: Educational/legal topics
+- Case Tags and Post Tags
 
 **Auto-sync**: Registry rebuilds automatically on `npm run dev` and `npm run build`
-
-**Manual management**:
-```bash
-node scripts/registry/metadata-registry-cli.js stats
-node scripts/registry/metadata-registry-cli.js list agencies
-node scripts/registry/metadata-registry-cli.js add-agency "Berkeley PD"
-```
-
-**Display Names**: `data/display-names.json` maps metadata keys to human-readable names for UI display.
-
-**See**: `METADATA-REGISTRY.md` for complete documentation
 
 ## Media Library
 
@@ -223,124 +177,50 @@ node scripts/registry/metadata-registry-cli.js add-agency "Berkeley PD"
 
 Tracks all uploaded media to prevent duplicates:
 - Videos: Cloudflare Stream IDs, file sizes, source URLs
-- Images: Cloudflare Image IDs, R2 URLs
+- Images: Cloudflare Image IDs
 - Documents: R2 URLs, filenames
 
 **Visual Browser**: `npm run media:browse` opens http://localhost:3001
-- Grid view of all media
-- Click-to-copy MDX component codes
-- Filter by type, search by filename
 
 ## Environment Variables
 
-**Required for publishing workflow**:
+**Required**:
 ```bash
-ANTHROPIC_API_KEY                    # Claude API key
 CLOUDFLARE_ACCOUNT_ID                # Cloudflare account ID
 CLOUDFLARE_API_TOKEN                 # API token (Stream/Images/R2 permissions)
 CLOUDFLARE_R2_ACCESS_KEY_ID          # R2 access key
 CLOUDFLARE_R2_SECRET_ACCESS_KEY      # R2 secret key
 ```
 
-**Optional**:
-```bash
-CLOUDFLARE_R2_BUCKET_NAME            # R2 bucket name (has default)
-CLOUDFLARE_R2_PUBLIC_URL             # R2 public URL for documents
-```
-
-Copy `.env.example` to `.env` and fill in values. See `CLOUDFLARE-SETUP.md` for setup instructions.
-
-## Search Implementation
-
-Uses Pagefind for static site search:
-- Runs automatically during `npm run build`
-- `scripts/build/copy-pagefind.js` copies assets to proper location
-- UI exists in `SearchModal.astro` but needs connection to Pagefind
-
-**See**: `SEARCH.md` for implementation details
-
-## Content Creation Patterns
-
-### MDX Component Imports
-Components must be imported at the top of MDX files:
-```mdx
----
-title: "Example Case"
----
-
-import CloudflareImage from '../../components/CloudflareImage.astro';
-import CloudflareVideo from '../../components/CloudflareVideo.astro';
-
-Content here...
-
-<CloudflareVideo videoId="abc123" />
-```
-
-### Querying Content
-```astro
-import { getCollection } from 'astro:content';
-
-// Get published cases
-const cases = await getCollection('cases', ({ data }) => data.published);
-
-// Sort by date
-const sorted = cases.sort((a, b) =>
-  new Date(b.data.incident_date).getTime() - new Date(a.data.incident_date).getTime()
-);
-```
-
-### Link Generation
-Use `createSlug()` helper for consistent URL generation:
-```astro
-function createSlug(name: string): string {
-  return name.toLowerCase().trim().replace(/\s+/g, '-');
-}
-
-<a href={`/agencies/${createSlug(agency)}`}>{agency}</a>
-```
+See `CLOUDFLARE-SETUP.md` for setup instructions.
 
 ## Key Files Reference
 
 - `astro.config.mjs` - Astro config with Tailwind, React, MDX integrations
 - `src/content/config.ts` - Content collection schemas (Zod)
 - `src/layouts/MainLayout.astro` - Base layout with navbar/footer
-- `src/pages/index.astro` - Homepage with hero, recent content
-- `scripts/cli.js` - Interactive CLI menu
-- `scripts/publish-draft.js` - Main publishing orchestrator
+- `instructions/` - Content creation guidelines for Claude Code
 - `data/metadata-registry.json` - Canonical metadata values
 - `data/media-library.json` - Uploaded media tracking
-- `data/display-names.json` - UI display name mappings
 
-## Documentation Hub
+## Documentation
 
-**Getting Started**: `QUICKSTART.md`, `PROJECT-ROADMAP.md`
-**Publishing**: `PUBLISHING.md`, `EDITING-ARTICLES.md`, `drafts/README.md`
-**Media**: `CLOUDFLARE-SETUP.md`, `scripts/cloudflare/README.md`, `scripts/media/README.md`
-**Metadata**: `METADATA-REGISTRY.md`, `METADATA-COMPONENT.md`
-**Technical**: `CLI.md`, `scripts/README.md`, `SEARCH.md`, `WORKFLOW-DIAGRAM.md`
+- `CLOUDFLARE-SETUP.md` - Media hosting setup
+- `METADATA-REGISTRY.md` - Registry documentation
+- `instructions/common.md` - Shared content creation instructions
+- `instructions/cases.md` - Case article instructions
+- `instructions/posts.md` - Blog post instructions
 
 ## Deployment
 
 - **Host**: Netlify (auto-deploy from main branch)
-- **Build Image**: Ubuntu Noble 24.04
 - **Build Command**: `npm run build`
 - **Publish Directory**: `dist/`
-- **Node Version**: 18
 
 ## Important Patterns
 
 1. **Registry is auto-maintained**: Don't manually edit `metadata-registry.json` during builds
 2. **Media library prevents duplicates**: Check `media-library.json` before uploading
-3. **Use `npm start` for common tasks**: Interactive menu is the easiest interface
-4. **MDX content lives in `src/content/`**: Never put content in `public/`
-5. **Drafts go in `/drafts/`**: Use templates in `drafts/README.md`
-6. **Theme toggle requires two scripts**: Inline for immediate load + client-side for interaction
-7. **All dynamic routes need `getStaticPaths()`**: Astro generates pages at build time
-8. **Cloudflare components need account IDs**: Don't change account hash or customer code
-
-## Incomplete Features
-
-- Search functionality (UI exists, needs Pagefind integration)
-- Contact form (Netlify Forms planned)
-- Newsletter signup (Buttondown planned)
-- RSS feed (planned)
+3. **MDX content lives in `src/content/`**: Never put content in `public/`
+4. **All dynamic routes need `getStaticPaths()`**: Astro generates pages at build time
+5. **Cloudflare components need account IDs**: Don't change account hash or customer code
