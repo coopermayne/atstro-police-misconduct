@@ -32,6 +32,15 @@ const pageType = content.type || 'website';
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width" />
 
+        <!-- Google Analytics -->
+        <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-41WT02WNRP"></script>
+        <script is:inline>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-41WT02WNRP');
+        </script>
+
         <!-- Favicons -->
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
