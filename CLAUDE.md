@@ -7,8 +7,8 @@ This file provides guidance to Claude Code when working with this repository.
 | Task | Action |
 |------|--------|
 | Start dev server | `npm run dev` |
-| Create case article | Read `instructions/common.md` + `instructions/cases.md` first |
-| Create blog post | Read `instructions/common.md` + `instructions/posts.md` first |
+| Create case article | Create branch `case/victim-name`, then read `instructions/common.md` + `instructions/cases.md` |
+| Create blog post | Create branch `post/short-slug`, then read `instructions/common.md` + `instructions/posts.md` |
 | Upload media | Use CLI utilities below |
 | Commit changes | `/cm` or `/cm file1.js file2.md` |
 
@@ -68,14 +68,16 @@ Content is created interactively through Claude Code conversations.
 
 ### Workflow Steps
 
-1. User provides notes/research
-2. Read instruction files + `data/metadata-registry.json`
-3. Research if needed (web search for facts/context)
-4. Ask clarifying questions
-5. Upload media using CLI utilities
-6. Write article in `src/content/cases/` or `src/content/posts/`
-7. Create notes file in `notes/cases/` or `notes/posts/`
-8. Iterate based on feedback
+1. **Create a new branch** (`case/victim-name` or `post/short-slug`)
+2. User provides notes/research
+3. Read instruction files + `data/metadata-registry.json`
+4. Research if needed (web search for facts/context)
+5. Ask clarifying questions
+6. Upload media using CLI utilities
+7. Write article in `src/content/cases/` or `src/content/posts/`
+8. Create notes file in `notes/cases/` or `notes/posts/`
+9. Iterate based on feedback
+10. Commit with `/cm` when complete (user will merge to main)
 
 ## Architecture
 
