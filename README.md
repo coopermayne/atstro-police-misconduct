@@ -89,6 +89,7 @@ See `instructions/` for detailed guidelines:
 - **Content**: MDX with Content Collections
 - **Hosting**: [Netlify](https://netlify.com) (auto-deploy)
 - **Media CDN**: Cloudflare (Stream, Images, R2)
+- **Analytics**: [Google Analytics](https://analytics.google.com/)
 
 ## Scripts
 
