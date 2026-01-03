@@ -398,6 +398,62 @@
         "clippedFrom": null,
         "publicDetails": null
       }
+    },
+    "video-1267ec1d-1aa0-45e3-9db4-986d4e747037": {
+      "id": "video-1267ec1d-1aa0-45e3-9db4-986d4e747037",
+      "videoId": "9d0d3ce4832a6872db235c612d010c6e",
+      "fileName": "lasd-critical-incident-video-deputies-fa-mjxke7z8.mp4",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/g82frj23vg8ma7xlpvms6/YTDown.com_YouTube_Critical-Incident-Briefing-Deputy-Involv_Media_MFW1IUdx_kM_001_1080p.mp4?rlkey=bo7lwvq59f7ibmifeyi8b2p1q&st=laqck33r&dl=0",
+      "description": "LASD Critical Incident Video: Deputies fatally shoot David Ordaz Jr. during mental health crisis response",
+      "alt": "LASD Critical Incident Video: Deputies fatally shoot David Ordaz Jr. during mental health crisis response",
+      "caption": "LASD Critical Incident Video: Deputies fatally shoot David Ordaz Jr. during mental health crisis response",
+      "tags": [],
+      "addedAt": "2026-01-03T00:28:53.656Z",
+      "cloudflareData": {
+        "uid": "9d0d3ce4832a6872db235c612d010c6e",
+        "creator": null,
+        "thumbnail": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/9d0d3ce4832a6872db235c612d010c6e/thumbnails/thumbnail.jpg",
+        "thumbnailTimestampPct": 0,
+        "readyToStream": false,
+        "readyToStreamAt": null,
+        "status": {
+          "state": "queued",
+          "errorReasonCode": "",
+          "errorReasonText": ""
+        },
+        "meta": {
+          "filetype": "video/mp4",
+          "name": "LASD Critical Incident Video: Deputies fatally shoot David Ordaz Jr. during mental health crisis response"
+        },
+        "created": "2026-01-03T00:28:37.735146Z",
+        "modified": "2026-01-03T00:28:53.402889Z",
+        "scheduledDeletion": null,
+        "size": 223960886,
+        "preview": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/9d0d3ce4832a6872db235c612d010c6e/watch",
+        "allowedOrigins": [],
+        "requireSignedURLs": false,
+        "uploaded": "2026-01-03T00:28:37.73379Z",
+        "uploadExpiry": "2026-01-04T00:28:37.733786Z",
+        "maxSizeBytes": null,
+        "maxDurationSeconds": null,
+        "duration": -1,
+        "input": {
+          "width": -1,
+          "height": -1
+        },
+        "playback": {
+          "hls": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/9d0d3ce4832a6872db235c612d010c6e/manifest/video.m3u8",
+          "dash": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/9d0d3ce4832a6872db235c612d010c6e/manifest/video.mpd"
+        },
+        "watermark": null,
+        "clippedFrom": null,
+        "publicDetails": {
+          "title": "",
+          "share_link": "",
+          "channel_link": "",
+          "logo": ""
+        }
+      }
     }
   },
   "images": {
@@ -654,6 +710,40 @@
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/43f340e0-700d-4f15-b871-aef793200800/medium",
         "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/43f340e0-700d-4f15-b871-aef793200800/large",
         "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/43f340e0-700d-4f15-b871-aef793200800/public"
+      }
+    },
+    "image-89c584f3-c716-444f-99ef-6cf664c7ffdd": {
+      "id": "image-89c584f3-c716-444f-99ef-6cf664c7ffdd",
+      "imageId": "4628964e-eb32-4605-9823-a00f649e5e00",
+      "fileName": "david-ordaz-jr-34-year-old-father-of-thr-mjxjrgyx.jpg",
+      "sourceUrl": "https://ca-times.brightspotcdn.com/dims4/default/abbe5e3/2147483647/strip/true/crop/636x558+0+0/resize/840x737!/quality/90/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2F1c%2Fc6%2Fd11368df4b1d939084a7381740a9%2Fimg-3841.jpeg",
+      "description": "David Ordaz Jr.",
+      "alt": "David Ordaz Jr., 34-year-old father of three from East Los Angeles",
+      "caption": "David Ordaz Jr.",
+      "tags": [],
+      "addedAt": "2026-01-03T00:10:53.592Z",
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/4628964e-eb32-4605-9823-a00f649e5e00/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/4628964e-eb32-4605-9823-a00f649e5e00/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/4628964e-eb32-4605-9823-a00f649e5e00/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/4628964e-eb32-4605-9823-a00f649e5e00/public"
+      }
+    },
+    "image-48ebd555-722b-44f6-846a-a14636d44964": {
+      "id": "image-48ebd555-722b-44f6-846a-a14636d44964",
+      "imageId": "c6850f4c-b941-44b9-682c-32f7dc4dc700",
+      "fileName": "memorial-posters-of-david-ordaz-jr-displ-mjxjtxez.jpg",
+      "sourceUrl": "https://scpr.brightspotcdn.com/dims4/default/3380954/2147483647/strip/true/crop/4032x3024+0+0/resize/960x720!/quality/90/?url=http%3A%2F%2Fscpr-brightspot.s3.us-west-2.amazonaws.com%2F58%2F01%2Fb988183a43cfaae7acf7ea5b9497%2Fimg-5151.jpg",
+      "description": "Family members display photos of David Ordaz Jr. outside the courthouse",
+      "alt": "Memorial posters of David Ordaz Jr. displayed outside Los Angeles County courthouse",
+      "caption": "Family members display photos of David Ordaz Jr. outside the courthouse",
+      "tags": [],
+      "addedAt": "2026-01-03T00:12:48.589Z",
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c6850f4c-b941-44b9-682c-32f7dc4dc700/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c6850f4c-b941-44b9-682c-32f7dc4dc700/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c6850f4c-b941-44b9-682c-32f7dc4dc700/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c6850f4c-b941-44b9-682c-32f7dc4dc700/public"
       }
     }
   },
