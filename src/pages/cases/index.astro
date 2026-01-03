@@ -179,7 +179,7 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
             class="filter-btn px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:border-red-500 dark:hover:border-red-400 transition-colors"
             data-toggle-filter="bodycam"
           >
-            📹 Body Cam
+            📹 Video
           </button>
         </div>
 
@@ -427,7 +427,7 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
       if (bodycamCheckbox && bodycamCheckbox.checked) {
         activeFilters.push({ 
           type: 'bodycam', 
-          label: 'Body Cam Available', 
+          label: 'Video Available', 
           clear: () => {
             bodycamCheckbox.checked = false;
             const bodycamBtn = document.getElementById('bodycam-filter-btn');
