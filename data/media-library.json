@@ -1133,6 +1133,75 @@
         "uniqueFileName": "partixqualifiedimmunity-20251115192034.pdf",
         "needsPublicUrl": false
       }
+    },
+    "document-5cc25f09-e8d0-411d-b415-286c961e6e10": {
+      "id": "document-5cc25f09-e8d0-411d-b415-286c961e6e10",
+      "fileName": "download-1767467374981.pdf",
+      "r2Key": "download-1767467374981-20260103190935.pdf",
+      "publicUrl": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1767467374981-20260103190935.pdf",
+      "sourceUrl": "https://web.archive.org/web/20250504030035/https://lasd.org/wp-content/uploads/2024/02/Transparency_011324_CEN_DIS__Ramsis_Noor_Summary_0213.24.pdf",
+      "description": "Los Angeles County Sheriff's Department transparency summary for the Noor Ramsis officer-involved shooting",
+      "linkText": "LASD Transparency Report - Noor Ramsis",
+      "fileType": "PDF",
+      "fileSize": null,
+      "tags": [],
+      "addedAt": "2026-01-03T19:09:35.307Z",
+      "metadata": {
+        "success": true,
+        "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1767467374981-20260103190935.pdf",
+        "key": "download-1767467374981-20260103190935.pdf",
+        "bucket": "police-misconduct-website",
+        "contentType": "application/pdf",
+        "originalFileName": "download-1767467374981.pdf",
+        "uniqueFileName": "download-1767467374981-20260103190935.pdf",
+        "needsPublicUrl": false
+      }
+    },
+    "document-cf425f7e-0986-4985-b11c-4709d8d40f81": {
+      "id": "document-cf425f7e-0986-4985-b11c-4709d8d40f81",
+      "fileName": "download-1767467395780.pdf",
+      "r2Key": "download-1767467395780-20260103190955.pdf",
+      "publicUrl": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1767467395780-20260103190955.pdf",
+      "sourceUrl": "https://web.archive.org/web/20240530190228/https://lasd.org/wp-content/uploads/2024/03/Transparency_022324_PLM_DIS_Henson_Joseph_Westley_Summary_030524.pdf",
+      "description": "Los Angeles County Sheriff's Department transparency summary for the Joseph Henson officer-involved shooting",
+      "linkText": "LASD Transparency Report - Joseph Henson",
+      "fileType": "PDF",
+      "fileSize": null,
+      "tags": [],
+      "addedAt": "2026-01-03T19:09:56.146Z",
+      "metadata": {
+        "success": true,
+        "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1767467395780-20260103190955.pdf",
+        "key": "download-1767467395780-20260103190955.pdf",
+        "bucket": "police-misconduct-website",
+        "contentType": "application/pdf",
+        "originalFileName": "download-1767467395780.pdf",
+        "uniqueFileName": "download-1767467395780-20260103190955.pdf",
+        "needsPublicUrl": false
+      }
+    },
+    "document-a332309e-cfb3-4d5e-a37e-ceb32ac03487": {
+      "id": "document-a332309e-cfb3-4d5e-a37e-ceb32ac03487",
+      "fileName": "download-1767467398603.pdf",
+      "r2Key": "download-1767467398603-20260103190958.pdf",
+      "publicUrl": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1767467398603-20260103190958.pdf",
+      "sourceUrl": "https://web.archive.org/web/20250504030535/https://lasd.org/wp-content/uploads/2024/04/Transparency_031624_ELA_DIS_Sebastian_Martin_Summary_DOJ_032624.pdf",
+      "description": "Los Angeles County Sheriff's Department transparency summary for the Martin Sebastian officer-involved shooting",
+      "linkText": "LASD Transparency Report - Martin Sebastian",
+      "fileType": "PDF",
+      "fileSize": null,
+      "tags": [],
+      "addedAt": "2026-01-03T19:09:58.931Z",
+      "metadata": {
+        "success": true,
+        "url": "https://pub-94ffb76bcbf1479e8e126efb9a35c91b.r2.dev/download-1767467398603-20260103190958.pdf",
+        "key": "download-1767467398603-20260103190958.pdf",
+        "bucket": "police-misconduct-website",
+        "contentType": "application/pdf",
+        "originalFileName": "download-1767467398603.pdf",
+        "uniqueFileName": "download-1767467398603-20260103190958.pdf",
+        "needsPublicUrl": false
+      }
     }
   }
 }

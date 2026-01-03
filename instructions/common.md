@@ -109,6 +109,43 @@ npm run link:external "https://youtube.com/watch?v=abc" -- --title "News Coverag
 
 ---
 
+## Document Handling Best Practices
+
+### PDFs Must Be Downloaded, Not Linked
+
+**Always download and upload PDFs** to our R2 storage rather than linking to external sources. External PDF links break frequently when:
+- Government agencies reorganize their websites
+- News sites remove or archive old content
+- Documents are moved or renamed
+
+**Correct approach:**
+```bash
+npm run upload:document "https://example.gov/report.pdf" -- --title "Investigation Report" --description "..."
+```
+
+**Incorrect approach:**
+```yaml
+# DON'T do this - link will break eventually
+external_links:
+  - title: "Investigation Report"
+    url: "https://example.gov/report.pdf"
+```
+
+### When to Use External Links vs Documents
+
+| Content Type | Use | Why |
+|--------------|-----|-----|
+| PDFs, reports, court filings | `upload:document` → R2 | Permanent storage, won't break |
+| News articles | `link:external` | Content too large to archive |
+| YouTube/video platforms | `link:external` | Streaming content |
+| Interactive web pages | `link:external` | Can't be downloaded |
+
+### Link Validation
+
+Run `npm run validate:links` periodically to check for broken external links. Results are stored in `data/link-status.json` and broken links are automatically hidden from display.
+
+---
+
 ## MDX Components
 
 ### CloudflareVideo
