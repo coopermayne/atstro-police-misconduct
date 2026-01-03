@@ -11,11 +11,19 @@
  *        "news"   => Newspaper/article icon (news sources)
  *        "generic" (default) => External link icon
  *
+ * Link Validation:
+ *  - Checks data/link-status.json for URL status
+ *  - Links marked as "error" are hidden from display
+ *  - Run `npm run validate:links` to update link status
+ *
  * Examples:
  *  <ExternalLinkCard url="https://youtu.be/abc123" title="Incident Video" icon="video" />
  *  <ExternalLinkCard url="https://news.example.com/story" title="Coverage" description="Local news analysis" icon="news" />
  *  <ExternalLinkCard url="https://example.org" description="Reference material" />
  */
+import fs from 'fs';
+import path from 'path';
+
 interface Props {
   url: string;
   title?: string;
@@ -24,6 +32,21 @@ interface Props {
 }
 
 const { url, title, description, icon = 'generic' } = Astro.props as Props;
+
+// Check link status from validation file
+let isLinkValid = true;
+try {
+  const statusPath = path.join(process.cwd(), 'data/link-status.json');
+  if (fs.existsSync(statusPath)) {
+    const statusData = JSON.parse(fs.readFileSync(statusPath, 'utf-8'));
+    const linkStatus = statusData.links?.[url];
+    if (linkStatus && linkStatus.status === 'error') {
+      isLinkValid = false;
+    }
+  }
+} catch {
+  // If we can't read the status file, show the link anyway
+}
 
 function getDisplayTitle(): string {
   if (title && title.trim().length > 0) return title.trim();
@@ -35,6 +58,7 @@ function getDisplayTitle(): string {
 }
 ---
 
+{isLinkValid && (
 <div class="my-6 not-prose">
   <a
     href={url}
@@ -90,6 +114,7 @@ function getDisplayTitle(): string {
     </div>
   </a>
 </div>
+)}
 
 <!-- Usage Reference:
 import ExternalLinkCard from '../../components/ExternalLinkCard.astro';

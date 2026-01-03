@@ -1,0 +1,235 @@
+{
+  "lastFullCheck": "2026-01-03T19:05:13.517Z",
+  "summary": {
+    "total": 25,
+    "ok": 22,
+    "error": 3
+  },
+  "links": {
+    "https://abc7.com/post/lasd-releases-bodycam-footage-shooting-left-rooftop-gunman/15065022/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/jerman-magana.mdx"
+      ]
+    },
+    "https://abc7.com/post/man-shotgun-compton-roof-shot-believed-dead-after/14947003/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/jerman-magana.mdx"
+      ]
+    },
+    "https://abc7.com/post/sheriffs-deputy-pleads-contest-avoids-jail-fatal-shooting-east-la-man-david-ordaz-jr/15564323/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/david-ordaz-jr.mdx"
+      ]
+    },
+    "https://mynewsla.com/crime/2024/06/14/shooting-suspect-killed-on-compton-area-rooftop-identified/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/jerman-magana.mdx"
+      ]
+    },
+    "https://laist.com/news/criminal-justice/da-charges-la-sheriffs-deputy-with-assault-in-fatal-shooting-of-man-having-a-mental-health-crisis": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/david-ordaz-jr.mdx"
+      ]
+    },
+    "https://mynewsla.com/crime/2024/03/21/armed-suspect-killed-in-deputy-shooting-near-long-beach-identified/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/jose-acosta.mdx"
+      ]
+    },
+    "https://abc7.com/post/lasd-releases-video-after-deputies-shoot-kill-armed-man-who-crashed-pontiac-into-patrol-vehicle-in-long-beach-bellflower-border/14692710/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/jose-acosta.mdx"
+      ]
+    },
+    "https://abc7.com/video-sheriffs-deputy-involved-shooting-pearblossom-gas-station-antelope-valley/14608091/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/joseph-henson.mdx"
+      ]
+    },
+    "https://www.ourweekly.com/2024/03/01/one-dead-in-deputy-involved-shooting/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/joseph-henson.mdx"
+      ]
+    },
+    "https://www.nbclosangeles.com/news/local/body-camera-video-released-of-man-shot-and-killed-by-lasd-deputies-in-east-la/2656931/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/david-ordaz-jr.mdx"
+      ]
+    },
+    "https://mynewsla.com/crime/2024/03/18/man-killed-by-deputies-in-east-la-identified-2/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/martin-sebastian.mdx"
+      ]
+    },
+    "https://www.cbsnews.com/losangeles/news/man-fires-shotgun-on-west-rancho-dominguez-roof-at-deputies/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/jerman-magana.mdx"
+      ]
+    },
+    "https://abc7.com/long-beach-deputy-shooting-suspect-killed-crash/14547751/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/jose-acosta.mdx"
+      ]
+    },
+    "https://da.lacounty.gov/sites/default/files/pdf/JSID-OIS-11-21-25-Ramsis.pdf": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/noor-ramsis.mdx"
+      ]
+    },
+    "https://lasd.org/wp-content/uploads/2024/03/Transparency_022324_PLM_DIS_Henson_Joseph_Westley_Summary_030524.pdf": {
+      "status": "error",
+      "statusCode": 415,
+      "error": "HTTP 415",
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/joseph-henson.mdx"
+      ]
+    },
+    "https://lasd.org/wp-content/uploads/2024/04/Transparency_031624_ELA_DIS_Sebastian_Martin_Summary_DOJ_032624.pdf": {
+      "status": "error",
+      "statusCode": 415,
+      "error": "HTTP 415",
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/martin-sebastian.mdx"
+      ]
+    },
+    "https://lasd.org/wp-content/uploads/2024/02/Transparency_011324_CEN_DIS__Ramsis_Noor_Summary_0213.24.pdf": {
+      "status": "error",
+      "statusCode": 415,
+      "error": "HTTP 415",
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/noor-ramsis.mdx"
+      ]
+    },
+    "https://www.cbsnews.com/losangeles/news/investigation-underway-after-deputy-involved-shooting-in-east-la/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/martin-sebastian.mdx"
+      ]
+    },
+    "https://laist.com/news/criminal-justice/former-sheriffs-deputy-convicted-in-fatal-shooting-of-ryan-twyman-first-such-conviction-in-two-decades-in-la": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/ryan-twyman.mdx"
+      ]
+    },
+    "https://en.wikipedia.org/wiki/New_Haven_v._Thomas_Hogg": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/posts/new-haven-v-thomas-hogg-two-witness-rule.mdx"
+      ]
+    },
+    "https://abc7.com/la-sheriffs-deputy-convicted-deadly-shooting-andrew-lyons-ryan-twyman/14317251/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/ryan-twyman.mdx"
+      ]
+    },
+    "https://www.nbclosangeles.com/news/local/lasd-deputy-shoots-man-in-south-los-angeles/3311711/": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/noor-ramsis.mdx"
+      ]
+    },
+    "https://en.wikipedia.org/wiki/Execution_of_George_Spencer": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/posts/new-haven-v-thomas-hogg-two-witness-rule.mdx"
+      ]
+    },
+    "https://da.lacounty.gov/about/inside-LADA/district-attorney-gasc-n-announces-conviction-sheriff-s-deputy-fatal-duty-shooting": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/ryan-twyman.mdx"
+      ]
+    },
+    "https://www.foxla.com/news/ryan-twyman-shooting-la-county-to-settle-24-year-olds-death-for-close-to-4m": {
+      "status": "ok",
+      "statusCode": 200,
+      "error": null,
+      "lastChecked": "2026-01-03T19:05:13.517Z",
+      "sources": [
+        "src/content/cases/ryan-twyman.mdx"
+      ]
+    }
+  }
+}
