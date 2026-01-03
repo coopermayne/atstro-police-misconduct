@@ -205,12 +205,102 @@ Doe's family filed a federal civil rights lawsuit in April 2024, alleging excess
 ## Workflow Checklist
 
 1. [ ] Read `instructions/common.md`
-2. [ ] Read the user's notes/research
-3. [ ] Read `data/metadata-registry.json` for canonical values
-4. [ ] Ask clarifying questions if needed
-5. [ ] Search web for additional context if helpful
-6. [ ] Upload any media using CLI utilities
-7. [ ] Generate frontmatter with all available fields
-8. [ ] Write article body following structure guidelines
-9. [ ] Create/update notes file with context and edit history
-10. [ ] Ask user to review, iterate as needed
+2. [ ] Read `data/metadata-registry.json` for canonical values
+3. [ ] **Create notes file FIRST** at `notes/cases/victim-name.md` (see Notes File section below)
+4. [ ] Read the user's notes/research, add to notes file
+5. [ ] Research: search web, update notes file with each source visited
+6. [ ] Ask clarifying questions if needed
+7. [ ] Upload any media using CLI utilities, update notes with media IDs
+8. [ ] Generate frontmatter with all available fields
+9. [ ] Write article body following structure guidelines
+10. [ ] Finalize notes file with edit history
+11. [ ] Ask user to review, iterate as needed
+
+---
+
+## Notes File
+
+**Create the notes file FIRST before any research.** Update it continuously as you work.
+
+### Notes File Location
+- Cases: `notes/cases/victim-name.md`
+- Posts: `notes/posts/article-slug.md`
+
+### Required Sections
+
+```markdown
+# [Victim Name] Case Notes
+
+## Case Summary
+- **Victim**: [Name, age, demographics]
+- **Date**: [Incident date]
+- **Location**: [City, county]
+- **Agency**: [Department name]
+- **Outcome**: [Current status]
+
+## Research Log
+<!-- Update this section as you research. Log EVERY source visited. -->
+
+### [Timestamp or sequence number]
+- **Source**: [URL or description]
+- **Found**: [What information was gathered]
+- **Status**: [Useful / Not useful / Needs follow-up]
+
+### [Next source...]
+
+## Key Facts
+<!-- Bullet points of confirmed facts -->
+
+## Sources
+<!-- Final list of sources used in article -->
+
+## Media
+- **Featured Image**: [Description and Cloudflare ID]
+- **Video**: [Description and Cloudflare Stream ID]
+
+## Data Source
+<!-- If from dataset, include the raw data -->
+
+## Open Questions
+<!-- Anything unresolved or needing clarification -->
+
+## Edit History
+- [Date]: Initial article created
+- [Date]: [Any updates]
+```
+
+### Research Log Best Practices
+
+Log each research step as you go:
+
+```markdown
+## Research Log
+
+### 1. Initial web search
+- **Query**: "John Doe LAPD shooting 2024"
+- **Source**: Google search results
+- **Found**: 3 relevant articles from LA Times, ABC7, NBC LA
+- **Status**: Will fetch each article
+
+### 2. LA Times article
+- **Source**: https://latimes.com/...
+- **Found**: Incident date (March 15), location (downtown LA), victim age (34)
+- **Status**: Useful - primary source
+
+### 3. ABC7 article
+- **Source**: https://abc7.com/...
+- **Found**: Body camera footage exists, family statement
+- **Status**: Useful - adds context
+
+### 4. DA website check
+- **Source**: https://da.lacounty.gov/reports/ois/2024
+- **Found**: No report published yet
+- **Status**: Note in article as pending
+
+### 5. LASD transparency page
+- **Source**: https://lasd.org/transparency/...
+- **Found**: Official summary PDF available
+- **Status**: Added to documents list
+```
+
+This creates an audit trail of how the article was researched and what sources informed each fact.

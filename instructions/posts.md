@@ -184,15 +184,97 @@ At the federal level, the George Floyd Justice in Policing Act included qualifie
 ## Workflow Checklist
 
 1. [ ] Read `instructions/common.md`
-2. [ ] Read the user's topic/research notes
-3. [ ] Read `data/metadata-registry.json` for existing tags
-4. [ ] Ask clarifying questions if needed
-5. [ ] Search web for current information if helpful
-6. [ ] Upload any media using CLI utilities
-7. [ ] Generate frontmatter with appropriate tags
-8. [ ] Write article body with Key Takeaways section
-9. [ ] Create/update notes file with context
-10. [ ] Ask user to review, iterate as needed
+2. [ ] Read `data/metadata-registry.json` for existing tags
+3. [ ] **Create notes file FIRST** at `notes/posts/article-slug.md` (see Notes File section below)
+4. [ ] Read the user's topic/research notes, add to notes file
+5. [ ] Research: search web, update notes file with each source visited
+6. [ ] Ask clarifying questions if needed
+7. [ ] Upload any media using CLI utilities, update notes with media IDs
+8. [ ] Generate frontmatter with appropriate tags
+9. [ ] Write article body with Key Takeaways section
+10. [ ] Finalize notes file with edit history
+11. [ ] Ask user to review, iterate as needed
+
+---
+
+## Notes File
+
+**Create the notes file FIRST before any research.** Update it continuously as you work.
+
+### Notes File Location
+- Posts: `notes/posts/article-slug.md`
+
+### Required Sections
+
+```markdown
+# [Article Title] - Post Notes
+
+## Post Summary
+- **Topic**: [Brief description]
+- **Purpose**: [What the article aims to explain/cover]
+- **Target audience**: [Who this is for]
+
+## Research Log
+<!-- Update this section as you research. Log EVERY source visited. -->
+
+### [Timestamp or sequence number]
+- **Source**: [URL or description]
+- **Found**: [What information was gathered]
+- **Status**: [Useful / Not useful / Needs follow-up]
+
+### [Next source...]
+
+## Key Points to Cover
+<!-- Main points the article should address -->
+
+## Sources
+<!-- Final list of sources used in article -->
+
+## Media
+- **Featured Image**: [Description and Cloudflare ID]
+- **Additional Media**: [Any other images/videos]
+
+## Tags Used
+<!-- List of tags from registry -->
+
+## Open Questions
+<!-- Anything unresolved or needing clarification -->
+
+## Edit History
+- [Date]: Initial article created
+- [Date]: [Any updates]
+```
+
+### Research Log Best Practices
+
+Log each research step as you go:
+
+```markdown
+## Research Log
+
+### 1. Initial web search
+- **Query**: "qualified immunity reform 2024"
+- **Source**: Google search results
+- **Found**: Recent articles from Reuters, NPR, legal blogs
+- **Status**: Will fetch each article
+
+### 2. Reuters article
+- **Source**: https://reuters.com/...
+- **Found**: Latest Supreme Court ruling details, state reform updates
+- **Status**: Useful - good overview
+
+### 3. State legislature check
+- **Source**: https://leginfo.legislature.ca.gov/...
+- **Found**: California AB 1234 text and status
+- **Status**: Useful - primary source for legislation
+
+### 4. Legal blog analysis
+- **Source**: https://lawblog.com/...
+- **Found**: Expert analysis on implications
+- **Status**: Useful - adds context
+```
+
+This creates an audit trail of how the article was researched and what sources informed each fact.
 
 ---
 
