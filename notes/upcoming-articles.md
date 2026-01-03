@@ -7,19 +7,17 @@ These cases were cross-referenced from the LASD YouTube video list against our d
 ### Completed
 - [x] **Noor Ramsis** - Jan 13, 2024, South Los Angeles (Century Station)
 - [x] **Joseph Henson** - Feb 23, 2024, Pearblossom (Palmdale Station)
+- [x] **Martin Sebastian** - Mar 16, 2024, East Los Angeles (East LA Station)
 
 ### To Do
-- [ ] **Martin Sebastian** - Mar 16, 2024, East Los Angeles
-  - Armed with metal stick and replica gun
-  - Dataset: Hispanic male, 28
-  - Source: https://www.cbsnews.com/losangeles/video/man-with-replica-handgun-shot-and-killed-by-deputies-in-east-la-on-saturday/
 
 - [ ] **Jose Acosta** - Mar 19, 2024, Long Beach
   - Welfare check, violated protection order, crashed into patrol car, ran at officers with knife
   - Dataset: Hispanic male, 40
   - Source: https://abc7.com/long-beach-deputy-shooting-suspect-killed-crash/14547751/
 
-- [ ] **Jerman Magana** - Jun 13, 2024, West Rancho Dominguez
+- [ ] **Jerman 
+** - Jun 13, 2024, West Rancho Dominguez
   - Family called 911, shooting gun in yard, allegedly fired at police helicopter from rooftop
   - Dataset: Hispanic male, 30
   - Source: https://ktla.com/video/south-l-a-rooftop-gunman-shot-killed-by-deputies/9783992/

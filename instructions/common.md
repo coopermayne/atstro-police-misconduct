@@ -4,31 +4,7 @@ Read this file before working on any content (cases, posts, etc.). It covers sha
 
 ## Git Workflow
 
-**Before starting any new article, create a dedicated branch.** This allows multiple articles to be in progress simultaneously without conflicts.
-
-### Branch Naming Convention
-| Content Type | Branch Name Format | Example |
-|--------------|-------------------|---------|
-| Case article | `case/victim-name` | `case/john-smith` |
-| Blog post | `post/short-slug` | `post/qualified-immunity-explainer` |
-
-### Workflow Steps
-1. **Create and switch to a new branch:**
-   ```bash
-   git checkout -b case/victim-name
-   ```
-2. **Do all work on this branch** - upload media, write article, create notes file
-3. **Commit when complete** using `/cm` or:
-   ```bash
-   git add . && git commit -m "Add case article: Victim Name"
-   ```
-4. **The user will merge to main** when ready (you don't need to merge or push unless asked)
-
-### Important
-- Always check which branch you're on before starting: `git branch --show-current`
-- If already on main, create the branch first
-- If already on an article branch for a different article, switch to main first, then create the new branch
-- One article per branch keeps merges clean
+Work directly on `main` unless told otherwise. Commit when the article is complete using `/cm`.
 
 ---
 
