@@ -136,7 +136,19 @@ const jsonLd = {
             ))}
           </div>
         )}
-        
+
+    </div>
+
+    <!-- Related Cases -->
+    <div class="px-6">
+      <RelatedCases
+        currentSlug={caseItem.slug}
+        relatedCaseSlugs={caseItem.data.related_cases || []}
+        agency={caseItem.data.agencies?.[0]}
+        forceType={caseItem.data.force_type}
+        county={caseItem.data.county}
+        maxResults={4}
+      />
     </div>
   </article>
 </MainLayout>

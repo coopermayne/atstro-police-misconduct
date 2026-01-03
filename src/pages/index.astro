@@ -176,15 +176,20 @@ function createSlug(name: string): string {
           <div class="grid md:grid-cols-3 gap-6 mt-8">
             {recentCases.map((caseItem) => (
               <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
-                {caseItem.data.featured_image && (
-                  <a href={`/cases/${caseItem.slug}`} class="block">
+                <a href={`/cases/${caseItem.slug}`} class="block">
+                  {caseItem.data.featured_image ? (
                     <img
                       src={`https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/${caseItem.data.featured_image.imageId}/thumbnail`}
                       alt={caseItem.data.featured_image.alt || caseItem.data.title}
                       class="w-full h-40 object-cover"
                     />
-                  </a>
-                )}
+                  ) : (
+                    <div class="w-full h-40 bg-gray-100 dark:bg-gray-700 flex flex-col items-center justify-center p-4 text-center">
+                      <h3 class="text-sm font-bold text-gray-800 dark:text-white mb-1 line-clamp-2">{caseItem.data.title}</h3>
+                      <p class="text-xs text-gray-600 dark:text-gray-400">{caseItem.data.city}, CA</p>
+                    </div>
+                  )}
+                </a>
                 <div class="p-5">
                   <h3 class="font-semibold text-gray-900 dark:text-white mb-3">
                     <a
