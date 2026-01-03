@@ -4,7 +4,7 @@
  * Shows related cases based on relationships
  */
 import { getCollection } from 'astro:content';
-import MetadataItem from './MetadataItem.astro';
+import CaseCard from './CaseCard.astro';
 
 interface Props {
   currentSlug: string;
@@ -12,16 +12,18 @@ interface Props {
   agency?: string;
   forceType?: string[];
   county?: string;
+  tags?: string[];
   maxResults?: number;
 }
 
-const { 
-  currentSlug, 
+const {
+  currentSlug,
   relatedCaseSlugs = [],
   agency,
   forceType = [],
   county,
-  maxResults = 4 
+  tags = [],
+  maxResults = 3
 } = Astro.props;
 
 // Get all published cases
@@ -38,126 +40,75 @@ if (relatedCases.length < maxResults) {
     .filter(c => {
       if (c.slug === currentSlug) return false;
       if (relatedCaseSlugs.includes(c.slug)) return false; // Already included
-      
+
       // Score by similarity
       let score = 0;
-      
+
       // Same agency (highest priority)
       if (agency && c.data.agencies?.includes(agency)) score += 3;
-      
+
       // Same force type
       if (forceType.length > 0 && c.data.force_type) {
         const overlap = forceType.filter(ft => c.data.force_type?.includes(ft));
         score += overlap.length * 2;
       }
-      
+
       // Same county
       if (county && c.data.county === county) score += 1;
-      
+
+      // Shared tags
+      if (tags.length > 0 && c.data.tags) {
+        const sharedTags = tags.filter(t => c.data.tags?.includes(t));
+        score += sharedTags.length;
+      }
+
       return score > 0;
     })
     .sort((a, b) => {
       // Sort by score (recalculate)
       let scoreA = 0, scoreB = 0;
-      
+
       if (agency) {
         if (a.data.agencies?.includes(agency)) scoreA += 3;
         if (b.data.agencies?.includes(agency)) scoreB += 3;
       }
-      
+
       if (forceType.length > 0) {
         const overlapA = forceType.filter(ft => a.data.force_type?.includes(ft));
         const overlapB = forceType.filter(ft => b.data.force_type?.includes(ft));
         scoreA += overlapA.length * 2;
         scoreB += overlapB.length * 2;
       }
-      
+
       if (county) {
         if (a.data.county === county) scoreA += 1;
         if (b.data.county === county) scoreB += 1;
       }
-      
+
+      if (tags.length > 0) {
+        const sharedTagsA = tags.filter(t => a.data.tags?.includes(t));
+        const sharedTagsB = tags.filter(t => b.data.tags?.includes(t));
+        scoreA += sharedTagsA.length;
+        scoreB += sharedTagsB.length;
+      }
+
       return scoreB - scoreA;
     })
     .slice(0, maxResults - relatedCases.length);
-  
+
   relatedCases = [...relatedCases, ...similarCases];
 }
 
-// Limit to maxResults
+// Limit to maxResults (default 3)
 relatedCases = relatedCases.slice(0, maxResults);
-
-// Helper function to format date
-function formatDate(dateString: string) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-}
 ---
 
-{relatedCases.length > 0 && (
+{relatedCases.length >= 3 && (
   <section class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
     <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Related Cases</h2>
-
-    <div class="space-y-6">
-      {relatedCases.map(relatedCase => (
-        <article class="md:flex gap-6">
-          {relatedCase.data.featured_image ? (
-            <div class="md:w-1/3 mb-4 md:mb-0">
-              <a href={`/cases/${relatedCase.slug}`} class="block group">
-                <img
-                  src={`https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/${relatedCase.data.featured_image.imageId}/medium`}
-                  alt={relatedCase.data.featured_image.alt || relatedCase.data.title}
-                  class="w-full h-48 md:h-full object-cover rounded-lg transition-transform duration-200 group-hover:scale-[1.02]"
-                />
-              </a>
-            </div>
-          ) : (
-            <div class="md:w-1/3 mb-4 md:mb-0">
-              <div class="w-full h-48 md:h-full bg-gray-100 dark:bg-gray-700 rounded-lg flex flex-col items-center justify-center p-4 text-center border border-gray-200 dark:border-gray-600">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2 line-clamp-2">{relatedCase.data.title}</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-400">{relatedCase.data.city}, CA</p>
-                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">{formatDate(relatedCase.data.incident_date)}</p>
-              </div>
-            </div>
-          )}
-
-          <div class="md:w-2/3">
-            <div class="mb-2">
-              <div class="flex flex-wrap gap-x-4 gap-y-2 mb-2">
-                <MetadataItem type="date" content={relatedCase.data.incident_date} size="md" />
-                <MetadataItem type="location" content={{ city: relatedCase.data.city, county: relatedCase.data.county }} size="md" />
-                <MetadataItem type="age" content={relatedCase.data.age} size="md" />
-              </div>
-              <div class="flex flex-wrap gap-2">
-                <MetadataItem type="agency" content={relatedCase.data.agencies?.slice(0, 2)} size="md" />
-                <MetadataItem type="forceType" content={relatedCase.data.force_type?.slice(0, 1)} size="md" />
-                <MetadataItem type="bodycam" content={relatedCase.data.bodycam_available} size="md" variant="badge" />
-              </div>
-            </div>
-
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
-              <a href={`/cases/${relatedCase.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
-                {relatedCase.data.title}
-              </a>
-            </h3>
-
-            {relatedCase.data.description && (
-              <p class="text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
-                {relatedCase.data.description}
-              </p>
-            )}
-
-            <a
-              href={`/cases/${relatedCase.slug}`}
-              class="inline-flex items-center gap-2 text-sm font-medium text-red-600 dark:text-red-500 hover:underline"
-            >
-              Read full case details
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </a>
-          </div>
-        </article>
+    <div class="grid md:grid-cols-3 gap-6">
+      {relatedCases.slice(0, 3).map(relatedCase => (
+        <CaseCard case={relatedCase} showImage={true} showDescription={true} showReadMore={true} />
       ))}
     </div>
   </section>
