@@ -20,11 +20,18 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await post.render();
 
-// Get related posts (same tags)
+// Get related posts (scored by number of shared tags)
 const allPosts = await getCollection('posts', ({ data }) => data.published);
 const relatedPosts = allPosts
-  .filter(p => p.slug !== post.slug && p.data.tags.some(tag => post.data.tags.includes(tag)))
-  .slice(0, 3);
+  .filter(p => p.slug !== post.slug)
+  .map(p => {
+    const sharedTags = p.data.tags.filter(tag => post.data.tags.includes(tag));
+    return { post: p, score: sharedTags.length };
+  })
+  .filter(({ score }) => score > 0)
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 3)
+  .map(({ post }) => post);
 
 // SEO data
 const siteUrl = 'https://www.californiapolicemisconduct.com';
