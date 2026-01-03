@@ -504,6 +504,56 @@
         "clippedFrom": null,
         "publicDetails": null
       }
+    },
+    "video-29d1748f-20e4-400c-996d-61a5a418c7f3": {
+      "id": "video-29d1748f-20e4-400c-996d-61a5a418c7f3",
+      "videoId": "08eda805ab5518540265e0be2c3cc87a",
+      "fileName": "video-mjxmev2z.mp4",
+      "sourceUrl": "https://www.dropbox.com/scl/fi/d23zl0pnz8h2z4ql19mlm/YTDown.com_YouTube_Critical-Incident-Briefing-Palmdale-Stat_Media_ksdwwO4S_gg_001_1080p.mp4?rlkey=fzf7c9so5f72djc5rz08ytbm8&st=5vtr81fy&dl=0",
+      "description": "",
+      "alt": "",
+      "caption": "",
+      "tags": [],
+      "addedAt": "2026-01-03T01:25:20.986Z",
+      "cloudflareData": {
+        "uid": "08eda805ab5518540265e0be2c3cc87a",
+        "creator": null,
+        "thumbnail": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/08eda805ab5518540265e0be2c3cc87a/thumbnails/thumbnail.jpg",
+        "thumbnailTimestampPct": 0,
+        "readyToStream": false,
+        "readyToStreamAt": null,
+        "status": {
+          "state": "queued",
+          "errorReasonCode": "",
+          "errorReasonText": ""
+        },
+        "meta": {
+          "name": "video-mjxmev2z.mp4"
+        },
+        "created": "2026-01-03T01:25:20.876637Z",
+        "modified": "2026-01-03T01:25:20.876637Z",
+        "scheduledDeletion": null,
+        "size": 195999923,
+        "preview": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/08eda805ab5518540265e0be2c3cc87a/watch",
+        "allowedOrigins": [],
+        "requireSignedURLs": false,
+        "uploaded": "2026-01-03T01:25:20.87421Z",
+        "uploadExpiry": null,
+        "maxSizeBytes": null,
+        "maxDurationSeconds": null,
+        "duration": -1,
+        "input": {
+          "width": -1,
+          "height": -1
+        },
+        "playback": {
+          "hls": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/08eda805ab5518540265e0be2c3cc87a/manifest/video.m3u8",
+          "dash": "https://customer-b2jil4qncbeg5z7d.cloudflarestream.com/08eda805ab5518540265e0be2c3cc87a/manifest/video.mpd"
+        },
+        "watermark": null,
+        "clippedFrom": null,
+        "publicDetails": null
+      }
     }
   },
   "images": {
