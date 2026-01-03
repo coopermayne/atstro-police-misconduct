@@ -1,7 +1,6 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
 import MetadataItem from '../../components/MetadataItem.astro';
-import CaseCard from '../../components/CaseCard.astro';
 import { getCollection } from 'astro:content';
 
 // Get all published cases
@@ -301,17 +300,81 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
         </button>
       </div>
 
-      <div id="cases-container" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {sortedCases.map(caseItem => (
-        <CaseCard
-          case={caseItem}
-          showImage={true}
-          showDescription={true}
-          showReadMore={true}
-          dataCase={true}
-        />
-      ))}
-    </div>
+      <!-- Table Header -->
+      <div class="hidden md:grid md:grid-cols-12 gap-4 px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-t-lg text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">
+        <div class="col-span-3">Name</div>
+        <div class="col-span-2">Date</div>
+        <div class="col-span-2">Force Type</div>
+        <div class="col-span-4">Agency</div>
+        <div class="col-span-1 text-center">Video</div>
+      </div>
+
+      <!-- Case Rows -->
+      <div id="cases-container" class="divide-y divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 rounded-b-lg md:rounded-t-none rounded-t-lg bg-white dark:bg-gray-800">
+        {sortedCases.map(caseItem => (
+          <a
+            href={`/cases/${caseItem.slug}`}
+            class="block px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+            data-case={JSON.stringify({
+              title: caseItem.data.title,
+              city: caseItem.data.city,
+              county: caseItem.data.county,
+              agencies: caseItem.data.agencies,
+              incident_date: caseItem.data.incident_date,
+              armed_status: caseItem.data.armed_status,
+              cause_of_death: caseItem.data.cause_of_death,
+              threat_level: caseItem.data.threat_level,
+              force_type: caseItem.data.force_type,
+              shooting_officers: caseItem.data.shooting_officers,
+              bodycam_available: caseItem.data.bodycam_available
+            })}
+          >
+            <!-- Mobile Layout -->
+            <div class="md:hidden">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-semibold text-gray-900 dark:text-white">{caseItem.data.title}</h3>
+                {caseItem.data.bodycam_available && (
+                  <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                  </svg>
+                )}
+              </div>
+              <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600 dark:text-gray-400">
+                <span>{new Date(caseItem.data.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span>{caseItem.data.city}, {caseItem.data.county}</span>
+              </div>
+              <div class="text-sm text-gray-500 dark:text-gray-500 mt-1">
+                {caseItem.data.agencies?.slice(0, 2).join(', ')}
+              </div>
+            </div>
+
+            <!-- Desktop Layout -->
+            <div class="hidden md:grid md:grid-cols-12 gap-4 items-center">
+              <div class="col-span-3">
+                <h3 class="font-semibold text-gray-900 dark:text-white hover:text-red-600 dark:hover:text-red-500 truncate">{caseItem.data.title}</h3>
+              </div>
+              <div class="col-span-2 text-sm text-gray-600 dark:text-gray-400">
+                {new Date(caseItem.data.incident_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </div>
+              <div class="col-span-2 text-sm text-gray-600 dark:text-gray-400 truncate">
+                {caseItem.data.force_type?.slice(0, 2).join(', ') || '—'}
+              </div>
+              <div class="col-span-4 text-sm text-gray-600 dark:text-gray-400 truncate">
+                {caseItem.data.agencies?.slice(0, 2).join(', ')}
+              </div>
+              <div class="col-span-1 flex justify-center">
+                {caseItem.data.bodycam_available ? (
+                  <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                  </svg>
+                ) : (
+                  <span class="text-gray-300 dark:text-gray-600">—</span>
+                )}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
