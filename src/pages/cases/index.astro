@@ -261,8 +261,8 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
 
       <div id="cases-container" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {sortedCases.map(caseItem => (
-        <article 
-          class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700"
+        <article
+          class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 overflow-hidden"
           data-case={JSON.stringify({
             title: caseItem.data.title,
             city: caseItem.data.city,
@@ -277,13 +277,22 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
             bodycam_available: caseItem.data.bodycam_available
           })}
         >
+          {caseItem.data.featured_image && (
+            <a href={`/cases/${caseItem.slug}`} class="block">
+              <img
+                src={getFeaturedImageUrl(caseItem.data.featured_image)}
+                alt={caseItem.data.featured_image.alt || caseItem.data.title}
+                class="w-full aspect-square object-cover"
+              />
+            </a>
+          )}
           <div class="p-6">
             <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-3">
               <a href={`/cases/${caseItem.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
                 {caseItem.data.title}
               </a>
             </h2>
-            
+
             {caseItem.data.description && (
               <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 {caseItem.data.description}
@@ -302,7 +311,7 @@ function getFeaturedImageUrl(featuredImage: {imageId: string, alt: string, capti
               </div>
             </div>
 
-            <a 
+            <a
               href={`/cases/${caseItem.slug}`}
               class="inline-block text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 text-sm font-medium"
             >

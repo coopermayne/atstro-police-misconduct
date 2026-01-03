@@ -8,19 +8,10 @@ These cases were cross-referenced from the LASD YouTube video list against our d
 - [x] **Noor Ramsis** - Jan 13, 2024, South Los Angeles (Century Station)
 - [x] **Joseph Henson** - Feb 23, 2024, Pearblossom (Palmdale Station)
 - [x] **Martin Sebastian** - Mar 16, 2024, East Los Angeles (East LA Station)
+- [x] **Jose Acosta** - Mar 19, 2024, Long Beach (Lakewood Station)
+- [x] **Jerman Magana** - Jun 13, 2024, West Rancho Dominguez
 
 ### To Do
-
-- [ ] **Jose Acosta** - Mar 19, 2024, Long Beach
-  - Welfare check, violated protection order, crashed into patrol car, ran at officers with knife
-  - Dataset: Hispanic male, 40
-  - Source: https://abc7.com/long-beach-deputy-shooting-suspect-killed-crash/14547751/
-
-- [ ] **Jerman 
-** - Jun 13, 2024, West Rancho Dominguez
-  - Family called 911, shooting gun in yard, allegedly fired at police helicopter from rooftop
-  - Dataset: Hispanic male, 30
-  - Source: https://ktla.com/video/south-l-a-rooftop-gunman-shot-killed-by-deputies/9783992/
 
 - [ ] **Cody Dodd-Thompson** - Jul 20, 2024, West Hollywood
   - Robbery suspect, turned toward police with knife

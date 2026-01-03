@@ -108,9 +108,7 @@ export async function uploadVideoTus(filePath, metadata = {}, onProgress = null)
   const fileSize = stats.size;
   const file = fs.createReadStream(filePath);
 
-  // Encode metadata for TUS Upload-Metadata header
   const metaName = metadata.name || fileName;
-  const encodedName = Buffer.from(metaName).toString('base64');
 
   return new Promise((resolve, reject) => {
     const upload = new tus.Upload(file, {
@@ -273,3 +271,4 @@ export async function getVideoDetails(videoId) {
 
   return data.result;
 }
+

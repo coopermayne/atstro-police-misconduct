@@ -604,6 +604,30 @@
         "clippedFrom": null,
         "publicDetails": null
       }
+    },
+    "video-ac9490d5-12c4-44d0-90ee-f549f4b0b7a3": {
+      "id": "video-ac9490d5-12c4-44d0-90ee-f549f4b0b7a3",
+      "videoId": "1dcf8b60e238ff5687d18da088f9aa56",
+      "fileName": "jose-acosta-lasd-critical-incident.mp4",
+      "sourceUrl": "local://Jose Acosta.mp4",
+      "description": "LASD Critical Incident Briefing: Deputy-involved shooting of Jose Acosta on March 19, 2024",
+      "alt": "LASD Critical Incident Briefing: Deputy-involved shooting of Jose Acosta on March 19, 2024",
+      "caption": "LASD Critical Incident Briefing: Deputy-involved shooting of Jose Acosta on March 19, 2024",
+      "tags": [],
+      "addedAt": "2026-01-03T03:41:24.558Z",
+      "cloudflareData": {}
+    },
+    "video-9bfb83fd-2259-49c1-8915-7fd0a4354325": {
+      "id": "video-9bfb83fd-2259-49c1-8915-7fd0a4354325",
+      "videoId": "c09a804c5b601949090f569c6f208802",
+      "fileName": "jerman-magana-lasd-critical-incident.mp4",
+      "sourceUrl": "local://Magana.mp4",
+      "description": "LASD Critical Incident Briefing: Deputy-involved shooting of Jerman Magana on June 13, 2024",
+      "alt": "LASD Critical Incident Briefing: Deputy-involved shooting of Jerman Magana on June 13, 2024",
+      "caption": "LASD Critical Incident Briefing: Deputy-involved shooting of Jerman Magana on June 13, 2024",
+      "tags": [],
+      "addedAt": "2026-01-03T03:41:40.146Z",
+      "cloudflareData": {}
     }
   },
   "images": {
@@ -894,6 +918,57 @@
         "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c6850f4c-b941-44b9-682c-32f7dc4dc700/medium",
         "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c6850f4c-b941-44b9-682c-32f7dc4dc700/large",
         "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/c6850f4c-b941-44b9-682c-32f7dc4dc700/public"
+      }
+    },
+    "image-354a4266-4b19-4ea1-9ea8-442152c58a06": {
+      "id": "image-354a4266-4b19-4ea1-9ea8-442152c58a06",
+      "imageId": "6e5cbb0c-5e28-4938-d522-bc66fe571e00",
+      "fileName": "lasd-bodycam-footage-showing-jerman-maga-mjxsfs6o.jpg",
+      "sourceUrl": "https://cdn.abcotvs.com/dip/images/15065185_LASD-bodycam-rooftop-gunman-clean-TN-img.jpg",
+      "description": "Still from LASD bodycam footage",
+      "alt": "LASD bodycam footage showing Jerman Magana on rooftop with shotgun",
+      "caption": "Still from LASD bodycam footage",
+      "tags": [],
+      "addedAt": "2026-01-03T04:13:44.841Z",
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/6e5cbb0c-5e28-4938-d522-bc66fe571e00/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/6e5cbb0c-5e28-4938-d522-bc66fe571e00/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/6e5cbb0c-5e28-4938-d522-bc66fe571e00/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/6e5cbb0c-5e28-4938-d522-bc66fe571e00/public"
+      }
+    },
+    "image-7507107f-c717-4622-ac73-ad473551cf0f": {
+      "id": "image-7507107f-c717-4622-ac73-ad473551cf0f",
+      "imageId": "f89eaf39-19e9-4255-6ca8-ee2e8381f600",
+      "fileName": "scene-of-deputy-involved-shooting-at-art-mjxshg7a.jpg",
+      "sourceUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3uENbzyGGuaJjMVPZkL2478WGzAvmOpvvTQ&s",
+      "description": "Location of the incident in Long Beach",
+      "alt": "Scene of deputy-involved shooting at Artesia Boulevard and Downey Avenue in Long Beach",
+      "caption": "Location of the incident in Long Beach",
+      "tags": [],
+      "addedAt": "2026-01-03T04:15:05.292Z",
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/f89eaf39-19e9-4255-6ca8-ee2e8381f600/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/f89eaf39-19e9-4255-6ca8-ee2e8381f600/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/f89eaf39-19e9-4255-6ca8-ee2e8381f600/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/f89eaf39-19e9-4255-6ca8-ee2e8381f600/public"
+      }
+    },
+    "image-48d6afa5-fa6d-43a2-828c-4cc75c1d5138": {
+      "id": "image-48d6afa5-fa6d-43a2-828c-4cc75c1d5138",
+      "imageId": "3550fbb8-3dfa-4fd5-af53-6e705321e800",
+      "fileName": "Screenshot 2026-01-02 at 8.27.06 PM.png",
+      "sourceUrl": "local://Screenshot 2026-01-02 at 8.27.06 PM.png",
+      "description": "Still from LASD Critical Incident Briefing video",
+      "alt": "Screenshot from LASD Critical Incident Briefing showing Martin Sebastian",
+      "caption": "Still from LASD Critical Incident Briefing video",
+      "tags": [],
+      "addedAt": "2026-01-03T04:30:31.212Z",
+      "urls": {
+        "thumbnail": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/3550fbb8-3dfa-4fd5-af53-6e705321e800/thumbnail",
+        "medium": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/3550fbb8-3dfa-4fd5-af53-6e705321e800/medium",
+        "large": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/3550fbb8-3dfa-4fd5-af53-6e705321e800/large",
+        "public": "https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/3550fbb8-3dfa-4fd5-af53-6e705321e800/public"
       }
     }
   },

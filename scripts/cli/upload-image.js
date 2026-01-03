@@ -3,11 +3,12 @@
  * Upload Image CLI
  *
  * Uploads an image to Cloudflare Images and outputs the MDX component.
- * Downloads file first to avoid URL length/encoding issues with Cloudflare API.
+ * Supports both URLs (downloads first) and local file paths.
  *
  * Usage:
  *   npm run upload:image <url> --alt "Description" [--caption "..."]
  *   npm run upload:image <url> -- --alt "Scene photo" --caption "Location of incident"
+ *   npm run upload:image "/path/to/local/file.png" --alt "Description"
  */
 
 import 'dotenv/config';
@@ -16,6 +17,15 @@ import path from 'path';
 import { uploadImage } from '../cloudflare/cloudflare-images.js';
 import { addImageToLibrary, findAssetBySourceUrl } from '../media/media-library.js';
 import { downloadFile } from '../media/file-downloader.js';
+
+function isLocalFile(input) {
+  // Check if it's a local file path (not a URL)
+  if (input.startsWith('http://') || input.startsWith('https://')) {
+    return false;
+  }
+  // Check if file exists
+  return fs.existsSync(input);
+}
 
 const TEMP_DIR = '.tmp-upload';
 
@@ -86,25 +96,37 @@ async function main() {
   }
 
   let tempFilePath = null;
+  let isLocal = isLocalFile(url);
 
   try {
-    // Generate short descriptive filename from alt text
-    const shortName = generateShortFilename(alt);
+    let filePath;
+    let fileName;
 
-    // Download file first (avoids URL length/encoding issues)
-    const downloadResult = await downloadFile(url, TEMP_DIR, shortName);
-    tempFilePath = downloadResult.filePath;
+    if (isLocal) {
+      // Use local file directly
+      filePath = url;
+      fileName = path.basename(url);
+    } else {
+      // Generate short descriptive filename from alt text
+      const shortName = generateShortFilename(alt);
+
+      // Download file first (avoids URL length/encoding issues)
+      const downloadResult = await downloadFile(url, TEMP_DIR, shortName);
+      tempFilePath = downloadResult.filePath;
+      filePath = downloadResult.filePath;
+      fileName = downloadResult.fileName;
+    }
 
     // Upload to Cloudflare Images
-    const result = await uploadImage(tempFilePath, {
+    const result = await uploadImage(filePath, {
       description: caption || alt
     });
 
     // Add to media library
     addImageToLibrary({
-      sourceUrl: url,
+      sourceUrl: isLocal ? `local://${path.basename(url)}` : url,
       imageId: result.imageId,
-      fileName: downloadResult.fileName,
+      fileName: fileName,
       alt: alt,
       caption: caption,
       description: caption || alt,
@@ -123,7 +145,7 @@ async function main() {
     console.error(`Error: ${error.message}`);
     process.exit(1);
   } finally {
-    // Clean up temp file
+    // Clean up temp file (only for downloaded files, not local files)
     if (tempFilePath && fs.existsSync(tempFilePath)) {
       fs.unlinkSync(tempFilePath);
       if (fs.existsSync(TEMP_DIR) && fs.readdirSync(TEMP_DIR).length === 0) {
