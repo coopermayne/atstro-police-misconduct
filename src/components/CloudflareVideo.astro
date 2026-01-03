@@ -3,18 +3,19 @@ interface Props {
   videoId: string;
   customerCode?: string;
   caption?: string;
-  poster?: string;
+  posterTime?: string; // e.g., "6s", "30s", "1:30", "2m30s"
 }
 
-const { 
-  videoId, 
+const {
+  videoId,
   customerCode = "b2jil4qncbeg5z7d",
   caption,
-  poster
+  posterTime
 } = Astro.props;
 
-// Construct the iframe URL
-const posterUrl = poster || `https://customer-${customerCode}.cloudflarestream.com/${videoId}/thumbnails/thumbnail.jpg?time=&height=600`;
+// Construct the poster URL with optional time parameter
+const timeParam = posterTime ? `time=${posterTime}&` : '';
+const posterUrl = `https://customer-${customerCode}.cloudflarestream.com/${videoId}/thumbnails/thumbnail.jpg?${timeParam}height=600`;
 const iframeSrc = `https://customer-${customerCode}.cloudflarestream.com/${videoId}/iframe?poster=${encodeURIComponent(posterUrl)}`;
 ---
 

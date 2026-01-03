@@ -348,6 +348,7 @@ export function addVideoToLibrary(videoData) {
     description: videoData.description || '',
     alt: videoData.alt || videoData.description || '',
     caption: videoData.caption || '',
+    posterTime: videoData.posterTime || null, // e.g., "6s", "1:30" - used for video thumbnail
     tags: videoData.tags || [],
     addedAt: new Date().toISOString(),
     cloudflareData: videoData.metadata || {}
