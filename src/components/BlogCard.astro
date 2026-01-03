@@ -1,0 +1,96 @@
+---
+interface Props {
+  post: {
+    slug: string;
+    data: {
+      title: string;
+      description?: string;
+      published_date: string;
+      tags?: string[];
+      featured_image?: {
+        imageId: string;
+        alt?: string;
+      };
+    };
+  };
+  showImage?: boolean;
+  showDescription?: boolean;
+  showReadMore?: boolean;
+}
+
+const {
+  post,
+  showImage = true,
+  showDescription = false,
+  showReadMore = true
+} = Astro.props;
+
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+---
+
+<article class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+  {showImage && (
+    <a href={`/posts/${post.slug}`} class="block">
+      {post.data.featured_image ? (
+        <img
+          src={`https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/${post.data.featured_image.imageId}/medium`}
+          alt={post.data.featured_image.alt || post.data.title}
+          class="w-full h-48 object-cover"
+        />
+      ) : (
+        <div class="w-full h-48 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+          <span class="text-gray-400 dark:text-gray-500">No image</span>
+        </div>
+      )}
+    </a>
+  )}
+
+  <div class="p-6">
+    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+      <a href={`/posts/${post.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
+        {post.data.title}
+      </a>
+    </h2>
+
+    <!-- Date -->
+    <div class="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 mb-3">
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      <span>{formatDate(post.data.published_date)}</span>
+    </div>
+
+    {showDescription && post.data.description && (
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+        {post.data.description}
+      </p>
+    )}
+
+    <!-- Tags -->
+    <div class="flex flex-wrap gap-2 text-xs mb-4">
+      {post.data.tags?.slice(0, 2).map((tag: string) => (
+        <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-gray-100 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 rounded border border-gray-300 dark:border-gray-600">
+          <svg class="w-3 h-3 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+          {tag}
+        </span>
+      ))}
+    </div>
+
+    {showReadMore && (
+      <a
+        href={`/posts/${post.slug}`}
+        class="inline-block text-red-600 dark:text-red-500 hover:underline text-sm"
+      >
+        Read more →
+      </a>
+    )}
+  </div>
+</article>

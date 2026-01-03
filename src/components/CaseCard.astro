@@ -1,0 +1,108 @@
+---
+import MetadataItem from './MetadataItem.astro';
+
+interface Props {
+  case: {
+    slug: string;
+    data: {
+      title: string;
+      description?: string;
+      incident_date: string;
+      city: string;
+      county: string;
+      age?: number;
+      agencies?: string[];
+      bodycam_available?: boolean;
+      armed_status?: string;
+      cause_of_death?: string;
+      threat_level?: string;
+      force_type?: string[];
+      shooting_officers?: string[];
+      featured_image?: {
+        imageId: string;
+        alt?: string;
+      };
+    };
+  };
+  showImage?: boolean;
+  showDescription?: boolean;
+  showReadMore?: boolean;
+  dataCase?: boolean;
+}
+
+const {
+  case: caseItem,
+  showImage = true,
+  showDescription = false,
+  showReadMore = false,
+  dataCase = false
+} = Astro.props;
+
+const caseData = dataCase ? JSON.stringify({
+  title: caseItem.data.title,
+  city: caseItem.data.city,
+  county: caseItem.data.county,
+  agencies: caseItem.data.agencies,
+  incident_date: caseItem.data.incident_date,
+  armed_status: caseItem.data.armed_status,
+  cause_of_death: caseItem.data.cause_of_death,
+  threat_level: caseItem.data.threat_level,
+  force_type: caseItem.data.force_type,
+  shooting_officers: caseItem.data.shooting_officers,
+  bodycam_available: caseItem.data.bodycam_available
+}) : null;
+---
+
+<article
+  class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 overflow-hidden"
+  data-case={caseData}
+>
+  {showImage && (
+    <a href={`/cases/${caseItem.slug}`} class="block">
+      {caseItem.data.featured_image ? (
+        <img
+          src={`https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/${caseItem.data.featured_image.imageId}/medium`}
+          alt={caseItem.data.featured_image.alt || caseItem.data.title}
+          class="w-full h-48 object-cover"
+        />
+      ) : (
+        <div class="w-full h-48 bg-gray-100 dark:bg-gray-700 flex flex-col items-center justify-center p-6 text-center">
+          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2 line-clamp-2">{caseItem.data.title}</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">{caseItem.data.city}, CA</p>
+        </div>
+      )}
+    </a>
+  )}
+  <div class={showImage ? 'p-5' : 'p-6'}>
+    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+      <a
+        href={`/cases/${caseItem.slug}`}
+        class="hover:text-red-600 dark:hover:text-red-500"
+      >
+        {caseItem.data.title}
+      </a>
+    </h3>
+    {showDescription && caseItem.data.description && (
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
+        {caseItem.data.description}
+      </p>
+    )}
+    <div class="flex flex-wrap gap-x-3 gap-y-1 mb-2">
+      <MetadataItem type="date" content={caseItem.data.incident_date} size="sm" />
+      <MetadataItem type="location" content={{ city: caseItem.data.city, county: caseItem.data.county }} size="sm" />
+      <MetadataItem type="age" content={caseItem.data.age} size="sm" />
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <MetadataItem type="agency" content={caseItem.data.agencies} size="sm" />
+      <MetadataItem type="bodycam" content={caseItem.data.bodycam_available} size="sm" variant={showReadMore ? 'badge' : 'inline'} />
+    </div>
+    {showReadMore && (
+      <a
+        href={`/cases/${caseItem.slug}`}
+        class="inline-block mt-4 text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 text-sm font-medium"
+      >
+        Read more →
+      </a>
+    )}
+  </div>
+</article>
