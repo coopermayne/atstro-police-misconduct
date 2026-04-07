@@ -11,3 +11,10 @@
 [build.environment]
   # Specify Node.js version if needed
   NODE_VERSION = "18"
+
+# Force trailing slashes on all URLs for consistent canonicalization
+[[redirects]]
+  from = "/*"
+  to = "/:splat/"
+  status = 301
+  force = false

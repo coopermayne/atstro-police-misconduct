@@ -41,7 +41,7 @@ const urlPrefix = type === 'post' ? '/posts' : '/cases';
     <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700">
       
       <!-- Featured image or placeholder (clickable) -->
-      <a href={`${urlPrefix}/${item.slug}`}>
+      <a href={`${urlPrefix}/${item.slug}/`}>
         {item.data.featured_image ? (
           <img 
             src={getFeaturedImageUrl(item.data.featured_image)} 
@@ -60,7 +60,7 @@ const urlPrefix = type === 'post' ? '/posts' : '/cases';
         
         <!-- Title (clickable) -->
         <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-          <a href={`${urlPrefix}/${item.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
+          <a href={`${urlPrefix}/${item.slug}/`} class="hover:text-red-600 dark:hover:text-red-500">
             {item.data.title}
           </a>
         </h2>
@@ -105,7 +105,7 @@ const urlPrefix = type === 'post' ? '/posts' : '/cases';
         
         <!-- Read more link (subtle affordance) -->
         <a 
-          href={`${urlPrefix}/${item.slug}`}
+          href={`${urlPrefix}/${item.slug}/`}
           class="inline-block text-red-600 dark:text-red-500 hover:underline text-sm mt-3"
         >
           Read more →

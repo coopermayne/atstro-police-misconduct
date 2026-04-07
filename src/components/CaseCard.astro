@@ -58,7 +58,7 @@ const caseData = dataCase ? JSON.stringify({
   data-case={caseData}
 >
   {showImage && (
-    <a href={`/cases/${caseItem.slug}`} class="block">
+    <a href={`/cases/${caseItem.slug}/`} class="block">
       {caseItem.data.featured_image ? (
         <img
           src={`https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/${caseItem.data.featured_image.imageId}/medium`}
@@ -76,7 +76,7 @@ const caseData = dataCase ? JSON.stringify({
   <div class={showImage ? 'p-5' : 'p-6'}>
     <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">
       <a
-        href={`/cases/${caseItem.slug}`}
+        href={`/cases/${caseItem.slug}/`}
         class="hover:text-red-600 dark:hover:text-red-500"
       >
         {caseItem.data.title}
@@ -98,7 +98,7 @@ const caseData = dataCase ? JSON.stringify({
     </div>
     {showReadMore && (
       <a
-        href={`/cases/${caseItem.slug}`}
+        href={`/cases/${caseItem.slug}/`}
         class="inline-block mt-4 text-red-600 dark:text-red-500 hover:text-red-700 dark:hover:text-red-400 text-sm font-medium"
       >
         Read more →

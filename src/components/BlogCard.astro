@@ -36,7 +36,7 @@ function formatDate(dateString: string): string {
 
 <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
   {showImage && (
-    <a href={`/posts/${post.slug}`} class="block">
+    <a href={`/posts/${post.slug}/`} class="block">
       {post.data.featured_image ? (
         <img
           src={`https://imagedelivery.net/3oZsG34qPq3SIXQhl47vqA/${post.data.featured_image.imageId}/medium`}
@@ -53,7 +53,7 @@ function formatDate(dateString: string): string {
 
   <div class="p-6">
     <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-      <a href={`/posts/${post.slug}`} class="hover:text-red-600 dark:hover:text-red-500">
+      <a href={`/posts/${post.slug}/`} class="hover:text-red-600 dark:hover:text-red-500">
         {post.data.title}
       </a>
     </h2>
@@ -86,7 +86,7 @@ function formatDate(dateString: string): string {
 
     {showReadMore && (
       <a
-        href={`/posts/${post.slug}`}
+        href={`/posts/${post.slug}/`}
         class="inline-block text-red-600 dark:text-red-500 hover:underline text-sm"
       >
         Read more →

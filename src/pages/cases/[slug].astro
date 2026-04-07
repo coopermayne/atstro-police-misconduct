@@ -24,7 +24,7 @@ const { Content } = await caseItem.render();
 
 // SEO data
 const siteUrl = 'https://www.californiapolicemisconduct.com';
-const canonicalUrl = `${siteUrl}/cases/${caseItem.slug}`;
+const canonicalUrl = `${siteUrl}/cases/${caseItem.slug}/`;
 const ogImage = caseItem.data.featured_image?.url || `${siteUrl}/images/og-default.jpg`;
 
 // JSON-LD structured data
@@ -78,7 +78,7 @@ const jsonLd = {
     <!-- Breadcrumb / Back Navigation -->
     <nav class="mb-6 px-6">
       <a 
-        href="/cases"
+        href="/cases/"
         class="inline-flex items-center text-sm text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
       >
         ← Back to all cases

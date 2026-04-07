@@ -8,9 +8,15 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.californiapolicemisconduct.com',
+  trailingSlash: 'always',
   vite: {
       plugins: [tailwindcss()]
     },
 
-  integrations: [react(), mdx(), sitemap()],
+  integrations: [react(), mdx(), sitemap({
+    serialize(item) {
+      item.lastmod = new Date().toISOString();
+      return item;
+    },
+  })],
 });

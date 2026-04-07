@@ -143,7 +143,7 @@ function createSlug(name: string): string {
 
 {shouldRender && isArrayType && processedItems.map(item => (
   type === 'agency' ? (
-    <a href={`/agencies/${createSlug(String(item))}`} class={`inline-flex items-center ${config.gap} ${config.badge} ${colors[type]} rounded border hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors`}>
+    <a href={`/agencies/${createSlug(String(item))}/`} class={`inline-flex items-center ${config.gap} ${config.badge} ${colors[type]} rounded border hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors`}>
       <svg class={`${config.icon} ${iconColor}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={icons[type]} />
       {String(item)}
     </a>
